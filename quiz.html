@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Well Do You Know Me? 💘</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #ffcce6, #ffb3d9, #ff99cc, #ff80bf);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23e22d6c" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #e22d6c;
+        }
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 10px;
+            cursor: inherit;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>How Well Do You Know Me? 💘</h1>
+        <div id="quiz"></div>
+        <p id="result" style="font-weight: bold;"></p>
+        <button onclick="window.location.href='love-letter.html'">← Back to Love Letter</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Where did we first meet?",
+                options: ["Coffee shop", "Through friends", "Work/School", "On a trip"],
+                answer: 1
+            },
+            {
+                question: "What's my favorite dessert?",
+                options: ["Chocolate cake", "Ice cream", "Cheesecake", "Fruit tart"],
+                answer: 2
+            },
+            {
+                question: "What's our song?",
+                options: ["Perfect by Ed Sheeran", "Lover by Taylor Swift", "A custom answer!", "I don’t remember"],
+                answer: 2
+            }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        function loadQuiz() {
+            const quizDiv = document.getElementById("quiz");
+            quizDiv.innerHTML = `
+                <p style="font-size: 1.2rem;">${questions[currentQ].question}</p>
+                ${questions[currentQ].options.map((opt, i) => `
+                    <button onclick="checkAnswer(${i})">${opt}</button>
+                `).join("")}
+            `;
+        }
+
+        function checkAnswer(i) {
+            if (i === questions[currentQ].answer) score++;
+            currentQ++;
+            if (currentQ < questions.length) loadQuiz();
+            else showResult();
+        }
+
+        function showResult() {
+            document.getElementById("quiz").innerHTML = "";
+            document.getElementById("result").innerHTML = `
+                You scored ${score}/${questions.length}!<br>
+                ${score === questions.length ? "You know me perfectly! 💖" : "Good try, my love~"}
+            `;
+        }
+
+        loadQuiz();
+    </script>
+</body>
+</html>

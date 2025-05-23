@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Our Puzzle</title>
+  <style>
+    body { background: #ffebee; text-align: center; }
+    .puzzle-container { 
+      display: grid; 
+      grid-template-columns: repeat(3, 200px);
+      gap: 10px; 
+      margin: 20px auto;
+      max-width: 620px;
+    }
+    .puzzle-piece { 
+      width: 200px; 
+      height: 200px; 
+      background-size: cover;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .puzzle-piece:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body>
+  <h1 style="color:#e22d6c; font-family: 'Dancing Script';">Put Our Memories Together ❤️</h1>
+  <div class="puzzle-container" id="puzzle"></div>
+  
+  <script>
+    const photos = [
+      'photo1.jpg', 'photo2.jpg', 'photo3.jpg',
+      'photo4.jpg', 'photo5.jpg', 'photo6.jpg',
+      'photo7.jpg', 'photo8.jpg', 'photo9.jpg'
+    ];
+    
+    const puzzleContainer = document.getElementById('puzzle');
+    const shuffledPhotos = [...photos].sort(() => Math.random() - 0.5);
+    
+    shuffledPhotos.forEach(photo => {
+      const piece = document.createElement('div');
+      piece.className = 'puzzle-piece';
+      piece.style.backgroundImage = `url(${photo})`;
+      puzzleContainer.appendChild(piece);
+    });
+  </script>
+</body>
+</html>

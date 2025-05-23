@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Memory Match</title>
+  <style>
+    body { background: #ffebee; text-align: center; }
+    .memory-container { 
+      display: grid; 
+      grid-template-columns: repeat(4, 150px);
+      gap: 10px; 
+      margin: 20px auto;
+      max-width: 620px;
+    }
+    .memory-card { 
+      width: 150px; 
+      height: 150px; 
+      background: #ff8fab;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .memory-card.flipped { transform: rotateY(180deg); }
+  </style>
+</head>
+<body>
+  <h1 style="color:#e22d6c; font-family: 'Dancing Script';">Match Our Memories 💞</h1>
+  <div class="memory-container" id="memory"></div>
+  
+  <script>
+    const photoPairs = [
+      'memory1.jpg', 'memory1.jpg',
+      'memory2.jpg', 'memory2.jpg',
+      'memory3.jpg', 'memory3.jpg',
+      'memory4.jpg', 'memory4.jpg'
+    ];
+    
+    const memoryContainer = document.getElementById('memory');
+    const shuffledPhotos = [...photoPairs].sort(() => Math.random() - 0.5);
+    
+    shuffledPhotos.forEach(photo => {
+      const card = document.createElement('div');
+      card.className = 'memory-card';
+      card.innerHTML = '❔';
+      
+      card.addEventListener('click', function() {
+        this.classList.add('flipped');
+        this.style.backgroundImage = `url(${photo})`;
+        // Add matching logic here
+      });
+      
+      memoryContainer.appendChild(card);
+    });
+  </script>
+</body>
+</html>
