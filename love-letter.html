@@ -401,5 +401,138 @@
       });
     </script>
 
+    <div id="decorative-bubbles"></div>
+
+    <style>
+
+      #decorative-bubbles {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+  z-index: 1; /* beneath all game and letter content */
+}
+
+.decorative-bubble {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+
+  /* Matching glowing gradient */
+  background: radial-gradient(
+    circle at 30% 30%, 
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0.15) 60%, 
+    rgba(255, 255, 255, 0.1) 80%,
+    transparent 90%
+  );
+
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 0 10px 15px rgba(255, 255, 255, 0.8),
+    inset 0 -10px 15px rgba(255, 255, 255, 0.1),
+    0 0 20px rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(6px);
+  animation: float-random 30s linear infinite alternate;
+  filter: drop-shadow(0 0 10px rgba(255, 140, 171, 0.6));
+}
+
+/* Optional rainbow sheen inside decorative bubbles */
+.decorative-bubble::before {
+  content: "";
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  width: 60%;
+  height: 30%;
+  border-radius: 50% / 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 0, 128, 0.3),
+    rgba(255, 255, 0, 0.3),
+    rgba(0, 255, 255, 0.3),
+    rgba(255, 0, 128, 0.3)
+  );
+  filter: blur(8px);
+  animation: float-rainbow 5s ease-in-out infinite;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@keyframes float-random {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.7;
+  }
+  25% {
+    transform: translate(40px, -30px) rotate(3deg);
+  }
+  50% {
+    transform: translate(30px, 40px) rotate(-4deg);
+  }
+  75% {
+    transform: translate(-40px, -20px) rotate(5deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.7;
+  }
+}
+</style>
+
+  <script>
+  function createDecorativeBubbles() {
+    const container = document.getElementById('decorative-bubbles');
+    const bubbleCount = 20;
+
+    for (let i = 0; i < bubbleCount; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'decorative-bubble';
+
+      // Smaller random sizes (30-80px)
+      const size = Math.random() * 50 + 30;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+
+      // Random position across screen
+      bubble.style.left = `${Math.random() * 100}vw`;
+      bubble.style.top = `${Math.random() * 100}vh`;
+
+      // Slightly varied animation duration
+      const duration = Math.random() * 10 + 20;
+      const delay = Math.random() * -duration;
+
+      // Unique animation for each
+      const animName = `float-random-${i}`;
+      const x1 = (Math.random() - 0.5) * 150;
+      const y1 = (Math.random() - 0.5) * 150;
+      const x2 = (Math.random() - 0.5) * 150;
+      const y2 = (Math.random() - 0.5) * 150;
+
+      const keyframes = `
+        @keyframes ${animName} {
+          0% { transform: translate(0, 0) rotate(0deg); }
+          25% { transform: translate(${x1}px, ${y1}px) rotate(3deg); }
+          50% { transform: translate(${x2}px, ${y2}px) rotate(-3deg); }
+          75% { transform: translate(${-x1 / 2}px, ${-y1 / 2}px) rotate(2deg); }
+          100% { transform: translate(0, 0) rotate(0deg); }
+        }
+      `;
+
+      const style = document.createElement('style');
+      style.innerHTML = keyframes;
+      document.head.appendChild(style);
+
+      bubble.style.animation = `${animName} ${duration}s ease-in-out ${delay}s infinite alternate`;
+
+      container.appendChild(bubble);
+    }
+  }
+
+  window.addEventListener('load', createDecorativeBubbles);
+</script>
+
+
 </body>
 </html>
