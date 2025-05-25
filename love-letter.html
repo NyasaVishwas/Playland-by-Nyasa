@@ -254,7 +254,7 @@
         z-index: 100;
         transition: transform 0.3s ease;
         user-select: none;
-        animation: iridescence 6s linear infinite alternate;
+        
       }
 
       .game-bubble:hover {
@@ -484,14 +484,14 @@
   <script>
   function createDecorativeBubbles() {
     const container = document.getElementById('decorative-bubbles');
-    const bubbleCount = 20;
+    const bubbleCount = 30;
 
     for (let i = 0; i < bubbleCount; i++) {
       const bubble = document.createElement('div');
       bubble.className = 'decorative-bubble';
 
       // Smaller random sizes (30-80px)
-      const size = Math.random() * 50 + 30;
+      const size = Math.random() * 40 + 20;
       bubble.style.width = `${size}px`;
       bubble.style.height = `${size}px`;
 
