@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Surprise Bubbles</title>
+  <style>
+    body, html {
+      margin: 0; padding: 0; overflow: hidden;
+      height: 100%;
+      background: linear-gradient(135deg, #ff6b9f, #ff5c8a, #ff4b91, #e84393);
+      background-size: 300% 300%;
+      animation: deepPinkFlow 12s ease infinite;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+
+    @keyframes deepPinkFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    #game-container {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .game-bubble {
+      position: fixed;
+      padding: 20px 25px;
+      aspect-ratio: 1 / 1;
+      min-width: 120px;
+      max-width: 180px;
+      color: white;
+      font-weight: bold;
+      background: radial-gradient(
+        circle at 30% 30%, 
+        rgba(255, 255, 255, 0.85),
+        rgba(255, 255, 255, 0.15) 60%, 
+        rgba(255, 255, 255, 0.1) 80%,
+        transparent 90%
+      );
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      box-shadow:
+        inset 0 10px 15px rgba(255, 255, 255, 0.8),
+        inset 0 -10px 15px rgba(255, 255, 255, 0.1),
+        0 0 20px rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.4rem;
+      cursor: pointer;
+      text-align: center;
+      white-space: normal;
+      word-break: break-word;
+      z-index: 100;
+      transition: transform 0.3s ease;
+      user-select: none;
+      pointer-events: auto;
+      will-change: transform;
+    }
+
+    .game-bubble:hover {
+      animation: bounce-glow 0.6s ease-in-out infinite alternate, iridescence 6s linear infinite alternate;
+      transform: scale(1.1);
+      z-index: 101;
+    }
+
+    @keyframes bounce-glow {
+      0% {
+        filter: drop-shadow(0 0 10px rgba(255, 140, 171, 0.7));
+      }
+      100% {
+        filter: drop-shadow(0 0 20px rgba(255, 140, 171, 0.9));
+      }
+    }
+
+    @keyframes iridescence {
+      0%, 100% {
+        background: radial-gradient(
+          circle at 30% 30%, 
+          rgba(255, 255, 255, 0.85),
+          rgba(255, 255, 255, 0.15) 60%, 
+          rgba(255, 255, 255, 0.1) 80%,
+          transparent 90%
+        );
+      }
+      50% {
+        background: radial-gradient(
+          circle at 40% 40%, 
+          rgba(255, 255, 255, 0.7),
+          rgba(255, 240, 240, 0.25) 60%, 
+          rgba(255, 220, 220, 0.15) 80%,
+          transparent 90%
+        );
+      }
+    }
+
+    .popping {
+      animation: pop-shrink 0.5s ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes pop-shrink {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(0.2); opacity: 0; }
+    }
+
+    .rainbow-reflection {
+      position: absolute;
+      top: 15%;
+      left: 10%;
+      width: 60%;
+      height: 30%;
+      border-radius: 50% / 100%;
+      pointer-events: none;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 0, 128, 0.3),
+        rgba(255, 255, 0, 0.3),
+        rgba(0, 255, 255, 0.3),
+        rgba(255, 0, 128, 0.3)
+      );
+      filter: blur(8px);
+      animation: float-rainbow 5s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes float-rainbow {
+      0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+      50% { transform: translate(10%, 5%) scale(1.1); opacity: 0.9; }
+      100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+    }
+
+    #decorative-bubbles {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .decorative-bubble {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      background: radial-gradient(
+        circle at 30% 30%, 
+        rgba(255, 255, 255, 0.85),
+        rgba(255, 255, 255, 0.15) 60%, 
+        rgba(255, 255, 255, 0.1) 80%,
+        transparent 90%
+      );
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      box-shadow:
+        inset 0 10px 15px rgba(255, 255, 255, 0.8),
+        inset 0 -10px 15px rgba(255, 255, 255, 0.1),
+        0 0 20px rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(6px);
+      animation: float-random 30s linear infinite alternate;
+      filter: drop-shadow(0 0 10px rgba(255, 140, 171, 0.6));
+      will-change: transform;
+    }
+
+    .decorative-bubble::before {
+      content: "";
+      position: absolute;
+      top: 15%;
+      left: 10%;
+      width: 60%;
+      height: 30%;
+      border-radius: 50% / 100%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 0, 128, 0.3),
+        rgba(255, 255, 0, 0.3),
+        rgba(0, 255, 255, 0.3),
+        rgba(255, 0, 128, 0.3)
+      );
+      filter: blur(8px);
+      animation: float-rainbow 5s ease-in-out infinite;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    @keyframes float-random {
+      0% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+      25% { transform: translate(40px, -30px) rotate(3deg); }
+      50% { transform: translate(30px, 40px) rotate(-4deg); }
+      75% { transform: translate(-40px, -20px) rotate(5deg); }
+      100% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="game-container"></div>
+  <div id="decorative-bubbles"></div>
+
+  <script>
+    const gameData = [
+      { label: 'Quiz', link: 'quiz.html' },
+      { label: 'Puzzle', link: 'puzzle.html' },
+      { label: 'Tic-Tac-Toe', link: 'tic.html' },
+      { label: 'Memory\nGame', link: 'memory.html' }
+    ];
+
+    const container = document.getElementById('game-container');
+    const bubbles = [];
+
+    gameData.forEach((game) => {
+      const bubble = document.createElement('div');
+      bubble.className = 'game-bubble';
+      bubble.innerHTML = game.label.replace(/\n/g, '<br>');
+
+      const size = 180;
+      let posX = Math.random() * (window.innerWidth - size);
+      let posY = Math.random() * (window.innerHeight - size);
+      let velX = (Math.random() - 0.5) * 2;
+      let velY = (Math.random() - 0.5) * 2;
+
+      const rainbowHighlight = document.createElement('div');
+      rainbowHighlight.className = 'rainbow-reflection';
+      bubble.appendChild(rainbowHighlight);
+
+      bubble.addEventListener('click', () => {
+        bubble.classList.add('popping');
+        setTimeout(() => {
+          window.location.href = game.link;
+        }, 500);
+      });
+
+      container.appendChild(bubble);
+
+      bubbles.push({ element: bubble, posX, posY, velX, velY, size });
+    });
+
+    function animate() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      bubbles.forEach(bubble => {
+        bubble.posX += bubble.velX;
+        bubble.posY += bubble.velY;
+
+        if (bubble.posX <= 0 || bubble.posX >= w - bubble.size) bubble.velX *= -1;
+        if (bubble.posY <= 0 || bubble.posY >= h - bubble.size) bubble.velY *= -1;
+
+        bubble.element.style.transform = `translate(${bubble.posX}px, ${bubble.posY}px)`;
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // Decorative bubbles
+    const decorativeContainer = document.getElementById('decorative-bubbles');
+    const bubbleCount = 40;
+
+    for (let i = 0; i < bubbleCount; i++) {
+      const bubble = document.createElement('div');
+      bubble.className = 'decorative-bubble';
+      const size = Math.random() * 40 + 20;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.top = `${Math.random() * 100}%`;
+      bubble.style.left = `${Math.random() * 100}%`;
+      bubble.style.animationDuration = `${25 + Math.random() * 20}s`;
+      decorativeContainer.appendChild(bubble);
+    }
+  </script>
+</body>
+</html>
