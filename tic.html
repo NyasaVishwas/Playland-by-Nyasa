@@ -119,8 +119,8 @@
 
   <div id="game-over" style="display:none; text-align: center;">
     <h1>Game Over</h1>
-    <p>You're the hero of my universe. 💖</p>
     <p id="final-score" style="font-size:1.3em; margin-top: 10px;"></p>
+    <p>You're the hero of my universe. 💖</p>
     <button onclick="startGame()">Play Again</button>
     <br />
     <button id="go-to-bubbles" style="margin-top: 10px; background: #ff69b4; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back to Bubbles</button>
@@ -149,6 +149,10 @@
     let spaceship, bullets, enemies, score, isGameOver, notesShown;
     let enemySpawnInterval;
     let noteTimeout;
+
+     document.getElementById('go-to-bubbles').addEventListener('click', () => {
+      window.location.href = 'bubbles.html';
+    });
 
     // Love notes messages
     const loveNotes = [
@@ -317,9 +321,7 @@
 
       // Show final score in the game over screen
       document.getElementById('final-score').textContent = `Final Score: ${score}`;
-      document.getElementById('go-to-bubbles').addEventListener('click', () => {
-      window.location.href = 'bubbles.html';
-});
+
 
     }
 
