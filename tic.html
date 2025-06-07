@@ -4,98 +4,101 @@
   <meta charset="UTF-8" />
   <title>Space Shooter - For My Love</title>
   <style>
-    body {
+    /* Fullscreen and responsive canvas */
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       background: linear-gradient(to bottom, #000020, #000000);
       overflow: hidden;
       font-family: 'Arial', sans-serif;
       color: white;
+      position: relative;
     }
-    #game-container {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 20px;
-      gap: 20px;
-    }
-    canvas {
-      background: transparent;
-      border: 1px solid #444;
-      border-radius: 10px;
+    #gameCanvas {
       display: block;
-    }
-    /* Removed old center noteBox styles */
-
-    /* Start screen & game over styles unchanged */
-    #start-screen, #game-over {
+      background: transparent;
+      /* Make canvas fill the window while keeping aspect ratio */
       position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: auto;
+      max-width: 100vw;
+      max-height: 100vh;
+    }
+
+    /* Scoreboard styling */
+    #scoreboard {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 1.2em;
+      font-weight: bold;
+      z-index: 10;
+      user-select: none;
+    }
+
+    /* Popup message on the right side */
+    #note-box {
+      position: fixed;
+      top: 20%;
+      right: 20px;
+      background: rgba(255, 192, 203, 0.95);
+      color: #000;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-size: 1.2em;
+      max-width: 220px;
+      box-shadow: 0 0 15px pink;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 10;
+    }
+    #note-box.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Start, Rules and Game Over screens centered on top of game */
+    #start-screen, #rules-screen, #game-over {
+      position: fixed;
       top: 40%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
       background: rgba(0,0,0,0.7);
-      padding: 20px;
-      border-radius: 10px;
-      z-index: 10;
+      padding: 25px 30px;
+      border-radius: 15px;
+      z-index: 20;
+      color: white;
+      max-width: 350px;
     }
+
+    #rules-screen {
+      background: rgba(255,192,203,0.95);
+      color: #000;
+    }
+
     button {
       padding: 10px 20px;
       font-size: 1em;
       background: #ff69b4;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.3s ease;
     }
-    /* Rules screen */
-    #rules-screen {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 20px;
-      max-width: 350px;
-      margin: auto;
-      background: rgba(255,192,203,0.95);
-      color: #000;
-      border-radius: 12px;
-      text-align: center;
-      z-index: 10;
-    }
-
-    /* NEW: Side panel for love notes */
-    #note-panel {
-      width: 280px;
-      height: 600px; /* same as canvas height */
-      background: #ffe6f0;
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 0 15px #f08080;
-      color: #c71585;
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      overflow-y: auto;
-      user-select: none;
-    }
-    #note-panel h3 {
-      margin-top: 0;
-      margin-bottom: 15px;
-      text-align: center;
-      font-size: 1.4em;
-      font-weight: bold;
-    }
-    #notes-container p {
-      background: #ffd6e8;
-      padding: 12px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      box-shadow: 0 0 6px #ffb6c1;
-      font-size: 1.1em;
-      line-height: 1.3;
+    button:hover {
+      background: #ff85c1;
     }
   </style>
 </head>
 <body>
 
-  <!-- Start, rules, and game over screens stay same -->
   <div id="start-screen">
     <h1>Space Shooter 🚀</h1>
     <p>Shoot asteroids and discover hidden messages!</p>
@@ -114,40 +117,40 @@
     <button id="btn-play">Got it! Let's play</button>
   </div>
 
-  <div id="game-over" style="display:none;">
+  <div id="game-over" style="display:none; text-align: center;">
     <h1>Game Over</h1>
     <p>You're the hero of my universe. 💖</p>
+    <p id="final-score" style="font-size:1.3em; margin-top: 10px;"></p>
     <button onclick="startGame()">Play Again</button>
+    <br />
+    <button id="go-to-bubbles" style="margin-top: 10px; background: #ff69b4; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back to Bubbles</button>
   </div>
 
-  <!-- MAIN GAME CONTAINER -->
-  <div id="game-container">
-    <canvas id="gameCanvas" width="400" height="600"></canvas>
 
-    <!-- NEW: Side panel for love notes -->
-    <div id="note-panel">
-      <h3>Love Notes 💌</h3>
-      <div id="notes-container"></div>
-    </div>
-  </div>
+
+  <div id="scoreboard">Score: 0</div>
+  <div id="note-box"></div>
+
+  <canvas id="gameCanvas"></canvas>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Removed old noteBox since we have side panel now
-    // const noteBox = document.getElementById('note-box');
-
+    const noteBox = document.getElementById('note-box');
+    const scoreboard = document.getElementById('scoreboard');
     const startScreen = document.getElementById('start-screen');
     const rulesScreen = document.getElementById('rules-screen');
     const gameOverScreen = document.getElementById('game-over');
 
-    // NEW references for side notes
-    const notesContainer = document.getElementById('notes-container');
+    const btnStart = document.getElementById('btn-start');
+    const btnPlay = document.getElementById('btn-play');
 
     let spaceship, bullets, enemies, score, isGameOver, notesShown;
-    let enemySpawnerInterval;
+    let enemySpawnInterval;
+    let noteTimeout;
 
+    // Love notes messages
     const loveNotes = [
       "You light up my universe! 💫",
       "No matter the distance, you're my hero. 🚀",
@@ -155,9 +158,13 @@
       "My heart beats for you, always. 💖",
     ];
 
-    // Buttons
-    const btnStart = document.getElementById('btn-start');
-    const btnPlay = document.getElementById('btn-play');
+    // Set canvas size to fill the window and adjust on resize
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
     btnStart.addEventListener('click', () => {
       startScreen.style.display = 'none';
@@ -170,30 +177,29 @@
     });
 
     function startGame() {
+      // Reset everything
       startScreen.style.display = 'none';
       gameOverScreen.style.display = 'none';
+      scoreboard.style.display = 'block'; // show scoreboard again when game restarts
+      noteBox.classList.remove('show');
+      clearTimeout(noteTimeout);
+      clearInterval(enemySpawnInterval);
 
-      clearNotes(); // Clear old notes from side panel
-
-      spaceship = { x: canvas.width/2 - 20, y: canvas.height - 60, width: 40, height: 40 };
+      spaceship = { x: canvas.width/2 - 20, y: canvas.height - 80, width: 40, height: 40 };
       bullets = [];
       enemies = [];
       score = 0;
       isGameOver = false;
       notesShown = [];
 
-      if (enemySpawnerInterval) clearInterval(enemySpawnerInterval);
+      updateScore();
       spawnEnemies();
-
       requestAnimationFrame(gameLoop);
     }
 
-    function clearNotes() {
-      notesContainer.innerHTML = '';
-    }
 
     function spawnEnemies() {
-      enemySpawnerInterval = setInterval(() => {
+      enemySpawnInterval = setInterval(() => {
         if (!isGameOver) {
           enemies.push({
             x: Math.random() * (canvas.width - 40),
@@ -202,22 +208,22 @@
             speed: 2 + Math.random() * 2
           });
         }
-      }, 1000);
+      }, 900);
     }
 
     document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') {
-        bullets.push({ x: spaceship.x + 18, y: spaceship.y, speed: 5 });
+      if (e.code === 'Space' && !isGameOver) {
+        bullets.push({ x: spaceship.x + spaceship.width/2 - 2, y: spaceship.y, speed: 7 });
       }
     });
 
     document.addEventListener('mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
-      spaceship.x = e.clientX - rect.left - spaceship.width/2;
-
-      // Keep spaceship inside canvas horizontally
-      if (spaceship.x < 0) spaceship.x = 0;
-      if (spaceship.x + spaceship.width > canvas.width) spaceship.x = canvas.width - spaceship.width;
+      let newX = e.clientX - rect.left - spaceship.width/2;
+      // Keep spaceship within canvas bounds
+      if (newX < 0) newX = 0;
+      if (newX + spaceship.width > canvas.width) newX = canvas.width - spaceship.width;
+      spaceship.x = newX;
     });
 
     function gameLoop() {
@@ -234,7 +240,7 @@
       bullets.forEach((b, i) => {
         b.y -= b.speed;
         ctx.fillRect(b.x, b.y, 4, 10);
-        if (b.y < 0) bullets.splice(i, 1);
+        if (b.y + 10 < 0) bullets.splice(i, 1);
       });
 
       // Draw enemies
@@ -244,40 +250,42 @@
         ctx.fillRect(en.x, en.y, en.size, en.size);
 
         // Collision with spaceship
-        if (
-          en.y + en.size > spaceship.y &&
-          en.x < spaceship.x + spaceship.width &&
-          en.x + en.size > spaceship.x
-        ) {
-          isGameOver = true;
-          gameOverScreen.style.display = 'block';
-          clearInterval(enemySpawnerInterval);
+        if (en.y + en.size > spaceship.y &&
+            en.x < spaceship.x + spaceship.width &&
+            en.x + en.size > spaceship.x) {
+          endGame();
         }
 
         // Collision with bullet
         bullets.forEach((b, j) => {
-          if (
-            b.x < en.x + en.size &&
-            b.x + 4 > en.x &&
-            b.y < en.y + en.size &&
-            b.y + 10 > en.y
-          ) {
+          if (b.x < en.x + en.size &&
+              b.x + 4 > en.x &&
+              b.y < en.y + en.size &&
+              b.y + 10 > en.y) {
             enemies.splice(i, 1);
             bullets.splice(j, 1);
-            score += 100;
-            maybeShowNote();
+            increaseScore(100);
           }
         });
 
-        // Remove enemies that go off screen
+        // Remove enemies that went off screen
         if (en.y > canvas.height) enemies.splice(i, 1);
       });
 
       requestAnimationFrame(gameLoop);
     }
 
+    function increaseScore(amount) {
+      score += amount;
+      updateScore();
+      maybeShowNote();
+    }
+
+    function updateScore() {
+      scoreboard.innerText = `Score: ${score}`;
+    }
+
     function maybeShowNote() {
-      // Check milestones & only show once per note
       if (score >= 500 && !notesShown.includes(0)) {
         showNote(0);
       } else if (score >= 1000 && !notesShown.includes(1)) {
@@ -291,16 +299,30 @@
 
     function showNote(index) {
       notesShown.push(index);
-      const noteText = loveNotes[index];
+      noteBox.textContent = loveNotes[index];
+      noteBox.classList.add('show');
 
-      // Create a paragraph element for the note
-      const p = document.createElement('p');
-      p.textContent = noteText;
-      notesContainer.appendChild(p);
-
-      // Optionally scroll to bottom to show newest note
-      notesContainer.scrollTop = notesContainer.scrollHeight;
+      clearTimeout(noteTimeout);
+      noteTimeout = setTimeout(() => {
+        noteBox.classList.remove('show');
+      }, 3000);
     }
+
+    function endGame() {
+      isGameOver = true;
+      gameOverScreen.style.display = 'block';
+      scoreboard.style.display = 'none'; // hide the top-left scoreboard on game over
+      clearInterval(enemySpawnInterval);
+      noteBox.classList.remove('show');
+
+      // Show final score in the game over screen
+      document.getElementById('final-score').textContent = `Final Score: ${score}`;
+      document.getElementById('go-to-bubbles').addEventListener('click', () => {
+      window.location.href = 'bubbles.html';
+});
+
+    }
+
   </script>
 </body>
 </html>
