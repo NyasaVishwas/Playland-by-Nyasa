@@ -1,46 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Our Puzzle</title>
+  <meta charset="UTF-8">
+  <title>Love Puzzle</title>
   <style>
-    body { background: #ffebee; text-align: center; }
-    .puzzle-container { 
-      display: grid; 
-      grid-template-columns: repeat(3, 200px);
-      gap: 10px; 
-      margin: 20px auto;
-      max-width: 620px;
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background-color: #ffe6f2;
+      color: #d63384;
+      text-align: center;
     }
-    .puzzle-piece { 
-      width: 200px; 
-      height: 200px; 
-      background-size: cover;
+    #puzzle {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      gap: 5px;
+      justify-content: center;
+      margin: 20px;
+    }
+    .tile {
+      width: 80px;
+      height: 80px;
+      background: #ff99cc;
+      color: white;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       cursor: pointer;
-      transition: transform 0.3s;
+      border-radius: 15px;
     }
-    .puzzle-piece:hover { transform: scale(1.05); }
+    .empty {
+      background: #ffe6f2;
+      cursor: default;
+    }
   </style>
 </head>
 <body>
-  <h1 style="color:#e22d6c; font-family: 'Dancing Script';">Put Our Memories Together ❤️</h1>
-  <div class="puzzle-container" id="puzzle"></div>
-  
+  <h1>💕 Love Puzzle 💕</h1>
+  <div id="puzzle"></div>
   <script>
-    const photos = [
-      'photo1.jpg', 'photo2.jpg', 'photo3.jpg',
-      'photo4.jpg', 'photo5.jpg', 'photo6.jpg',
-      'photo7.jpg', 'photo8.jpg', 'photo9.jpg'
-    ];
-    
-    const puzzleContainer = document.getElementById('puzzle');
-    const shuffledPhotos = [...photos].sort(() => Math.random() - 0.5);
-    
-    shuffledPhotos.forEach(photo => {
-      const piece = document.createElement('div');
-      piece.className = 'puzzle-piece';
-      piece.style.backgroundImage = `url(${photo})`;
-      puzzleContainer.appendChild(piece);
-    });
+    const letters = ['I', '❤️', 'U', '', 'Y', 'O', 'U', 'R', '!'];
+    let tiles = letters.slice();
+    shuffle();
+
+    function shuffle() {
+      for (let i = tiles.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+      }
+      render();
+    }
+
+    function render() {
+      const puzzle = document.getElementById('puzzle');
+      puzzle.innerHTML = '';
+      tiles.forEach((val, idx) => {
+        const div = document.createElement('div');
+        div.className = val === '' ? 'tile empty' : 'tile';
+        div.textContent = val;
+        div.onclick = () => move(idx);
+        puzzle.appendChild(div);
+      });
+    }
+
+    function move(idx) {
+      const emptyIdx = tiles.indexOf('');
+      const validMoves = [emptyIdx - 3, emptyIdx + 3, emptyIdx - 1, emptyIdx + 1];
+      if (validMoves.includes(idx)) {
+        [tiles[emptyIdx], tiles[idx]] = [tiles[idx], tiles[emptyIdx]];
+        render();
+        if (tiles.join('') === letters.join('')) alert("Yay! You solved it! 💖");
+      }
+    }
   </script>
 </body>
 </html>

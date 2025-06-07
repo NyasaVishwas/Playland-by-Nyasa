@@ -2,28 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Memory Game</title>
+  <title>Romantic Memory Game</title>
   <style>
-    #memory { display: grid; grid-template-columns: repeat(4, 80px); gap: 5px; margin: 20px; }
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background-color: #ffe6f2;
+      color: #d63384;
+      text-align: center;
+    }
+    #memory {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      gap: 5px;
+      justify-content: center;
+      margin: 20px;
+    }
     .card {
       width: 80px;
       height: 80px;
-      background: #aaa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
+      background: #ff99cc;
+      border-radius: 10px;
       cursor: pointer;
+      background-size: cover;
+      background-position: center;
     }
   </style>
 </head>
 <body>
-  <h1>Memory Game</h1>
+  <h1>💕 Romantic Memory Game 💕</h1>
   <div id="memory"></div>
   <script>
-    const memory = document.getElementById('memory');
-    const emojis = ['🍎','🍌','🍇','🍉','🍓','🍒','🍍','🥝'];
-    let cards = [...emojis, ...emojis];
+    const images = [
+      'photo1.jpg', 'photo2.jpg', 'photo3.jpg', 'photo4.jpg'
+    ];
+    let cards = [...images, ...images];
     let selected = [];
     let matched = [];
 
@@ -38,11 +50,14 @@
     }
 
     function render() {
+      const memory = document.getElementById('memory');
       memory.innerHTML = '';
       cards.forEach((val, idx) => {
         const div = document.createElement('div');
         div.className = 'card';
-        div.textContent = matched.includes(idx) || selected.includes(idx) ? val : '';
+        if (matched.includes(idx) || selected.includes(idx)) {
+          div.style.backgroundImage = `url(${val})`;
+        }
         div.onclick = () => flip(idx);
         memory.appendChild(div);
       });
@@ -58,7 +73,7 @@
         setTimeout(() => {
           selected = [];
           render();
-        }, 500);
+        }, 800);
       }
       render();
     }
