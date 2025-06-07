@@ -1,59 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Memory Match</title>
+  <meta charset="UTF-8">
+  <title>Memory Game</title>
   <style>
-    body { background: #ffebee; text-align: center; }
-    .memory-container { 
-      display: grid; 
-      grid-template-columns: repeat(4, 150px);
-      gap: 10px; 
-      margin: 20px auto;
-      max-width: 620px;
-    }
-    .memory-card { 
-      width: 150px; 
-      height: 150px; 
-      background: #ff8fab;
-      border-radius: 10px;
+    #memory { display: grid; grid-template-columns: repeat(4, 80px); gap: 5px; margin: 20px; }
+    .card {
+      width: 80px;
+      height: 80px;
+      background: #aaa;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 2rem;
+      font-size: 24px;
       cursor: pointer;
-      transition: all 0.3s;
     }
-    .memory-card.flipped { transform: rotateY(180deg); }
   </style>
 </head>
 <body>
-  <h1 style="color:#e22d6c; font-family: 'Dancing Script';">Match Our Memories 💞</h1>
-  <div class="memory-container" id="memory"></div>
-  
+  <h1>Memory Game</h1>
+  <div id="memory"></div>
   <script>
-    const photoPairs = [
-      'memory1.jpg', 'memory1.jpg',
-      'memory2.jpg', 'memory2.jpg',
-      'memory3.jpg', 'memory3.jpg',
-      'memory4.jpg', 'memory4.jpg'
-    ];
-    
-    const memoryContainer = document.getElementById('memory');
-    const shuffledPhotos = [...photoPairs].sort(() => Math.random() - 0.5);
-    
-    shuffledPhotos.forEach(photo => {
-      const card = document.createElement('div');
-      card.className = 'memory-card';
-      card.innerHTML = '❔';
-      
-      card.addEventListener('click', function() {
-        this.classList.add('flipped');
-        this.style.backgroundImage = `url(${photo})`;
-        // Add matching logic here
+    const memory = document.getElementById('memory');
+    const emojis = ['🍎','🍌','🍇','🍉','🍓','🍒','🍍','🥝'];
+    let cards = [...emojis, ...emojis];
+    let selected = [];
+    let matched = [];
+
+    shuffle();
+
+    function shuffle() {
+      for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+      }
+      render();
+    }
+
+    function render() {
+      memory.innerHTML = '';
+      cards.forEach((val, idx) => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.textContent = matched.includes(idx) || selected.includes(idx) ? val : '';
+        div.onclick = () => flip(idx);
+        memory.appendChild(div);
       });
-      
-      memoryContainer.appendChild(card);
-    });
+    }
+
+    function flip(idx) {
+      if (selected.includes(idx) || matched.includes(idx)) return;
+      selected.push(idx);
+      if (selected.length === 2) {
+        if (cards[selected[0]] === cards[selected[1]]) {
+          matched.push(...selected);
+        }
+        setTimeout(() => {
+          selected = [];
+          render();
+        }, 500);
+      }
+      render();
+    }
   </script>
 </body>
 </html>

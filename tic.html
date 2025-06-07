@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic-Tac-Toe</title>
+  <style>
+    #board { display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; margin: 20px; }
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 36px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tic-Tac-Toe</h1>
+  <div id="board"></div>
+  <div id="status"></div>
+  <script>
+    const board = document.getElementById('board');
+    const status = document.getElementById('status');
+    let cells = Array(9).fill('');
+    let currentPlayer = 'X';
+
+    function render() {
+      board.innerHTML = '';
+      cells.forEach((val, idx) => {
+        const div = document.createElement('div');
+        div.className = 'cell';
+        div.textContent = val;
+        div.onclick = () => move(idx);
+        board.appendChild(div);
+      });
+    }
+
+    function move(idx) {
+      if (cells[idx] !== '') return;
+      cells[idx] = currentPlayer;
+      if (checkWin(currentPlayer)) {
+        status.textContent = `${currentPlayer} wins!`;
+        board.style.pointerEvents = 'none';
+      } else if (cells.every(cell => cell !== '')) {
+        status.textContent = 'Draw!';
+      } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      }
+      render();
+    }
+
+    function checkWin(player) {
+      const winPatterns = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      return winPatterns.some(pattern =>
+        pattern.every(idx => cells[idx] === player)
+      );
+    }
+
+    render();
+  </script>
+</body>
+</html>
