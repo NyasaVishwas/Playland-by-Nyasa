@@ -202,18 +202,24 @@
     }
 
 
-    function spawnEnemies() {
-      enemySpawnInterval = setInterval(() => {
-        if (!isGameOver) {
-          enemies.push({
-            x: Math.random() * (canvas.width - 40),
-            y: -40,
-            size: 40,
-            speed: 2 + Math.random() * 2
-          });
-        }
-      }, 900);
-    }
+  function spawnEnemies() {
+    setInterval(() => {
+      if (!isGameOver) {
+        // Base speed + incremental speed based on score (e.g. every 500 points adds 0.5 speed)
+        const baseSpeed = 2;
+        const speedIncrement = Math.floor(score / 500) * 0.5; 
+        const enemySpeed = baseSpeed + speedIncrement + Math.random();
+
+        enemies.push({
+          x: Math.random() * (canvas.width - 40),
+          y: -40,
+          size: 40,
+          speed: enemySpeed
+        });
+      }
+    }, 1000);
+  }
+
 
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && !isGameOver) {
