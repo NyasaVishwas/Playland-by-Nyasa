@@ -232,11 +232,9 @@
       bubble.appendChild(rainbowHighlight);
 
       bubble.addEventListener('click', () => {
-        bubble.classList.add('popping');
-        setTimeout(() => {
-          window.location.href = game.link;
-        }, 500);
-      });
+  window.location.href = game.link;
+});
+
 
       container.appendChild(bubble);
 
