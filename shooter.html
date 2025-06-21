@@ -62,6 +62,95 @@
       pointer-events: auto;
     }
 
+#win-screen {
+  position: fixed;
+  top: 15%;
+  left: 40%;
+  width: 100vw;
+  height: 100vh;
+  <!-- background: rgba(28, 28, 60, 0.9); -->
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.win-box {
+  background: rgba(255, 240, 255, 0.96);
+  color: #222;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 25px #ff8fd0;
+  text-align: center;
+  width: 300px;
+  animation: popIn 1s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.win-box h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #ff3c96;
+  animation: glowText 1.2s infinite alternate;
+}
+
+.win-box img {
+  width: 200px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #ffb6c1;
+  margin: 15px 0;
+}
+
+.win-box button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: #ff69b4;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.win-box button:hover {
+  background: #ff92c2;
+}
+
+
+/* ✨ Animations */
+@keyframes popIn {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes glowText {
+  from {
+    text-shadow: 0 0 10px #ff9bd2;
+  }
+  to {
+    text-shadow: 0 0 20px #ff3c96;
+  }
+}
+
+
+
     /* Start, Rules and Game Over screens centered on top of game */
     #start-screen, #rules-screen, #game-over {
       position: fixed;
@@ -126,6 +215,18 @@
     <button id="go-to-bubbles" style="margin-top: 10px; background: #ff69b4; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back to Bubbles</button>
   </div>
 
+  <div id="win-screen" style="display:none;">
+    <div class="win-box">
+      <h1>You Won! 🌟</h1>
+      <p style="font-size:1.3em;">Final Score: <span id="final-win-score">10000</span></p>
+      <p>We conquered space together 💖</p>
+      <img src="our_photo.jpeg" alt="Us Together" />
+      <br />
+      <button onclick="startGame()">Play Again</button>
+      <button id="go-to-bubbles" style="margin-top: 10px;">Back to Bubbles</button>
+    </div>
+  </div>
+
 
 
   <div id="scoreboard">Score: 0</div>
@@ -181,10 +282,11 @@
     });
 
     function startGame() {
-      // Reset everything
       startScreen.style.display = 'none';
+      rulesScreen.style.display = 'none';
       gameOverScreen.style.display = 'none';
-      scoreboard.style.display = 'block'; // show scoreboard again when game restarts
+      document.getElementById('win-screen').style.display = 'none'; // ✅ ADD THIS
+      scoreboard.style.display = 'block';
       noteBox.classList.remove('show');
       clearTimeout(noteTimeout);
       clearInterval(enemySpawnInterval);
@@ -200,6 +302,7 @@
       spawnEnemies();
       requestAnimationFrame(gameLoop);
     }
+
 
 
   function spawnEnemies() {
@@ -243,7 +346,13 @@
 
       // Draw spaceship
       ctx.fillStyle = '#00BFFF';
-      ctx.fillRect(spaceship.x, spaceship.y, spaceship.width, spaceship.height);
+      ctx.beginPath();
+      ctx.moveTo(spaceship.x + spaceship.width / 2, spaceship.y); // tip
+      ctx.lineTo(spaceship.x, spaceship.y + spaceship.height);     // bottom left
+      ctx.lineTo(spaceship.x + spaceship.width, spaceship.y + spaceship.height); // bottom right
+      ctx.closePath();
+      ctx.fill();
+
 
       // Draw bullets
       ctx.fillStyle = '#fff';
@@ -257,7 +366,10 @@
       ctx.fillStyle = '#ff6347';
       enemies.forEach((en, i) => {
         en.y += en.speed;
-        ctx.fillRect(en.x, en.y, en.size, en.size);
+        ctx.beginPath();
+        ctx.arc(en.x + en.size/2, en.y + en.size/2, en.size/2, 0, Math.PI * 2);
+        ctx.fill();
+
 
         // Collision with spaceship
         if (en.y + en.size > spaceship.y &&
@@ -289,7 +401,12 @@
       score += amount;
       updateScore();
       maybeShowNote();
+
+      if (score >= 10000) {
+        winGame();
+      }
     }
+
 
     function updateScore() {
       scoreboard.innerText = `Score: ${score}`;
@@ -327,9 +444,22 @@
 
       // Show final score in the game over screen
       document.getElementById('final-score').textContent = `Final Score: ${score}`;
-
-
     }
+
+    function winGame() {
+      isGameOver = true;
+      document.getElementById('win-screen').style.display = 'block';
+      scoreboard.style.display = 'none';
+      clearInterval(enemySpawnInterval);
+      noteBox.classList.remove('show');
+
+      document.getElementById('final-win-score').textContent = score;
+    }
+
+    document.getElementById('go-to-bubbles').addEventListener('click', () => {
+      window.location.href = 'bubbles.html'; // Update if your actual page is different
+    });
+
 
   </script>
 </body>
