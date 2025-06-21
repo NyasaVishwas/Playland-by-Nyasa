@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>How Well Do You Know Me? 💘</title>
+  <title>Quiz</title>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300&display=swap" rel="stylesheet">
   <style>
     body {
@@ -13,12 +13,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(-45deg, #ffcce6, #ffb3d9, #ff99cc, #ff80bf);
+      background: linear-gradient(-45deg, #ffffff, #e8c6ff, #e8bdff, #cc9df7);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
       font-family: 'Poppins', sans-serif;
       overflow: hidden;
-      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23e22d6c" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%239370DB" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
     }
 
     @keyframes gradientBG {
@@ -38,12 +38,12 @@
 
     h1 {
       font-family: 'Dancing Script', cursive;
-      color: #e22d6c;
+      color: #761ad9;
       margin-bottom: 1rem;
     }
 
     button {
-      background: #ff6b6b;
+      background: #b06ef7;
       color: white;
       border: none;
       padding: 10px 20px;
@@ -53,12 +53,14 @@
       font-size: 1rem;
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     button:hover {
       transform: scale(1.1);
-      background: #ff4d6d;
-      box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
+      background: #ec6ffa;
+      box-shadow: 0 8px 25px rgba(233, 107, 255, 0.5);
     }
 
     .fade-in {
@@ -78,45 +80,98 @@
 </head>
 <body>
   <div class="quiz-container">
-    <h1>How Well Do You Know Me? 💘</h1>
-    <div id="quiz" class="fade-in"></div>
+    <div id="start-screen">
+      <h1>Let's have a quiz. Shall we! 💕</h1>
+      <p>Dekhti hu kitna sahi answer kr paate ho</p>
+      <p style="font-weight:bold;">
+        0–3: Good <br>
+        4–7: Ok-ok<br>
+        8–10: Best
+      </p>
+      <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quiz" class="fade-in" style="display: none;"></div>
     <p id="result" style="font-weight: bold;"></p>
-    <button onclick="window.location.href='bubbles.html'">← Back to Bubbles</button>
+    <button id="backBtn" onclick="window.location.href='bubbles.html'" style="display: none;">Back to Bubbles</button>
   </div>
 
   <script>
     const questions = [
       {
-        question: "Where did we first meet?",
-        options: ["Coffee shop", "Through friends", "Work/School", "On a trip"],
+        question: "When did we first talk irl?",
+        options: ["PES class", "Concert", "ECE lab", "Maths class"],
+        answer: 0
+      },
+      {
+        question: "What’s my top comfort thing when I’m sad and you're not around?",
+        options: ["Series/Kdrama", "Chocolate", "Cry", "Sleep"],
+        answer: 3
+      },
+      {
+        question: "If I got angry with you, what’s the fastest way to fix it?",
+        options: ["Give me space", "Spam cute texts", "Say sorry and bring snacks", "Call me"],
+        answer: 2
+      },
+      {
+        question: "What’s my ultimate soft spot?",
+        options: ["Surprises", "Compliments", "Soft toys", "You, obviously"],
+        answer: 3
+      },
+      {
+        question: "Which one of us is more likely to fall asleep during a movie night?",
+        options: ["Me", "You", "Both of us", "No one"],
+        answer: 0
+      },
+      {
+        question: "What would I probably do if I saw you talking to your female friend for too long?",
+        options: ["Say “Have fun", "Stare at you both", "Punch you", "Do nothing"],
+        answer: 2
+      },
+      {
+        question: "What’s my favorite thing to do when I’m with you",
+        options: ["Talk endlessly", "Cuddle quietly", "Making food", "All of the above"],
+        answer: 3
+      },
+      {
+        question: "What is the time complexity of a binary search algorithm?",
+        options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
         answer: 1
       },
       {
-        question: "What's my favorite dessert?",
-        options: ["Chocolate cake", "Ice cream", "Cheesecake", "Fruit tart"],
-        answer: 2
+        question: "How do I act when I’m low-key jealous?",
+        options: ["I joke about it", "I go quiet", "I get extra clingy", "I act like it’s no big deal (but it is)"],
+        answer: 3
       },
       {
-        question: "What's our song?",
-        options: ["Perfect by Ed Sheeran", "Lover by Taylor Swift", "A custom answer!", "I don’t remember"],
-        answer: 2
-      }
+        question: "What’s one thing that instantly melts me?",
+        options: ["Forehead kisses", "Soft apologies", "Talking", "You being silly"],
+        answer: 0
+      },
     ];
 
     let currentQ = 0;
     let score = 0;
 
+    function startQuiz() {
+      document.getElementById("start-screen").style.display = "none";
+      document.getElementById("quiz").style.display = "block";
+      loadQuiz();
+    }
+
     function loadQuiz() {
       const quizDiv = document.getElementById("quiz");
       quizDiv.classList.remove("fade-in");
-      void quizDiv.offsetWidth; // trigger reflow
+      void quizDiv.offsetWidth;
       quizDiv.classList.add("fade-in");
 
       quizDiv.innerHTML = `
         <p style="font-size: 1.2rem;">${questions[currentQ].question}</p>
-        ${questions[currentQ].options.map((opt, i) => `
-          <button onclick="checkAnswer(${i})">${opt}</button>
-        `).join("")}
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+          ${questions[currentQ].options.map((opt, i) => `
+            <button onclick="checkAnswer(${i})">${opt}</button>
+          `).join("")}
+        </div>
       `;
     }
 
@@ -130,11 +185,24 @@
     function showResult() {
       const quizDiv = document.getElementById("quiz");
       const result = document.getElementById("result");
-      quizDiv.innerHTML = "";
+      quizDiv.style.display = "none";
       result.innerHTML = "";
-      const message = `You scored ${score}/${questions.length}!` +
-        (score === questions.length ? "You know me perfectly! 💖✨" : "Good try, my love~ 💌");
-      typeWriter(result, message, 0);
+
+      let finalMessage = `You scored ${score}/${questions.length}!`;
+      if (score <= 3) finalMessage += "<br>Itnaa kam???😭";
+      else if (score <= 7) finalMessage += "<br>Abhi v janna baaki h thora😬";
+      else finalMessage += "<br>Certified soulmate💖";
+
+      typeWriter(result, finalMessage, 0);
+
+      const playAgainBtn = document.createElement("button");
+      playAgainBtn.textContent = "Play Again";
+      playAgainBtn.onclick = () => window.location.reload();
+      const backBtn = document.getElementById("backBtn");
+      backBtn.style.display = "inline-block";
+      backBtn.parentNode.insertBefore(playAgainBtn, backBtn);
+
+
 
       if (score === questions.length) {
         for (let i = 0; i < 30; i++) {
@@ -153,13 +221,19 @@
     }
 
     function typeWriter(element, text, i) {
-      if (i < text.length) {
+      if (i >= text.length) return;
+
+      // If it finds a <br>, treat it as a full tag and append it
+      if (text.substring(i, i + 4) === "<br>") {
+        element.innerHTML += "<br>";
+        setTimeout(() => typeWriter(element, text, i + 4), 200); // Pause slightly more for drama
+      } else {
         element.innerHTML += text.charAt(i);
         setTimeout(() => typeWriter(element, text, i + 1), 40);
       }
     }
 
-    loadQuiz();
   </script>
 </body>
+
 </html>
