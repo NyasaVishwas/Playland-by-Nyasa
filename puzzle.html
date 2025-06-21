@@ -132,6 +132,8 @@
     const obstacleColors = ["#ff6b6b", "#d65db1", "#fcbf49", "#3f72af"];
 
     let player, obstacles, hearts, score, gameOver, gameWon, girl, speed;
+    let playerReachedCenter = false;
+
 
     function startGame() {
       document.getElementById("start-screen").style.display = "none";
@@ -238,17 +240,29 @@
 
       document.getElementById("score").innerText = "Score: " + score;
 
-      player.x += 1;
+      if (!playerReachedCenter) {
+        if (player.x < canvas.width / 2 - player.width / 2) {
+          player.x += 2; // move toward center
+        } else {
+          playerReachedCenter = true;
+        }
+      }
+
 
       if (girl) {
         girl.x -= speed;
         ctx.drawImage(girlImg, girl.x, girl.y, girl.width, girl.height);
-        if (player.x + player.width >= girl.x) {
+
+        // Once girl appears, boy starts moving towards her
+        if (player.x < girl.x - player.width) {
+          player.x += 2; // move boy to girl slowly
+        } else {
           gameWon = true;
           document.getElementById("win-screen").style.display = "block";
           document.getElementById("finalScoreWin").innerText = score;
         }
       }
+
 
       requestAnimationFrame(gameLoop);
     }
