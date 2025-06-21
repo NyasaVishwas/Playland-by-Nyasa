@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Space Shooter - For My Love</title>
+  <title>Space Shooter</title>
   <style>
     /* Fullscreen and responsive canvas */
     html, body {
@@ -190,7 +190,7 @@
 
   <div id="start-screen">
     <h1>Space Shooter 🚀</h1>
-    <p>Shoot asteroids and discover hidden messages!</p>
+    <p>Shoot asteroids, <br>thinking of them as misunderstandings!</p>
     <button id="btn-start">Start Game</button>
   </div>
 
@@ -201,15 +201,16 @@
       <li>Press <b>Spacebar</b> to shoot bullets upwards.</li>
       <li>Destroy asteroids before they hit you.</li>
       <li>Earn points for every asteroid destroyed.</li>
-      <li>Reach milestones to unlock secret love notes 💖</li>
+      <li>Game jitne k liye, you need to score: 10k points.</li>
+      <li><b>Bonus:</b> Reach milestones to unlock secret messages 💖</li>
     </ul>
-    <button id="btn-play">Got it! Let's play</button>
+    <button id="btn-play">Let's goooooooo</button>
   </div>
 
   <div id="game-over" style="display:none; text-align: center;">
     <h1>Game Over</h1>
     <p id="final-score" style="font-size:1.3em; margin-top: 10px;"></p>
-    <p>You're the hero of my universe. 💖</p>
+    <p>Koi baat nhi, firse khelo. <br>End surprise dekhna h na?</p>
     <button onclick="startGame()">Play Again</button>
     <br />
     <button id="go-to-bubbles" style="margin-top: 10px; background: #ff69b4; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back to Bubbles</button>
@@ -217,10 +218,10 @@
 
   <div id="win-screen" style="display:none;">
     <div class="win-box">
-      <h1>You Won! 🌟</h1>
+      <h1>Yayyyyyy <br>Jeet gyeeeee tm! 🥳</h1>
       <p style="font-size:1.3em;">Final Score: <span id="final-win-score">10000</span></p>
-      <p>We conquered space together 💖</p>
-      <img src="our_photo.jpeg" alt="Us Together" />
+      <p>Acha btao kaisa lga game? Btao btao...</p>
+      <img src="our_photo.png" alt="Us Together" />
       <br />
       <button onclick="startGame()">Play Again</button>
       <button id="go-to-bubbles" style="margin-top: 10px;">Back to Bubbles</button>
@@ -257,10 +258,16 @@
 
     // Love notes messages
     const loveNotes = [
-      "You light up my universe! 💫",
-      "No matter the distance, you're my hero. 🚀",
-      "Every star reminds me of you. 🌟",
-      "My heart beats for you, always. 💖",
+      "Ache se khelooooo",
+      "I believe in you",
+      "Jldi jldi gama khtm kroo",
+      "End me surprise haiiii",
+      "Focus on the game",
+      "Ab disturb nhi krungi",
+      "Wo mazak tha",
+      "Mai to disturb krungi",
+      "Yayyyyy",
+      "Bs jitne hi wale ho, hurray"
     ];
 
     // Set canvas size to fill the window and adjust on resize
@@ -417,10 +424,22 @@
         showNote(0);
       } else if (score >= 1000 && !notesShown.includes(1)) {
         showNote(1);
-      } else if (score >= 1500 && !notesShown.includes(2)) {
+      } else if (score >= 2000 && !notesShown.includes(2)) {
         showNote(2);
-      } else if (score >= 2000 && !notesShown.includes(3)) {
+      } else if (score >= 3000 && !notesShown.includes(3)) {
         showNote(3);
+      } else if (score >= 4000 && !notesShown.includes(4)) {
+        showNote(4);
+      } else if (score >= 5000 && !notesShown.includes(5)) {
+        showNote(5);
+      } else if (score >= 6000 && !notesShown.includes(6)) {
+        showNote(6);
+      } else if (score >= 7000 && !notesShown.includes(7)) {
+        showNote(7);
+      } else if (score >= 8000 && !notesShown.includes(8)) {
+        showNote(8);
+      } else if (score >= 9000 && !notesShown.includes(9)) {
+        showNote(9);
       }
     }
 
