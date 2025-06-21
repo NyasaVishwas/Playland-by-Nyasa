@@ -108,10 +108,18 @@
       z-index: 0;
     }
 
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+
 
   </style>
 </head>
 <body>
+  <audio id="bgMusic" src="music.mp3" loop autoplay></audio>
+  
   <div id="game-container">
     <canvas id="gameCanvas" width="800" height="450"></canvas>
     <div id="score">Score: 0</div>
@@ -142,8 +150,28 @@
     <div id="win-screen" class="end-screen" style="display:none;">
       <h2>Hurrayyyy!</h2>
       <p>We finally met! <br>(Ab bs real me v jldi se mil le)<br><b>Final Score: <span id="finalScoreWin">0</span></b></p>
+
       <button onclick="startGame()">Play Again</button>
-      <button onclick="window.location.href='bubbles.html'">Back to Bubbles</button>
+      <button onclick="window.location.href='bubbles.html'">Back to Bubbles</button><br>
+      <button onclick="revealSecret()" style="background: #ff6b81; border: none; color: white; padding: 10px 20px; border-radius: 8px; margin-top: 10px; cursor: pointer;">Tmhara inaam 😂</button>
+
+      <p id="secret-message" style="display:none; margin-top: 20px; font-size: 18px; color: #b30059; animation: fadeIn 1s ease; white-space: pre-wrap;">
+        💌 Babe, idk how to explain but I really really love you.
+        I really do.
+        And I miss you so much, so veryyyyy much.
+        I know, I should not feel sad, but mujhe
+        boht bura lgta h ki tmhara birthday hmesha
+        summer vacation me hi kyu aata hai?
+        Mera v to mann krta h n tmhare sath rehne ka.
+        Koi naa, next year to most probably college 
+        me hi rehna h, yaayyyyyy.
+        Ab kon bachayega tmhe mujhse??? (devil laugh)
+        Ek aur baat bolna tha, sorry.....
+        Iss baar sbkuch itna achanak se hua ki mai koi
+        gift v nhi prepare krke de paayi tmhe (sad face)
+        Isliye ye chhota sa fun website sirf tmhare liye 💖
+        Once again, Happy Birthday My Love ❤️
+      </p>
     </div>
 
 
@@ -160,9 +188,12 @@
     const girlImg = new Image();
     boyImg.src = "./boy_logo.png";  
     girlImg.src = "./girl_logo.png";
+    boyImg.alt = "boy";
+    girlImg.alt = "girl";
+
 
     const heartEmoji = "♥️";
-    const obstacleColors = ["211C84", "4D55CC", "7A73D1", "B5A8D5"];
+    const obstacleColors = ["#000000"];
 
     let player, obstacles, hearts, score, gameOver, gameWon, girl, speed;
     let playerReachedCenter = false;
@@ -213,7 +244,7 @@
         });
       }
 
-      setTimeout(generateObstacle, 1000 + Math.random() * 500);
+      setTimeout(generateObstacle, 1000 + Math.random() * 5000);
     }
 
       function generateHeart() {
@@ -370,6 +401,14 @@
 
       requestAnimationFrame(gameLoop);
     }
+
+    function revealSecret() {
+      const message = document.getElementById('secret-message');
+      message.style.display = 'block';
+    }
+
+    document.getElementById("bgMusic").volume = 0.2;
+
 
     function isColliding(a, b) {
       return (
