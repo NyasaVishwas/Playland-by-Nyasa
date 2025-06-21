@@ -26,7 +26,6 @@
 
 
 
-
     canvas {
       display: block;
       background: transparent;
@@ -50,7 +49,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgb(255, 183, 183);
+      background: rgb(255, 210, 210);
       padding: 30px;
       border-radius: 16px;
       text-align: center;
@@ -162,8 +161,8 @@
     boyImg.src = "./boy_logo.png";  
     girlImg.src = "./girl_logo.png";
 
-    const heartEmoji = "💖";
-    const obstacleColors = ["#ff6b6b", "#d65db1", "#fcbf49", "#3f72af"];
+    const heartEmoji = "♥️";
+    const obstacleColors = ["211C84", "4D55CC", "7A73D1", "B5A8D5"];
 
     let player, obstacles, hearts, score, gameOver, gameWon, girl, speed;
     let playerReachedCenter = false;
@@ -280,7 +279,7 @@
 
       if (invincible) {
         ctx.save();
-        ctx.shadowColor = "#ff69b4";
+        ctx.shadowColor = "#ff4d4d";
         ctx.shadowBlur = 20;
         ctx.drawImage(boyImg, player.x, player.y, player.width, player.height);
         ctx.restore();
