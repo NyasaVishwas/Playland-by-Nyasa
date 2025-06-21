@@ -212,7 +212,7 @@
       function generateStar() {
         if (gameOver || gameWon) return;
 
-        if (Math.random() < 0.2) { // 20% chance to spawn
+        if (Math.random() < 0.3) { // 20% chance to spawn
           stars.push({
             x: canvas.width + Math.random() * 300,
             y: 270 + Math.random() * 60,
@@ -243,10 +243,17 @@
 
       if (player.jumping && !playerReachedCenter && player.x < canvas.width / 2 - player.width / 2) {
         player.x += 1; // Boost forward when jumping before center
-}
+      }
 
-
-      ctx.drawImage(boyImg, player.x, player.y, player.width, player.height);
+      if (invincible) {
+        ctx.save();
+        ctx.shadowColor = "#ff69b4";
+        ctx.shadowBlur = 20;
+        ctx.drawImage(boyImg, player.x, player.y, player.width, player.height);
+        ctx.restore();
+      } else {
+        ctx.drawImage(boyImg, player.x, player.y, player.width, player.height);
+      }
 
       obstacles = obstacles.filter(ob => ob.x + ob.width > 0);
       for (const ob of obstacles) {
@@ -341,14 +348,14 @@
       );
     }
 
-document.addEventListener("keydown", (e) => {
-  if ((e.code === "Space" || e.key === " ")) {
-    if (player.jumpCount < 2) {
-      player.vy = -20 + (player.jumpCount * -4); // 1st jump strong, 2nd jump soft
-      player.jumpCount++;
-    }
-  }
-});
+    document.addEventListener("keydown", (e) => {
+      if ((e.code === "Space" || e.key === " ")) {
+        if (player.jumpCount < 2) {
+          player.vy = -20 + (player.jumpCount * -4); // 1st jump strong, 2nd jump soft
+          player.jumpCount++;
+        }
+      }
+    });
 
 
     // Wait for player to start
