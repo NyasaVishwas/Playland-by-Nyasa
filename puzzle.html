@@ -145,6 +145,7 @@
       speed = 3;
       gameOver = false;
       gameWon = false;
+      playerReachedCenter = false;
 
       document.getElementById("score").innerText = "Score: 0";
       document.getElementById("end-screen").style.display = "none";
@@ -158,7 +159,7 @@
     function generateObstacle() {
       if (score >= 5000 || gameOver || gameWon) return;
 
-      const gap = 180 + Math.random() * 100;
+      const gap = 150 + Math.random() * 100;
       const lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : 0;
 
       if (obstacles.length === 0 || lastX < canvas.width - gap) {
@@ -176,18 +177,32 @@
       setTimeout(generateObstacle, 1000 + Math.random() * 500);
     }
 
-    function generateHeart() {
-      if (gameOver || gameWon) return;
-      hearts.push({
-        x: canvas.width + Math.random() * 300,
-        y: 270 + Math.random() * 60,
-        width: 24,
-        height: 24,
-        speed: speed
-      });
+      function generateHeart() {
+        if (gameOver || gameWon) return;
 
-      setTimeout(generateHeart, 1500 + Math.random() * 2000);
-    }
+        // Always spawn one heart
+        hearts.push({
+          x: canvas.width + Math.random() * 300,
+          y: 270 + Math.random() * 60,
+          width: 24,
+          height: 24,
+          speed: speed
+        });
+
+        // Occasionally spawn a second heart nearby 💖
+        if (Math.random() < 0.3) {
+          hearts.push({
+            x: canvas.width + 100 + Math.random() * 200,
+            y: 270 + Math.random() * 60,
+            width: 24,
+            height: 24,
+            speed: speed
+          });
+        }
+
+        setTimeout(generateHeart, 800 + Math.random() * 1000); // Faster spawn
+      }
+
 
     function gameLoop() {
       if (gameOver || gameWon) return;
@@ -202,6 +217,11 @@
         player.vy = 0;
         player.jumpCount = 0;
       }
+
+      if (player.jumping && !playerReachedCenter && player.x < canvas.width / 2 - player.width / 2) {
+        player.x += 1; // Boost forward when jumping before center
+}
+
 
       ctx.drawImage(boyImg, player.x, player.y, player.width, player.height);
 
