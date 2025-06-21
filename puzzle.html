@@ -135,7 +135,7 @@
 
     function startGame() {
       document.getElementById("start-screen").style.display = "none";
-      player = { x: 50, y: 310, width: 40, height: 60, vy: 0, jumping: false };
+      player = { x: 50, y: 310, width: 40, height: 60, vy: 0, jumping: false, jumpCount: 0};
       obstacles = [];
       hearts = [];
       girl = null;
@@ -198,7 +198,7 @@
       if (player.y > 310) {
         player.y = 310;
         player.vy = 0;
-        player.jumping = false;
+        player.jumpCount = 0;
       }
 
       ctx.drawImage(boyImg, player.x, player.y, player.width, player.height);
@@ -262,12 +262,15 @@
       );
     }
 
-    document.addEventListener("keydown", (e) => {
-      if ((e.code === "Space" || e.key === " ") && !player.jumping) {
-        player.vy = -22;
-        player.jumping = true;
-      }
-    });
+document.addEventListener("keydown", (e) => {
+  if ((e.code === "Space" || e.key === " ")) {
+    if (player.jumpCount < 2) {
+      player.vy = -20 + (player.jumpCount * -4); // 1st jump strong, 2nd jump soft
+      player.jumpCount++;
+    }
+  }
+});
+
 
     // Wait for player to start
     window.onload = () => {
