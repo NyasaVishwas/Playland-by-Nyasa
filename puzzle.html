@@ -1,77 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Love Puzzle</title>
+  <meta charset="UTF-8" />
+  <title>Love Quest 💖</title>
   <style>
     body {
+      margin: 0;
       font-family: 'Comic Sans MS', cursive;
-      background-color: #ffe6f2;
-      color: #d63384;
-      text-align: center;
-    }
-    #puzzle {
-      display: grid;
-      grid-template-columns: repeat(3, 80px);
-      gap: 5px;
-      justify-content: center;
-      margin: 20px;
-    }
-    .tile {
-      width: 80px;
-      height: 80px;
-      background: #ff99cc;
-      color: white;
-      font-size: 24px;
+      background: linear-gradient(to bottom right, #ffe0eb, #ffcfe0);
       display: flex;
       justify-content: center;
       align-items: center;
-      cursor: pointer;
-      border-radius: 15px;
+      height: 100vh;
     }
-    .empty {
-      background: #ffe6f2;
-      cursor: default;
+
+    #game-container {
+      background: #fff0f5;
+      width: 800px;
+      height: 400px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px #ffaad4;
+      overflow: hidden;
+      position: relative;
+    }
+
+    canvas {
+      display: block;
+      background: transparent;
+    }
+
+    #score {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 18px;
+      color: hotpink;
+      box-shadow: 0 0 10px #ffb6c1;
+    }
+
+    .end-screen, .start-screen {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: pink;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 0 20px #ff69b4;
+    }
+
+    .end-screen h2,
+    .start-screen h2 {
+      color: #d1005f;
+      font-size: 28px;
+    }
+
+    .end-screen p,
+    .start-screen p {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .end-screen button,
+    .start-screen button {
+      background: hotpink;
+      border: none;
+      color: white;
+      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin: 6px;
+      cursor: pointer;
+    }
+
+    .start-screen ul {
+      text-align: left;
+      font-size: 16px;
+      margin-bottom: 16px;
     }
   </style>
 </head>
 <body>
-  <h1>💕 Love Puzzle 💕</h1>
-  <div id="puzzle"></div>
+  <div id="game-container">
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <div id="score">Score: 0</div>
+
+    <!-- Start Screen with Rules -->
+    <div id="start-screen" class="start-screen">
+      <h2>💕 Love Quest: Rules</h2>
+      <ul>
+        <li>💫 Use Spacebar to jump</li>
+        <li>🧱 Avoid the obstacles (they're smaller now!)</li>
+        <li>💖 Collect hearts to gain score</li>
+        <li>🌈 Reach 5000 points to meet your love!</li>
+      </ul>
+      <button onclick="startGame()">Start Game</button>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="end-screen" class="end-screen" style="display:none;">
+      <h2>💔 Oops!</h2>
+      <p>He stumbled upon a doubt!<br>Final Score: <span id="finalScore">0</span></p>
+      <button onclick="startGame()">Play Again</button>
+      <button onclick="window.location.href='bubbles.html'">Back to Surprise</button>
+    </div>
+
+    <!-- Game Win Screen -->
+    <div id="win-screen" class="end-screen" style="display:none;">
+      <h2>🏁 You Made It!</h2>
+      <p>He finally reached you! 💕<br>Final Score: <span id="finalScoreWin">0</span></p>
+      <button onclick="startGame()">Play Again</button>
+      <button onclick="window.location.href='bubbles.html'">Back to Surprise</button>
+    </div>
+  </div>
+
   <script>
-    const letters = ['I', '❤️', 'U', '', 'Y', 'O', 'U', 'R', '!'];
-    let tiles = letters.slice();
-    shuffle();
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-    function shuffle() {
-      for (let i = tiles.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
-      }
-      render();
+    const boyImg = new Image();
+    const girlImg = new Image();
+    boyImg.src = "./boy_logo.png";  // Replace with your image path
+    girlImg.src = "./girl_logo.png"; // Replace with your image path
+
+    const heartEmoji = "💖";
+    const obstacleColors = ["#ff6b6b", "#d65db1", "#fcbf49", "#3f72af"];
+
+    let player, obstacles, hearts, score, gameOver, gameWon, girl, speed;
+
+    function startGame() {
+      document.getElementById("start-screen").style.display = "none";
+      player = { x: 50, y: 310, width: 40, height: 60, vy: 0, jumping: false };
+      obstacles = [];
+      hearts = [];
+      girl = null;
+      score = 0;
+      speed = 3;
+      gameOver = false;
+      gameWon = false;
+
+      document.getElementById("score").innerText = "Score: 0";
+      document.getElementById("end-screen").style.display = "none";
+      document.getElementById("win-screen").style.display = "none";
+
+      generateObstacle();
+      generateHeart();
+      requestAnimationFrame(gameLoop);
     }
 
-    function render() {
-      const puzzle = document.getElementById('puzzle');
-      puzzle.innerHTML = '';
-      tiles.forEach((val, idx) => {
-        const div = document.createElement('div');
-        div.className = val === '' ? 'tile empty' : 'tile';
-        div.textContent = val;
-        div.onclick = () => move(idx);
-        puzzle.appendChild(div);
+    function generateObstacle() {
+      if (score >= 5000 || gameOver || gameWon) return;
+
+      const gap = 180 + Math.random() * 100;
+      const lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : 0;
+
+      if (obstacles.length === 0 || lastX < canvas.width - gap) {
+        const color = obstacleColors[Math.floor(Math.random() * obstacleColors.length)];
+        obstacles.push({
+          x: canvas.width + Math.random() * 100,
+          y: 340,
+          width: 30 + Math.random() * 20, // smaller width
+          height: 40,
+          speed: speed,
+          color: color
+        });
+      }
+
+      setTimeout(generateObstacle, 1000 + Math.random() * 500);
+    }
+
+    function generateHeart() {
+      if (gameOver || gameWon) return;
+      hearts.push({
+        x: canvas.width + Math.random() * 300,
+        y: 270 + Math.random() * 60,
+        width: 24,
+        height: 24,
+        speed: speed
       });
+
+      setTimeout(generateHeart, 1500 + Math.random() * 2000);
     }
 
-    function move(idx) {
-      const emptyIdx = tiles.indexOf('');
-      const validMoves = [emptyIdx - 3, emptyIdx + 3, emptyIdx - 1, emptyIdx + 1];
-      if (validMoves.includes(idx)) {
-        [tiles[emptyIdx], tiles[idx]] = [tiles[idx], tiles[emptyIdx]];
-        render();
-        if (tiles.join('') === letters.join('')) alert("Yay! You solved it! 💖");
+    function gameLoop() {
+      if (gameOver || gameWon) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      player.vy += 1.5;
+      player.y += player.vy;
+
+      if (player.y > 310) {
+        player.y = 310;
+        player.vy = 0;
+        player.jumping = false;
       }
+
+      ctx.drawImage(boyImg, player.x, player.y, player.width, player.height);
+
+      obstacles = obstacles.filter(ob => ob.x + ob.width > 0);
+      for (const ob of obstacles) {
+        ob.x -= ob.speed;
+        ctx.fillStyle = ob.color;
+        ctx.fillRect(ob.x, ob.y, ob.width, ob.height);
+
+        if (isColliding(player, ob)) {
+          gameOver = true;
+          document.getElementById("end-screen").style.display = "block";
+          document.getElementById("finalScore").innerText = score;
+          return;
+        }
+      }
+
+      hearts = hearts.filter(h => h.x + h.width > 0);
+      for (let i = 0; i < hearts.length; i++) {
+        const h = hearts[i];
+        h.x -= h.speed;
+        ctx.font = "24px serif";
+        ctx.fillText(heartEmoji, h.x, h.y);
+
+        if (isColliding(player, h)) {
+          score += 50;
+          hearts.splice(i, 1);
+          i--;
+          if (score >= 5000 && !girl) {
+            girl = { x: canvas.width + 100, y: 320, width: 30, height: 60 };
+          }
+        }
+      }
+
+      if (score > 0 && score % 500 === 0) speed += 0.02;
+
+      document.getElementById("score").innerText = "Score: " + score;
+
+      player.x += 1;
+
+      if (girl) {
+        girl.x -= speed;
+        ctx.drawImage(girlImg, girl.x, girl.y, girl.width, girl.height);
+        if (player.x + player.width >= girl.x) {
+          gameWon = true;
+          document.getElementById("win-screen").style.display = "block";
+          document.getElementById("finalScoreWin").innerText = score;
+        }
+      }
+
+      requestAnimationFrame(gameLoop);
     }
+
+    function isColliding(a, b) {
+      return (
+        a.x < b.x + b.width &&
+        a.x + a.width > b.x &&
+        a.y < b.y + b.height &&
+        a.y + a.height > b.y
+      );
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if ((e.code === "Space" || e.key === " ") && !player.jumping) {
+        player.vy = -22;
+        player.jumping = true;
+      }
+    });
+
+    // Wait for player to start
+    window.onload = () => {
+      document.getElementById("start-screen").style.display = "block";
+    };
   </script>
 </body>
 </html>
