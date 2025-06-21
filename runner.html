@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Love Quest 💖</title>
+  <title>Love Run</title>
   <style>
     body {
       margin: 0;
       font-family: 'Comic Sans MS', cursive;
-      background: linear-gradient(to bottom right, #ffe0eb, #ffcfe0);
+      background: linear-gradient(to bottom right, #ffe0e0, #ff0000);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,12 +17,15 @@
     #game-container {
       background: #fff0f5;
       width: 800px;
-      height: 400px;
+      height: 450px;
       border-radius: 16px;
-      box-shadow: 0 0 20px #ffaad4;
+      box-shadow: 0 0 20px #f99393;
       overflow: hidden;
       position: relative;
     }
+
+
+
 
     canvas {
       display: block;
@@ -38,8 +41,8 @@
       border-radius: 12px;
       font-weight: bold;
       font-size: 18px;
-      color: hotpink;
-      box-shadow: 0 0 10px #ffb6c1;
+      color: rgb(234, 33, 33);
+      box-shadow: 0 0 10px #ff9f9f;
     }
 
     .end-screen, .start-screen {
@@ -47,16 +50,17 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: pink;
+      background: rgb(255, 183, 183);
       padding: 30px;
       border-radius: 16px;
       text-align: center;
-      box-shadow: 0 0 20px #ff69b4;
+      z-index: 100;
+      box-shadow: 0 0 20px #ff5a5a;
     }
 
     .end-screen h2,
     .start-screen h2 {
-      color: #d1005f;
+      color: #d10000;
       font-size: 28px;
     }
 
@@ -68,7 +72,7 @@
 
     .end-screen button,
     .start-screen button {
-      background: hotpink;
+      background: rgb(243, 61, 61);
       border: none;
       color: white;
       font-size: 16px;
@@ -83,40 +87,70 @@
       font-size: 16px;
       margin-bottom: 16px;
     }
+
+        .ground-line {
+      position: absolute;
+      left: 0;
+      bottom: 60px; /* Adjust based on your character's Y */
+      width: 100%;
+      height: 20px;
+      background: linear-gradient(to top, #90ee90, #b0ffb0);
+      border-top: 2px dashed #ffffff80;
+      z-index: 1;
+    }
+
+    .ground-base {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px; /* This should match ground-line's bottom offset */
+      background: linear-gradient(to top, #8B4513, #a0522d); /* earthy brown gradient */
+      z-index: 0;
+    }
+
+
   </style>
 </head>
 <body>
   <div id="game-container">
-    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <canvas id="gameCanvas" width="800" height="450"></canvas>
     <div id="score">Score: 0</div>
 
     <!-- Start Screen with Rules -->
     <div id="start-screen" class="start-screen">
-      <h2>💕 Love Quest: Rules</h2>
+      <h2>Game Rules</h2>
       <ul>
-        <li>💫 Use Spacebar to jump</li>
-        <li>🧱 Avoid the obstacles (they're smaller now!)</li>
-        <li>💖 Collect hearts to gain score</li>
-        <li>🌈 Reach 5000 points to meet your love!</li>
+        <li>Use <b>Spacebar</b> to jump</li>
+        <li>Avoid the obstacles (they're negativity)</li>
+        <li>Hearts collect kro to gain score</li>
+        <li>Collect stars, wo negativity se protect krta h (Aura++)</li>
+        <li>Reach 5000 points to meet me! ❤️</li>
+        <li><b>Hint: </b>Double press Spacebar for higher jump</li>
       </ul>
       <button onclick="startGame()">Start Game</button>
     </div>
 
     <!-- Game Over Screen -->
     <div id="end-screen" class="end-screen" style="display:none;">
-      <h2>💔 Oops!</h2>
-      <p>He stumbled upon a doubt!<br>Final Score: <span id="finalScore">0</span></p>
-      <button onclick="startGame()">Play Again</button>
-      <button onclick="window.location.href='bubbles.html'">Back to Surprise</button>
+      <h2>💔 Areeee!</h2>
+      <p>Tm negativity k pass kyu chale gye? <br>Mere pass aaoooo naaaa! <br><b>Final Score: <span id="finalScore">0</span></b></p>
+      <button onclick="startGame()">Firse khelo</button>
+      <button onclick="window.location.href='bubbles.html'">Back to Bubbles</button>
     </div>
 
     <!-- Game Win Screen -->
     <div id="win-screen" class="end-screen" style="display:none;">
-      <h2>🏁 You Made It!</h2>
-      <p>He finally reached you! 💕<br>Final Score: <span id="finalScoreWin">0</span></p>
+      <h2>Hurrayyyy!</h2>
+      <p>We finally met! <br>(Ab bs real me v jldi se mil le)<br><b>Final Score: <span id="finalScoreWin">0</span></b></p>
       <button onclick="startGame()">Play Again</button>
-      <button onclick="window.location.href='bubbles.html'">Back to Surprise</button>
+      <button onclick="window.location.href='bubbles.html'">Back to Bubbles</button>
     </div>
+
+
+    <div class="ground-line"></div>
+    <div class="ground-base"></div>
+
   </div>
 
   <script>
@@ -125,8 +159,8 @@
 
     const boyImg = new Image();
     const girlImg = new Image();
-    boyImg.src = "./boy_logo.png";  // Replace with your image path
-    girlImg.src = "./girl_logo.png"; // Replace with your image path
+    boyImg.src = "./boy_logo.png";  
+    girlImg.src = "./girl_logo.png";
 
     const heartEmoji = "💖";
     const obstacleColors = ["#ff6b6b", "#d65db1", "#fcbf49", "#3f72af"];
@@ -195,7 +229,6 @@
           speed: speed
         });
 
-        // Occasionally spawn a second heart nearby 💖
         if (Math.random() < 0.3) {
           hearts.push({
             x: canvas.width + 100 + Math.random() * 200,
