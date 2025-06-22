@@ -188,11 +188,16 @@
 </head>
 <body>
 
+  <audio id="gameMusic" src="space.mp3" loop></audio>
+
   <div id="start-screen">
     <h1>Space Shooter 🚀</h1>
     <p>Shoot asteroids, <br>thinking of them as misunderstandings!</p>
     <button id="btn-start">Start Game</button>
   </div>
+
+  <button onclick="toggleMusic()" style="position: fixed; top: 10px; right: 10px; z-index: 20;">🎵 Toggle Music</button>
+
 
   <div id="rules-screen" style="display:none;">
     <h2>Game Rules</h2>
@@ -289,10 +294,11 @@
     });
 
     function startGame() {
+      document.getElementById('gameMusic').play();
       startScreen.style.display = 'none';
       rulesScreen.style.display = 'none';
       gameOverScreen.style.display = 'none';
-      document.getElementById('win-screen').style.display = 'none'; // ✅ ADD THIS
+      document.getElementById('win-screen').style.display = 'none'; 
       scoreboard.style.display = 'block';
       noteBox.classList.remove('show');
       clearTimeout(noteTimeout);
@@ -478,6 +484,16 @@
     document.getElementById('go-to-bubbles').addEventListener('click', () => {
       window.location.href = 'bubbles.html'; // Update if your actual page is different
     });
+
+    function toggleMusic() {
+      const music = document.getElementById("gameMusic");
+      if (music.paused) {
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
+
 
 
   </script>

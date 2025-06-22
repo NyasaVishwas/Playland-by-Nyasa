@@ -118,8 +118,9 @@
   </style>
 </head>
 <body>
-  <audio id="bgMusic" src="music.mp3" loop autoplay></audio>
-  
+  <audio id="bgMusic" src="run.mp3" loop></audio>
+  <button onclick="toggleMusic()" style="position: absolute; top: 20px; right: 20px; z-index: 101;">🎵 Toggle Music</button>
+
   <div id="game-container">
     <canvas id="gameCanvas" width="800" height="450"></canvas>
     <div id="score">Score: 0</div>
@@ -205,6 +206,7 @@
 
 
     function startGame() {
+      document.getElementById("bgMusic").play();
       document.getElementById("start-screen").style.display = "none";
       player = { x: 50, y: 310, width: 40, height: 60, vy: 0, jumping: false, jumpCount: 0};
       obstacles = [];
@@ -244,7 +246,7 @@
         });
       }
 
-      setTimeout(generateObstacle, 1000 + Math.random() * 5000);
+      setTimeout(generateObstacle, 1000 + Math.random() * 500);
     }
 
       function generateHeart() {
@@ -275,7 +277,7 @@
       function generateStar() {
         if (gameOver || gameWon) return;
 
-        if (Math.random() < 0.3) { // 20% chance to spawn
+        if (Math.random() < 0.3) { 
           stars.push({
             x: canvas.width + Math.random() * 300,
             y: 270 + Math.random() * 60,
@@ -285,7 +287,7 @@
           });
         }
 
-        setTimeout(generateStar, 7000 + Math.random() * 5000); // appears occasionally
+        setTimeout(generateStar, 7000 + Math.random() * 5000);
       }
 
 
@@ -433,6 +435,16 @@
     window.onload = () => {
       document.getElementById("start-screen").style.display = "block";
     };
+
+    function toggleMusic() {
+      const music = document.getElementById("bgMusic");
+      if (music.paused) {
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
+
   </script>
       <footer style="
         position: fixed;

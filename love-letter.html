@@ -1,246 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To You</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300&display=swap" rel="stylesheet">
-    <style>
-        /* === ROMANTIC STYLES === */
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(-45deg, #f34ca5, #f46aaf, #ff80bf, #ff6bdf);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ffffff" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>To You</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300&display=swap" rel="stylesheet" />
+  <style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(-45deg, #f34ca5, #f46aaf, #ff80bf, #ff6bdf);
+        background-size: 400% 400%;
+        animation: gradientBG 15s ease infinite;
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden;
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ffffff" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
+    }
 
-          }
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
 
-        /* === LOVE LETTER CARD === */
-        .letter {
-            background: rgba(255, 206, 236, 0.9);
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            position: relative;
-            z-index: 10;
-        }
 
-        h1 {
-            font-family: 'Dancing Script', cursive;
-            color: #e22d6c;
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-        #typed-text {
-            color: #555;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            min-height: 200px;
-            border-left: 3px solid #ff8fab;
-            padding-left: 20px;
-        }
+    #startScreen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #ffffff, #80d0ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+    cursor:auto;
+    }
 
-        /* === PHOTO MEMORIES === */
-        .memories {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 2rem;
-        }
+    .heart-button {
+    background: none;
+    border: none;
+    font-size: 6rem;
+    cursor: pointer;
+    animation: pulse 1.5s infinite ease-in-out;
+    transition: transform 0.3s ease;
+    }
 
-        .memory {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
-            object-fit: cover;
-            cursor: pointer;
-            transition: transform 0.3s;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    .heart-button:hover {
+    transform: scale(1.2);
+    }
 
-        .memory:hover {
-            transform: scale(1.1);
-        }
+    @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+    }
 
-        /* === SECRET VAULT === */
-        .vault {
-            text-align: center;
-            margin-top: 2rem;
-        }
+    #mainContent {
+    display: none;
+    animation: fadeIn 1.5s ease forwards;
 
-        .vault input {
-            padding: 10px;
-            border: 2px solid #ff8fab;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    }
 
-        .vault button {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
 
-        /* === FLOATING HEARTS (FROM INDEX) === */
-        .heart {
-            position: absolute;
-            pointer-events: none;
-            font-size: 20px;
-            color: #fbfbfb;
-            opacity: 0.8;
-            animation: fade 1.5s ease-in-out forwards;
-            z-index: 1;
-        }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
 
-        @keyframes fade {
-            0% { opacity: 0.8; }
-            100% { opacity: 0; }
-        }
-    </style>
+    .letter {
+        background: rgba(255, 206, 236, 0.9);
+        top: 10%;
+        padding: 3rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh; /* Add a max height */
+        overflow-y: auto; /* Allow internal scroll if needed */
+        position: relative;
+        z-index: 10;
+        animation: float 5s ease-in-out infinite;
+    }
+
+    h1 {
+      font-family: 'Dancing Script', cursive;
+      color: #e22d6c;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    #typed-text {
+      color: #555;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      min-height: 200px;
+      border-left: 3px solid #ff8fab;
+      padding-left: 20px;
+    }
+
+    .memories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 2rem;
+    }
+
+    .memory {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .memory:hover {
+      transform: scale(1.1);
+    }
+
+    .vault {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .vault input {
+      padding: 10px;
+      border: 2px solid #ff8fab;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    .vault button {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .heart {
+      position: absolute;
+      pointer-events: none;
+      font-size: 20px;
+      color: #fbfbfb;
+      opacity: 0.8;
+      animation: fade 1.5s ease-in-out forwards;
+      z-index: 1;
+    }
+
+    @keyframes fade {
+      0% { opacity: 0.8; }
+      100% { opacity: 0; }
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #ffffff;
+      opacity: 0.7;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- 🎉 Start Screen -->
+    <div id="startScreen">
+    <button class="heart-button" onclick="startExperience()">💝</button>
+    <p style="color: white; font-size: 1.2rem; margin-top: 20px;">Tap kro heart ko</p>
+    </div>
+
+
+  <!-- 💌 Main Content -->
+  <div id="mainContent">
     <audio id="bgMusic" src="bg-music.mp3" autoplay loop hidden></audio>
 
     <div style="position: absolute; top: 10px; right: 10px;">
-        <button onclick="toggleMusic()" style="padding: 5px 10px; font-size: 0.8rem;">🎵 Toggle Music</button>
+      <button onclick="toggleMusic()" style="padding: 5px 10px; font-size: 0.8rem;">🎵 Toggle Music</button>
     </div>
-
 
     <div class="letter">
-        <h1>Happiest Birthday Bhavishya</h1>
-        <div id="typed-text"></div> <!-- Love letter will type here -->
+      <h1>Happiest Birthday Bhavishya</h1>
+      <div id="typed-text"></div>
 
-        <!-- Photo memories (click to reveal captions) -->
-        <div class="memories">
-            <img src="memory1.jpg" class="memory" onclick="showMemory('Our first date 💘')">
-            <img src="memory2.jpg" class="memory" onclick="showMemory('That time we got lost together 🗺️')">
-            <img src="memory3.jpg" class="memory" onclick="showMemory('When you made me laugh until I cried 😂')">
-        </div>
+      <div class="memories">
+        <img src="memory1.jpeg" class="memory" onclick="showMemory('Best date ever 💘')">
+        <img src="memory2.jpeg" class="memory" onclick="showMemory('First photo together 🫂')">
+        <img src="memory3.jpeg" class="memory" onclick="showMemory('My favourite picture of us 🫶')">
+      </div>
 
-        <!-- Secret vault -->
-        <div class="vault">
-            <p>Enter the date we first talked on insta to unlock a surprise...</p>
-            <input type="password" id="vault-password" placeholder="DDMMYYYY">
-            <button onclick="checkPassword()">Unlock</button>
-        </div>
+      <div class="vault">
+        <p>Enter the date we first talked on insta to unlock a surprise...</p>
+        <input type="password" id="vault-password" placeholder="DDMMYYYY">
+        <button onclick="checkPassword()">Unlock</button>
+      </div>
 
-        <div id="surprise-popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-          background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; z-index: 999;">
-            <p style="font-size: 1.2rem; color: #e22d6c;">🎉 Yaayyy! 🎉</p>
-            <button onclick="window.location.href='bubbles.html'"
-              style="margin-top: 1rem; padding: 10px 20px; background-color: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;">
-              Ab surprise dekho!
-            </button>
-          </div>
-          <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(0,0,0,0.5); z-index: 998;"></div>
-
-
+      <div id="surprise-popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; z-index: 999;">
+        <p style="font-size: 1.2rem; color: #e22d6c;">🎉 Yaayyy! 🎉</p>
+        <button onclick="window.location.href='bubbles.html'"
+          style="margin-top: 1rem; padding: 10px 20px; background-color: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;">
+          Ab surprise dekho!
+        </button>
+      </div>
+      <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 998;"></div>
     </div>
 
-    <!-- Heart trail (same as index.html) -->
     <div id="hearts-container"></div>
 
-    <script>
-        // === TYPED LOVE LETTER ===
-        const letter = [
-            "My dearest love,", 
-            "Happy birthday to the one who makes my world brighter...", 
-            "Every moment with you feels like magic.", 
-            "Here’s to forever adventures together.", 
-            "Love always, me 💕"
-        ];
-        let line = 0;
-        let char = 0;
+    <footer>
+      Developed with ❤️ by Nyasa
+    </footer>
+  </div>
 
-        function typeLetter() {
-            if (line < letter.length) {
-                if (char < letter[line].length) {
-                    document.getElementById("typed-text").innerHTML += letter[line].charAt(char);
-                    char++;
-                    setTimeout(typeLetter, 50); // Typing speed
-                } else {
-                    document.getElementById("typed-text").innerHTML += "<br><br>";
-                    line++;
-                    char = 0;
-                    setTimeout(typeLetter, 500); // Pause between lines
-                }
-            }
+  <script>
+    function startExperience() {
+      const music = document.getElementById("bgMusic");
+      music.play();
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("mainContent").style.display = "block";
+      typeLetter();
+    }
+
+    const letter = [
+      "Hey bb,", 
+      "I hope tm boht blush & smile kr rhe hoge abhi", 
+      "Agr nhi kr rhe to kro, krna chahiye", 
+      "I tried to make your special day bit extra special", 
+      "Aage aur v boht kuch h, dekho and enjoy kro",
+      "ps - Niche wale pictures clickable h",
+      "With love, me 💕"
+    ];
+    let line = 0;
+    let char = 0;
+
+    function typeLetter() {
+      if (line < letter.length) {
+        if (char < letter[line].length) {
+          document.getElementById("typed-text").innerHTML += letter[line].charAt(char);
+          char++;
+          setTimeout(typeLetter, 80);
+        } else {
+          document.getElementById("typed-text").innerHTML += "<br><br>";
+          line++;
+          char = 0;
+          setTimeout(typeLetter, 600);
         }
-        typeLetter();
+      }
+    }
 
-        // === PHOTO MEMORIES ===
-        function showMemory(caption) {
-            alert(caption); // Replace with a prettier popup if desired!
-        }
+    function showMemory(caption) {
+      alert(caption);
+    }
 
-        // === SECRET VAULT ===
-        function checkPassword() {
-    const password = document.getElementById("vault-password").value;
-    if (password === "0101") {
+    function checkPassword() {
+      const password = document.getElementById("vault-password").value;
+      if (password === "12112023") {
         document.getElementById("surprise-popup").style.display = 'block';
         document.getElementById("overlay").style.display = 'block';
-    } else {
-        alert("Try again, my love. Hint: It’s your birthday!");
+      } else {
+        alert("Try again, my love. Hint: It was near Diwali'23!");
+      }
     }
-}
 
+    function toggleMusic() {
+      const music = document.getElementById("bgMusic");
+      if (music.paused) {
+        music.play();
+      } else {
+        music.pause();
+      }
+    }
 
-        // === HEART TRAIL (FROM INDEX.HTML) ===
-        document.addEventListener('mousemove', (e) => {
-            const hearts = document.getElementById('hearts-container');
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '🤍';
-            heart.style.left = e.pageX + 'px';
-            heart.style.top = e.pageY + 'px';
-            hearts.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 1500);
-        });
+    document.addEventListener('mousemove', (e) => {
+      const hearts = document.getElementById('hearts-container');
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '🤍';
+      heart.style.left = e.pageX + 'px';
+      heart.style.top = e.pageY + 'px';
+      hearts.appendChild(heart);
+      setTimeout(() => { heart.remove(); }, 1500);
+    });
 
-        function toggleMusic() {
-        const music = document.getElementById("bgMusic");
-        if (music.paused) {
-            music.play();
-        } else {
-            music.pause();
-        }
-        }
-
-    </script>
-
-      <footer style="
-        position: fixed;
-        bottom: 10px;
-        width: 100%;
-        text-align: center;
-        font-size: 1.2rem;
-        color: #ffffff;
-        opacity: 0.7;
-    ">
-        Developed with ❤️ by Nyasa
-    </footer>
-
+  </script>
 </body>
 </html>

@@ -76,6 +76,8 @@
   </style>
 </head>
 <body>
+
+  <audio id="bgMusic" src="mem.mp3" autoplay loop></audio>
   <div id="startScreen" class="screen active">
     <h1>🍃 Memory Match 🍃</h1>
     <p>Match all the memories hidden in the cards!</p>
@@ -102,8 +104,8 @@
 
   <script>
     const images = [
-      'photo1.jpeg', 'photo2.jpg', 'photo3.jpeg', 'photo4.jpeg',
-      'photo5.jpg', 'photo6.jpg', 'photo7.jpg', 'photo8.jpg'
+      'photo1.JPG', 'photo2.jpeg', 'photo3.jpg', 'photo4.jpg',
+      'photo5.jpg', 'photo6.jpeg', 'photo7.jpeg', 'photo8.jpeg'
     ];
     let cards = [];
     let selected = [];
@@ -124,6 +126,7 @@
       clearInterval(timerInterval);
       timerInterval = setInterval(updateTimer, 1000);
 
+      document.getElementById("bgMusic").play();
       document.getElementById("startScreen").classList.remove("active");
       document.getElementById("winScreen").classList.remove("active");
       document.getElementById("gameScreen").classList.add("active");
@@ -193,7 +196,7 @@
       document.getElementById("gameScreen").classList.remove("active");
       document.getElementById("winScreen").classList.add("active");
       document.getElementById("winTitle").textContent = "🎉 Perfect Match! 💚 🎉";
-      document.querySelector(".win-message").textContent = "Ye to mst easy-peasy game h na!";
+      document.querySelector(".win-message").textContent = "Ye to mst easy-peasy game tha na!";
     }
 
 
@@ -230,7 +233,7 @@
         width: 100%;
         text-align: center;
         font-size: 1.2rem;
-        color: #ffffff;
+        color: #075110;
         opacity: 0.7;
     ">
         Developed with ❤️ by Nyasa
