@@ -88,6 +88,23 @@
       margin-bottom: 16px;
     }
 
+    .secret-box {
+      display: none;
+      background: #fff0f5;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-size: 16px;
+      color: #b30059;
+      max-height: 200px;
+      overflow-y: auto;
+      text-align: left;
+      animation: fadeIn 1s ease;
+      box-shadow: inset 0 0 10px #ffc1d1;
+      white-space: pre-line;
+    }
+
+
         .ground-line {
       position: absolute;
       left: 0;
@@ -158,23 +175,24 @@
       <button onclick="window.location.href='bubbles.html'">Back to Bubbles</button><br>
       <button onclick="revealSecret()" style="background: #ff6b81; border: none; color: white; padding: 10px 20px; border-radius: 8px; margin-top: 10px; cursor: pointer;">Tmhara inaam 😂</button>
 
-      <p id="secret-message" style="display:none; margin-top: 20px; font-size: 18px; color: #b30059; animation: fadeIn 1s ease; white-space: pre-wrap;">
-        💌 Babe, idk how to explain but I really really love you.
-        I really do.
-        And I miss you so much, so veryyyyy much.
-        I know, I should not feel sad, but mujhe
-        boht bura lgta h ki tmhara birthday hmesha
-        summer vacation me hi kyu aata hai?
-        Mera v to mann krta h n tmhare sath rehne ka.
-        Koi naa, next year to most probably college 
-        me hi rehna h, yaayyyyyy.
-        Ab kon bachayega tmhe mujhse??? (devil laugh)
-        Ek aur baat bolna tha, sorry.....
-        Iss baar sbkuch itna achanak se hua ki mai koi
-        gift v nhi prepare krke de paayi tmhe (sad face)
-        Isliye ye chhota sa fun website sirf tmhare liye 💖
+      <div id="secret-message" class="secret-box">
+        💌 Babe, idk how to explain but I really really love you. <br>
+        I really do.<br>
+        And I miss you so much, so veryyyyy much.<br>
+        I know, I should not feel sad, but mujhe<br>
+        boht bura lgta h ki tmhara birthday hmesha<br>
+        summer vacation me hi kyu aata hai?<br>
+        Mera v to mann krta h n tmhare sath rehne ka.<br>
+        Koi naa, next year to most probably college<br>
+        me hi rehna h, yaayyyyyy.<br>
+        Ab kon bachayega tmhe mujhse??? 😈<br>
+        Ek aur baat bolna tha, sorry.....<br>
+        Iss baar sbkuch itna achanak se hua ki mai koi<br>
+        gift v nhi prepare krke de paayi tmhe 😔<br>
+        Isliye ye chhota sa fun website sirf tmhare liye 💖<br><br>
         Once again, Happy Birthday My Love ❤️
-      </p>
+      </div>
+
     </div>
 
 
@@ -410,10 +428,11 @@
 
     function revealSecret() {
       const message = document.getElementById('secret-message');
-      message.style.display = 'block';
+      message.style.display = message.style.display === 'block' ? 'none' : 'block';
     }
 
-    document.getElementById("bgMusic").volume = 0.2;
+
+    document.getElementById("bgMusic").volume = 0.3;
 
 
     function isColliding(a, b) {
