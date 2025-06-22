@@ -31,10 +31,10 @@
 
     .game-bubble {
       position: fixed;
-      padding: 20px 25px;
+      padding: 16px 20px;
       aspect-ratio: 1 / 1;
-      min-width: 120px;
-      max-width: 180px;
+      min-width: 100px;
+      max-width: 150px;
       color: white;
       font-weight: bold;
       background: radial-gradient(
@@ -54,7 +54,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       cursor: pointer;
       text-align: center;
       white-space: normal;
@@ -205,6 +205,37 @@
       100% { transform: translateY(0); }
     }
 
+    #musicPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.65);
+      padding: 25px 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      z-index: 9999;
+      font-family: 'Poppins', sans-serif;
+      backdrop-filter: blur(10px);
+    }
+
+    #musicPopup button {
+      background: none;
+      border: none;
+      font-size: 3.5rem;
+      cursor: pointer;
+      animation: floatBubble 2s infinite;
+      color: #4d4dff;
+    }
+
+    #musicPopup p {
+      font-size: 1rem;
+      margin-top: 10px;
+      color: #0e0f5c;
+    }
+
+
   </style>
 </head>
 
@@ -212,19 +243,7 @@
   <div id="game-container"></div>
   <div id="decorative-bubbles"></div>
   <!-- 🎵 Centered Popup Bubble -->
-  <div id="musicPopup" style="
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.626);
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    text-align: center;
-    z-index: 9999;
-    font-family: 'Poppins', sans-serif;
-  ">
+  <div id="musicPopup" >
     <button onclick="startExperience()" style="
       background: none;
       border: none;
@@ -234,9 +253,8 @@
     ">
       🫧
     </button>
-    <p style="font-size: 1rem; margin-top: 10px; color: #0e0f5c;">Pop this bubble</p>
+    <p style="font-size: 0.9rem; margin-top: 10px; color: #0e0f5c;">Pop this bubble</p>
   </div>
-xx
 
 
   <audio id="bgMusic" src="simple.mp3" loop></audio>
@@ -326,7 +344,7 @@ xx
     bottom: 10px;
     width: 100%;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #ffffff;
     opacity: 0.7;
   ">

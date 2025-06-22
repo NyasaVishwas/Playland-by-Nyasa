@@ -36,6 +36,29 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
 
+    @media (max-width: 600px) {
+      .quiz-container {
+        width: 90%;
+        padding: 1.5rem;
+      }
+
+      button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+    }
+
+    #result {
+      font-weight: bold;
+      animation: zoomIn 0.6s ease;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+
     h1 {
       font-family: 'Dancing Script', cursive;
       color: #761ad9;
