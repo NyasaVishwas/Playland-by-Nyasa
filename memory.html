@@ -2,44 +2,136 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Romantic Memory Game</title>
+  <title>Memory Match</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     body {
+      margin: 0;
+      padding: 0;
       font-family: 'Comic Sans MS', cursive;
-      background-color: #ffe6f2;
-      color: #d63384;
-      text-align: center;
+      background: linear-gradient(135deg, #e6ffe6, #ccffcc);
+      color: #2e8b57;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .active {
+      display: flex;
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 2.5rem;
+    }
+
     #memory {
       display: grid;
-      grid-template-columns: repeat(4, 80px);
-      gap: 5px;
+      grid-template-columns: repeat(4, 100px);
+      gap: 10px;
       justify-content: center;
-      margin: 20px;
+      margin: 20px 0;
     }
+
     .card {
-      width: 80px;
-      height: 80px;
-      background: #ff99cc;
-      border-radius: 10px;
+      width: 100px;
+      height: 100px;
+      background: #98fb98;
+      border-radius: 12px;
       cursor: pointer;
       background-size: cover;
       background-position: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 20px;
+      background-color: #3cb371;
+      color: white;
+      cursor: pointer;
+      margin-top: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    button:hover {
+      background-color: #2e8b57;
+    }
+
+    .win-message {
+      font-size: 1.8rem;
+      margin-top: 20px;
+      color: #006400;
     }
   </style>
 </head>
 <body>
-  <h1>💕 Romantic Memory Game 💕</h1>
-  <div id="memory"></div>
+  <div id="startScreen" class="screen active">
+    <h1>🍃 Memory Match 🍃</h1>
+    <p>Match all the memories hidden in the cards!</p>
+    <p>Time limit: 45s</p>
+    <button onclick="startGame()">Start Game</button>
+  </div>
+
+  <div id="gameScreen" class="screen">
+    <h1>🍀 Match the Memories 🍀</h1>
+    <div style="display: flex; justify-content: center; gap: 30px; margin-top: 10px;">
+      <p id="timer" style="font-weight:bold; font-size:1.2rem;">Time Left: 45s</p>
+      <p id="score" style="font-weight:bold; font-size:1.2rem;">Score: 0</p>
+    </div>
+
+    <div id="memory"></div>
+  </div>
+
+  <div id="winScreen" class="screen">
+    <h1 id="winTitle">🎉 Perfect Match! 💚 🎉</h1>
+    <p class="win-message">Ye to mstt easy-peasy sa game tha na! 💚</p>
+    <button onclick="startGame()">Firse khelna??</button>
+    <button onclick="window.location.href='bubbles.html'">Back to Bubbles</button>
+  </div>
+
   <script>
     const images = [
-      'photo1.jpg', 'photo2.jpg', 'photo3.jpg', 'photo4.jpg'
+      'photo1.jpeg', 'photo2.jpg', 'photo3.jpeg', 'photo4.jpeg',
+      'photo5.jpg', 'photo6.jpg', 'photo7.jpg', 'photo8.jpg'
     ];
-    let cards = [...images, ...images];
+    let cards = [];
     let selected = [];
     let matched = [];
+    let timeLeft = 45;
+    let timerInterval;
+    let gameWon = false;
 
-    shuffle();
+    function startGame() {
+      gameWon = false;
+      timeLeft = 45;
+      selected = [];
+      matched = [];
+      cards = [...images.slice(0, 8), ...images.slice(0, 8)];
+      
+      document.getElementById("timer").textContent = `Time Left: ${timeLeft}s`;
+      document.getElementById("score").textContent = "Score: 0";
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateTimer, 1000);
+
+      document.getElementById("startScreen").classList.remove("active");
+      document.getElementById("winScreen").classList.remove("active");
+      document.getElementById("gameScreen").classList.add("active");
+
+      shuffle();
+    }
+
+
 
     function shuffle() {
       for (let i = cards.length - 1; i > 0; i--) {
@@ -66,17 +158,70 @@
     function flip(idx) {
       if (selected.includes(idx) || matched.includes(idx)) return;
       selected.push(idx);
-      if (selected.length === 2) {
-        if (cards[selected[0]] === cards[selected[1]]) {
-          matched.push(...selected);
-        }
-        setTimeout(() => {
-          selected = [];
-          render();
-        }, 800);
-      }
       render();
+
+      if (selected.length === 2) {
+        const [first, second] = selected;
+        if (cards[first] === cards[second]) {
+          matched.push(...selected);
+          document.getElementById("score").textContent = `Score: ${matched.length / 2}`;
+          selected = [];
+
+          if (matched.length === cards.length) {
+            setTimeout(() => {
+              render(); // Flip the last card visibly
+              setTimeout(showWin, 500);
+            }, 300);
+            return;
+          }
+
+          setTimeout(render, 300);
+        } else {
+          setTimeout(() => {
+            selected = [];
+            render();
+          }, 800);
+        }
+      }
     }
+
+
+    function showWin() {
+      if (gameWon) return;
+      gameWon = true;
+      clearInterval(timerInterval);
+      document.getElementById("gameScreen").classList.remove("active");
+      document.getElementById("winScreen").classList.add("active");
+      document.getElementById("winTitle").textContent = "🎉 Perfect Match! 💚 🎉";
+      document.querySelector(".win-message").textContent = "Ye to mst easy-peasy game h na!";
+    }
+
+
+    function updateTimer() {
+      if (gameWon) {
+        clearInterval(timerInterval); // Stop timer if game is already won
+        return;
+      }
+
+      timeLeft--;
+      document.getElementById("timer").textContent = `Time Left: ${timeLeft}s`;
+      if (timeLeft === 0 && !gameWon) {
+        clearInterval(timerInterval);
+        endGameTimeout();
+      }
+    }
+
+
+    function endGameTimeout() {
+      if (gameWon) return;
+      gameWon = true;
+      document.getElementById("gameScreen").classList.remove("active");
+      document.getElementById("winScreen").classList.add("active");
+      document.getElementById("winTitle").textContent = "⏰ Time's Up! 😢";
+      document.querySelector(".win-message").textContent = "Jaa, jldi jldi match kro";
+    }
+
+
   </script>
 </body>
 </html>
