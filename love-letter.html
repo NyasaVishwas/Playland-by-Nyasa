@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To My Love 💌</title>
+    <title>To You</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300&display=swap" rel="stylesheet">
     <style>
         /* === ROMANTIC STYLES === */
@@ -120,8 +120,15 @@
     </style>
 </head>
 <body>
+    <audio id="bgMusic" src="bg-music.mp3" autoplay loop hidden></audio>
+
+    <div style="position: absolute; top: 10px; right: 10px;">
+        <button onclick="toggleMusic()" style="padding: 5px 10px; font-size: 0.8rem;">🎵 Toggle Music</button>
+    </div>
+
+
     <div class="letter">
-        <h1>To You, My Love</h1>
+        <h1>Happiest Birthday Bhavishya</h1>
         <div id="typed-text"></div> <!-- Love letter will type here -->
 
         <!-- Photo memories (click to reveal captions) -->
@@ -133,17 +140,17 @@
 
         <!-- Secret vault -->
         <div class="vault">
-            <p>Enter your birthday (MMDD) to unlock a surprise...</p>
-            <input type="password" id="vault-password" placeholder="MMDD">
+            <p>Enter the date we first talked on insta to unlock a surprise...</p>
+            <input type="password" id="vault-password" placeholder="DDMMYYYY">
             <button onclick="checkPassword()">Unlock</button>
         </div>
 
         <div id="surprise-popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
           background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; z-index: 999;">
-            <p style="font-size: 1.2rem; color: #e22d6c;">🎉 Surprise! 🎉</p>
+            <p style="font-size: 1.2rem; color: #e22d6c;">🎉 Yaayyy! 🎉</p>
             <button onclick="window.location.href='bubbles.html'"
               style="margin-top: 1rem; padding: 10px 20px; background-color: #ff6b6b; color: white; border: none; border-radius: 5px; cursor: pointer;">
-              Click to see your surprise!
+              Ab surprise dekho!
             </button>
           </div>
           <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -211,7 +218,29 @@
             hearts.appendChild(heart);
             setTimeout(() => { heart.remove(); }, 1500);
         });
+
+        function toggleMusic() {
+        const music = document.getElementById("bgMusic");
+        if (music.paused) {
+            music.play();
+        } else {
+            music.pause();
+        }
+        }
+
     </script>
+
+      <footer style="
+        position: fixed;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+        font-size: 1.2rem;
+        color: #ffffff;
+        opacity: 0.7;
+    ">
+        Developed with ❤️ by Nyasa
+    </footer>
 
 </body>
 </html>
