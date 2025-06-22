@@ -125,6 +125,7 @@
   <div id="game-container">
     <canvas id="gameCanvas" width="800" height="450"></canvas>
     <div id="score">Score: 0</div>
+    
 
     <!-- Start Screen with Rules -->
     <div id="start-screen" class="start-screen">
@@ -203,6 +204,7 @@
     let invincible = false;
     let invincibleTimer = 0;
     const starEmoji = "⭐";
+    let gameStarted = false;
 
 
 
@@ -210,6 +212,7 @@
       document.getElementById("bgMusic").play();
       document.getElementById("start-screen").style.display = "none";
       player = { x: 50, y: 310, width: 40, height: 60, vy: 0, jumping: false, jumpCount: 0};
+      gameStarted = true;
       obstacles = [];
       hearts = [];
       girl = null;
@@ -294,7 +297,7 @@
 
 
     function gameLoop() {
-      if (gameOver || gameWon) return;
+      if (!gameStarted || gameOver || gameWon) return;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
