@@ -65,26 +65,27 @@
 
 #win-screen {
   position: fixed;
-  top: 15%;
+  top: 7%;
   left: 40%;
   width: 100vw;
   height: 100vh;
-  <!-- background: rgba(28, 28, 60, 0.9); -->
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 999;
   animation: fadeIn 1.5s ease-in-out;
+  padding:20px;
 }
 
 .win-box {
   background: rgba(255, 240, 255, 0.96);
   color: #222;
-  padding: 30px 40px;
+  padding: 20px 25px;
   border-radius: 20px;
   box-shadow: 0 0 25px #ff8fd0;
   text-align: center;
-  width: 300px;
+  width: 90%;
+  max-width: 340px;
   animation: popIn 1s ease;
   display: flex;
   flex-direction: column;
@@ -93,15 +94,18 @@
 }
 
 
+
 .win-box h1 {
-  font-size: 2em;
+  font-size: 1.6em;
   margin-bottom: 10px;
   color: #ff3c96;
   animation: glowText 1.2s infinite alternate;
+  line-height: 1.3;
 }
 
+
 .win-box img {
-  width: 200px;
+  width: 150px;
   border-radius: 12px;
   box-shadow: 0 0 15px #ffb6c1;
   margin: 15px 0;
@@ -197,7 +201,7 @@
     <button id="btn-start">Start Game</button>
   </div>
 
-  <button onclick="toggleMusic()" style="position: fixed; top: 10px; right: 10px; z-index: 20;">🎵 Toggle Music</button>
+  <button onclick="toggleMusic()" style="position: fixed; top: 5px; right: 5px; z-index: 20; font-size: 0.9em;">🎵 Toggle Music</button>
 
 
   <div id="rules-screen" style="display:none;">
@@ -226,7 +230,7 @@
     <div class="win-box">
       <h1>Yayyyyyy <br>Jeet gyeeeee tm! 🥳</h1>
       <p style="font-size:1.3em;">Final Score: <span id="final-win-score">10000</span></p>
-      <p>Acha btao kaisa lga game? Btao btao...</p>
+      <p>Cute h n ye wali photoooooo</p>
       <img src="our_photo.png" alt="Us Together" />
       <br />
       <button onclick="startGame()">Play Again</button>
@@ -503,7 +507,7 @@
         bottom: 10px;
         width: 100%;
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 0.9rem;
         color: #ffffff;
         opacity: 0.7;
     ">
