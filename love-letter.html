@@ -21,168 +21,170 @@
         cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ffffff" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto;
     }
 
-    @keyframes float {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-        100% { transform: translateY(0px); }
-    }
-
-
-
     @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
     #startScreen {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(135deg, #ffffff, #80d0ff);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 9999;
-    cursor:auto;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: linear-gradient(135deg, #ffffff, #80d0ff);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 9999;
+        cursor: auto;
     }
 
     .heart-button {
-    background: none;
-    border: none;
-    font-size: 6rem;
-    cursor: pointer;
-    animation: pulse 1.5s infinite ease-in-out;
-    transition: transform 0.3s ease;
+        background: none;
+        border: none;
+        font-size: 4.5rem;
+        cursor: pointer;
+        animation: pulse 1.5s infinite ease-in-out;
+        transition: transform 0.3s ease;
     }
 
     .heart-button:hover {
-    transform: scale(1.2);
+        transform: scale(1.2);
     }
 
     @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-    100% { transform: scale(1); }
+        0% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+        100% { transform: scale(1); }
     }
 
     #mainContent {
-    display: none;
-    animation: fadeIn 1.5s ease forwards;
-
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+        display: none;
+        animation: fadeIn 1.5s ease forwards;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
     }
 
-
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     .letter {
         background: rgba(255, 206, 236, 0.9);
-        top: 7%;
-        padding: 3rem;
+        padding: 2rem;
         border-radius: 15px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
+        max-width: 500px;
         width: 90%;
-        max-height: 90vh; /* Add a max height */
-        overflow-y: auto; /* Allow internal scroll if needed */
+        max-height: 85vh;
+        overflow-y: auto;
         position: relative;
         z-index: 10;
         animation: float 5s ease-in-out infinite;
     }
 
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0px); }
+    }
+
     h1 {
-      font-family: 'Dancing Script', cursive;
-      color: #e22d6c;
-      font-size: 2.5rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
+        font-family: 'Dancing Script', cursive;
+        color: #e22d6c;
+        font-size: 2.3rem;
+        margin-bottom: 1rem;
+        text-align: center;
     }
 
     #typed-text {
-      color: #555;
-      font-size: 1.1rem;
-      line-height: 1.6;
-      min-height: 200px;
-      border-left: 3px solid #ff8fab;
-      padding-left: 20px;
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.5;
+        min-height: 150px;
+        border-left: 3px solid #ff8fab;
+        padding-left: 15px;
     }
 
     .memories {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 1.5rem;
     }
 
     .memory {
-      width: 100px;
-      height: 100px;
-      border-radius: 10px;
-      object-fit: cover;
-      cursor: pointer;
-      transition: transform 0.3s;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 80px;
+        height: 80px;
+        border-radius: 10px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.3s;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .memory:hover {
-      transform: scale(1.1);
+        transform: scale(1.08);
     }
 
     .vault {
-      text-align: center;
-      margin-top: 2rem;
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .vault p {
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
     }
 
     .vault input {
-      padding: 10px;
-      border: 2px solid #ff8fab;
-      border-radius: 5px;
-      margin-right: 10px;
+        padding: 8px;
+        border: 2px solid #ff8fab;
+        border-radius: 5px;
+        margin-right: 8px;
+        font-size: 0.9rem;
     }
 
     .vault button {
-      background: #ff6b6b;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        border-radius: 5px;
+        cursor: pointer;
     }
 
     .heart {
-      position: absolute;
-      pointer-events: none;
-      font-size: 20px;
-      color: #fbfbfb;
-      opacity: 0.8;
-      animation: fade 1.5s ease-in-out forwards;
-      z-index: 1;
+        position: absolute;
+        pointer-events: none;
+        font-size: 18px;
+        color: #fbfbfb;
+        opacity: 0.8;
+        animation: fade 1.5s ease-in-out forwards;
+        z-index: 1;
     }
 
     @keyframes fade {
-      0% { opacity: 0.8; }
-      100% { opacity: 0; }
+        0% { opacity: 0.8; }
+        100% { opacity: 0; }
     }
 
     footer {
-      position: fixed;
-      bottom: 10px;
-      width: 100%;
-      text-align: center;
-      font-size: 1.2rem;
-      color: #ffffff;
-      opacity: 0.7;
+        position: fixed;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+        font-size: 1rem;
+        color: #ffffff;
+        opacity: 0.7;
     }
+
   </style>
 </head>
 <body>

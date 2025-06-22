@@ -6,7 +6,7 @@
     <title>For You 💖</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300&display=swap" rel="stylesheet">
     <style>
-        /* === ENCHANTED STYLES === */
+       /* === ENCHANTED STYLES === */
         body {
             margin: 0;
             padding: 0;
@@ -30,27 +30,34 @@
 
         /* === MAIN CARD === */
         .card {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 3rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+            padding: 2rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             text-align: center;
-            max-width: 500px;
+            max-width: 400px;
             position: relative;
             z-index: 10;
         }
 
+        /* smaller, cuter heading */
         h1 {
             font-family: 'Dancing Script', cursive;
             color: #e22d6c;
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
         }
 
         p {
             color: #555;
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h5 {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 1.8rem;
         }
 
         /* === BUTTON === */
@@ -58,27 +65,27 @@
             background: #ff6b6b;
             color: white;
             border: none;
-            padding: 12px 30px;
-            font-size: 1.1rem;
+            padding: 10px 25px;
+            font-size: 1rem;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.6);
         }
 
-        /* === HEART TRAIL (SHORTER LENGTH) === */
+        /* === HEART TRAIL === */
         .heart {
             position: absolute;
             pointer-events: none;
-            font-size: 20px;
+            font-size: 18px;
             color: #ff8fab;
             opacity: 0.8;
-            animation: fade 1.5s ease-in-out forwards; /* Faster fade than before (1.5s vs 2s) */
+            animation: fade 1.5s ease-in-out forwards;
             z-index: 1;
         }
 
@@ -92,7 +99,7 @@
             position: fixed;
             bottom: 10px;
             right: 10px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: transparent;
             transition: color 0.3s;
             z-index: 20;
@@ -101,6 +108,7 @@
         .secret:hover {
             color: #e22d6c;
         }
+
     </style>
 </head>
 <body>
@@ -150,7 +158,7 @@
         bottom: 10px;
         width: 100%;
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 1rem;
         color: #ffffff;
         opacity: 0.7;
     ">
