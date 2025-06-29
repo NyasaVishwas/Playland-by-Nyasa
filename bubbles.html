@@ -259,18 +259,16 @@
   <div id="game-container"></div>
   <div id="decorative-bubbles"></div>
 
-  <div id="musicPopup" >
-    <button onclick="startExperience()" style="
-      background: none;
-      border: none;
-      font-size: 4rem;
-      cursor: pointer;
-      animation: floatBubble 2s infinite;
-    ">
-      🫧
-    </button>
-    <p style="font-size: 0.9rem; margin-top: 10px; color: #0e0f5c;">Pop this bubble</p>
+  <div id="musicPopup">
+    <div id="musicPopupCard">
+      <button onclick="startExperience()">🫧</button>
+      <p>Pop this bubble to start your experience</p>
+      <p style="font-size: 0.95rem; color: #4d0080; margin-top: 10px;">
+        💖 Love is floating... just one tap away!
+      </p>
+    </div>
   </div>
+
 
 
   <audio id="bgMusic" src="simple.mp3" loop></audio>
