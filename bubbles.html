@@ -8,7 +8,7 @@
     body, html {
       margin: 0; padding: 0; overflow: hidden;
       height: 100%;
-      background: linear-gradient(135deg, #0f177e, #8bb4fb, #0f177e, #365bed);
+      background: linear-gradient(135deg, #0f177e, #548ef2, #0f177e, #365bed);
       background-size: 300% 300%;
       animation: deepPinkFlow 12s ease infinite;
       transform-style: preserve-3d;
@@ -207,18 +207,19 @@
 
     #musicPopup {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(255, 255, 255, 0.65);
-      padding: 25px 40px;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-      text-align: center;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.35); /* light transparent overlay */
+      backdrop-filter: blur(8px); /* thin glass effect */
+      display: flex;
+      justify-content: center;
+      align-items: center;
       z-index: 9999;
       font-family: 'Poppins', sans-serif;
-      backdrop-filter: blur(10px);
     }
+
 
     #musicPopup button {
       background: none;
