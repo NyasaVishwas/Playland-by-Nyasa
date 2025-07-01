@@ -195,48 +195,53 @@
 
   <audio id="gameMusic" src="space.mp3" loop></audio>
 
+  <!-- Start Screen -->
   <div id="start-screen">
     <h1>Space Shooter 🚀</h1>
-    <p>Shoot asteroids, <br>thinking of them as misunderstandings!</p>
+    <p>Blast asteroids out of space! <br>Can you reach the highest score?</p>
     <button id="btn-start">Start Game</button>
   </div>
 
+  <!-- Music Toggle Button -->
   <button onclick="toggleMusic()" style="position: fixed; top: 5px; right: 5px; z-index: 20; font-size: 0.9em;">🎵 Toggle Music</button>
 
-
+  <!-- Rules Screen -->
   <div id="rules-screen" style="display:none;">
     <h2>Game Rules</h2>
     <ul style="text-align:left; font-size: 1.1em;">
-      <li>Use your mouse to move the spaceship left and right.</li>
-      <li>Press <b>Spacebar</b> to shoot bullets upwards.</li>
-      <li>Destroy asteroids before they hit you.</li>
-      <li>Earn points for every asteroid destroyed.</li>
-      <li>Surprise dekhne k liye, you need to score: 10k points.</li>
-      <li><b>Bonus:</b> Reach milestones to unlock secret messages 💖</li>
+      <li>Move your spaceship using your mouse.</li>
+      <li>Press <b>Spacebar</b> to shoot bullets.</li>
+      <li>Destroy incoming asteroids to survive.</li>
+      <li>Earn points for each asteroid you hit.</li>
+      <li>Try to score 10,000 points to unlock a surprise ending!</li>
+      <li><b>Hint:</b> The higher your score, the cooler the surprise 🎁</li>
     </ul>
-    <button id="btn-play">Let's goooooooo</button>
+    <button id="btn-play">Let’s Play!</button>
   </div>
 
+  <!-- Game Over Screen -->
   <div id="game-over" style="display:none; text-align: center;">
     <h1>Game Over</h1>
     <p id="final-score" style="font-size:1.3em; margin-top: 10px;"></p>
-    <p>Koi baat nhi, firse khelo. <br>End surprise dekhna h na?</p>
+    <p>No worries, try again and see if you can uncover the secret ending!</p>
     <button onclick="startGame()">Play Again</button>
     <br />
-    <button id="go-to-bubbles" style="margin-top: 10px; background: #ff69b4; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back to Bubbles</button>
+    <button id="go-to-bubbles" style="margin-top: 10px; background: #6c63ff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back to Game Hub</button>
   </div>
 
+  <!-- Win Screen -->
   <div id="win-screen" style="display:none;">
     <div class="win-box">
-      <h1>Yayyyyyy <br>Jeet gyeeeee tm! 🥳</h1>
+      <h1>Congratulations! 🎉</h1>
       <p style="font-size:1.3em;">Final Score: <span id="final-win-score">10000</span></p>
-      <p>Cute h n ye wali photoooooo</p>
-      <img src="our_photo.png" alt="Us Together" />
+      <p>You’ve unlocked the surprise ending! 🎁</p>
+      <img src="surprise.png" alt="Surprise Image" style="max-width: 80%; border-radius: 10px;" />
       <br />
       <button onclick="startGame()">Play Again</button>
-      <button id="go-to-bubble" style="margin-top: 10px;">Back to Bubbles</button>
+      <button id="go-to-bubble" style="margin-top: 10px;">Back to Game Hub</button>
     </div>
   </div>
+
 
 
 
@@ -502,17 +507,21 @@
 
 
   </script>
-      <footer style="
-        position: fixed;
-        bottom: 10px;
-        width: 100%;
-        text-align: center;
-        font-size: 0.9rem;
-        color: #ffffff;
-        opacity: 0.7;
-    ">
-        Developed with ❤️ by Nyasa
-    </footer>
+
+  <footer style="
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #ffffff;
+    opacity: 0.7;
+  ">
+    Crafted by <strong>
+    <a href="https://github.com/NyasaVishwas" target="_blank" style="color: #fff691; text-decoration: underline; font-weight: bold;">
+      Nyasa Vishwas
+    </a></strong>
+  </footer>
 
 </body>
 </html>
