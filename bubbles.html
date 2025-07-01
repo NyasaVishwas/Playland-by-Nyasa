@@ -238,11 +238,18 @@
     #musicPopup button {
       background: none;
       border: none;
-      font-size: 3.5rem;
+      font-size: 4rem;
       cursor: pointer;
       animation: floatBubble 2s infinite;
       color: #4d4dff;
+      transition: transform 0.3s, text-shadow 0.3s;
     }
+
+    #musicPopup button:hover {
+      transform: scale(1.2);
+      text-shadow: 0 0 10px #8aaaff, 0 0 20px #8aaaff;
+    }
+
 
     #musicPopup p {
       font-size: 1rem;
