@@ -435,49 +435,14 @@
       scoreboard.innerText = `Score: ${score}`;
     }
 
-    function maybeShowNote() {
-      if (score >= 500 && !notesShown.includes(0)) {
-        showNote(0);
-      } else if (score >= 1000 && !notesShown.includes(1)) {
-        showNote(1);
-      } else if (score >= 2000 && !notesShown.includes(2)) {
-        showNote(2);
-      } else if (score >= 3000 && !notesShown.includes(3)) {
-        showNote(3);
-      } else if (score >= 4000 && !notesShown.includes(4)) {
-        showNote(4);
-      } else if (score >= 5000 && !notesShown.includes(5)) {
-        showNote(5);
-      } else if (score >= 6000 && !notesShown.includes(6)) {
-        showNote(6);
-      } else if (score >= 7000 && !notesShown.includes(7)) {
-        showNote(7);
-      } else if (score >= 8000 && !notesShown.includes(8)) {
-        showNote(8);
-      } else if (score >= 9000 && !notesShown.includes(9)) {
-        showNote(9);
-      }
-    }
-
-    function showNote(index) {
-      notesShown.push(index);
-      noteBox.textContent = loveNotes[index];
-      noteBox.classList.add('show');
-
-      clearTimeout(noteTimeout);
-      noteTimeout = setTimeout(() => {
-        noteBox.classList.remove('show');
-      }, 3000);
-    }
 
     function endGame() {
       isGameOver = true;
       gameOverScreen.style.display = 'block';
-      scoreboard.style.display = 'none'; // hide the top-left scoreboard on game over
+      scoreboard.style.display = 'none';
       clearInterval(enemySpawnInterval);
       noteBox.classList.remove('show');
 
-      // Show final score in the game over screen
       document.getElementById('final-score').textContent = `Final Score: ${score}`;
     }
 
@@ -503,9 +468,6 @@
         music.pause();
       }
     }
-
-
-
   </script>
 
   <footer style="
