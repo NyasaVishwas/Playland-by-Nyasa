@@ -193,13 +193,16 @@
       enemies = [];
       score = 0;
       isGameOver = false;
+      currentInterval = 1000;
 
       updateScore();
       spawnEnemies();
       requestAnimationFrame(gameLoop);
     }
 
+    let currentInterval = 1000;
     function spawnEnemies() {
+      clearInterval(enemySpawnInterval);
       enemySpawnInterval = setInterval(() => {
         if (!isGameOver) {
           const baseSpeed = 2;
@@ -213,7 +216,7 @@
             speed: enemySpeed
           });
         }
-      }, 1000);
+      }, currentInterval);
     }
 
     document.addEventListener('keydown', (e) => {
@@ -288,10 +291,19 @@
       requestAnimationFrame(gameLoop);
     }
 
+    let lastDifficultyUpdate = 0;
+
     function increaseScore(amount) {
       score += amount;
       updateScore();
+
+      if (score - lastDifficultyUpdate >= 2000 && currentInterval > 400) {
+        currentInterval -= 100;
+        lastDifficultyUpdate = score;
+        spawnEnemies();
+      }
     }
+
 
     function updateScore() {
       scoreboard.innerText = `Score: ${score}`;
