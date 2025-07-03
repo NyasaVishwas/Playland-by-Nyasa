@@ -250,6 +250,7 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
+
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
@@ -278,32 +279,28 @@
       enemies = [];
       score = 0;
       isGameOver = false;
-      notesShown = [];
 
       updateScore();
       spawnEnemies();
       requestAnimationFrame(gameLoop);
     }
 
+    function spawnEnemies() {
+      setInterval(() => {
+        if (!isGameOver) {
+          const baseSpeed = 2;
+          const speedIncrement = Math.floor(score / 500) * 0.5; 
+          const enemySpeed = baseSpeed + speedIncrement + Math.random();
 
-
-  function spawnEnemies() {
-    setInterval(() => {
-      if (!isGameOver) {
-        const baseSpeed = 2;
-        const speedIncrement = Math.floor(score / 500) * 0.5; 
-        const enemySpeed = baseSpeed + speedIncrement + Math.random();
-
-        enemies.push({
-          x: Math.random() * (canvas.width - 40),
-          y: -40,
-          size: 40,
-          speed: enemySpeed
-        });
-      }
-    }, 1000);
-  }
-
+          enemies.push({
+            x: Math.random() * (canvas.width - 40),
+            y: -40,
+            size: 40,
+            speed: enemySpeed
+          });
+        }
+      }, 1000);
+    }
 
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && !isGameOver) {
