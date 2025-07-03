@@ -16,6 +16,7 @@
       color: white;
       position: relative;
     }
+
     #gameCanvas {
       display: block;
       background: transparent;
@@ -58,103 +59,98 @@
       transition: opacity 0.5s ease;
       z-index: 10;
     }
+
     #note-box.show {
       opacity: 1;
       pointer-events: auto;
     }
 
-#win-screen {
-  position: fixed;
-  top: 7%;
-  left: 40%;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  animation: fadeIn 1.5s ease-in-out;
-  padding:20px;
-}
+    #win-screen {
+      position: fixed;
+      top: 7%;
+      left: 40%;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      animation: fadeIn 1.5s ease-in-out;
+      padding:20px;
+    }
 
-.win-box {
-  background: rgba(255, 240, 255, 0.96);
-  color: #222;
-  padding: 20px 25px;
-  border-radius: 20px;
-  box-shadow: 0 0 25px #ff8fd0;
-  text-align: center;
-  width: 90%;
-  max-width: 340px;
-  animation: popIn 1s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+    .win-box {
+      background: rgba(255, 240, 255, 0.96);
+      color: #222;
+      padding: 20px 25px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #ff8fd0;
+      text-align: center;
+      width: 90%;
+      max-width: 340px;
+      animation: popIn 1s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
 
+    .win-box h1 {
+      font-size: 1.6em;
+      margin-bottom: 10px;
+      color: #ff3c96;
+      animation: glowText 1.2s infinite alternate;
+      line-height: 1.3;
+    }
 
+    .win-box img {
+      width: 150px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #ffb6c1;
+      margin: 15px 0;
+    }
 
-.win-box h1 {
-  font-size: 1.6em;
-  margin-bottom: 10px;
-  color: #ff3c96;
-  animation: glowText 1.2s infinite alternate;
-  line-height: 1.3;
-}
+    .win-box button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #ff69b4;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
 
+    .win-box button:hover {
+      background: #ff92c2;
+    }
 
-.win-box img {
-  width: 150px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px #ffb6c1;
-  margin: 15px 0;
-}
+    /* ✨ Animations */
+    @keyframes popIn {
+      from {
+        transform: scale(0.6);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
 
-.win-box button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background: #ff69b4;
-  border: none;
-  color: white;
-  border-radius: 8px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
 
-.win-box button:hover {
-  background: #ff92c2;
-}
-
-
-/* ✨ Animations */
-@keyframes popIn {
-  from {
-    transform: scale(0.6);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes glowText {
-  from {
-    text-shadow: 0 0 10px #ff9bd2;
-  }
-  to {
-    text-shadow: 0 0 20px #ff3c96;
-  }
-}
-
-
+    @keyframes glowText {
+      from {
+        text-shadow: 0 0 10px #ff9bd2;
+      }
+      to {
+        text-shadow: 0 0 20px #ff3c96;
+      }
+    }
 
     /* Start, Rules and Game Over screens centered on top of game */
     #start-screen, #rules-screen, #game-over {
