@@ -209,8 +209,7 @@
       <li>Press <b>Spacebar</b> to shoot bullets.</li>
       <li>Destroy incoming asteroids to survive.</li>
       <li>Earn points for each asteroid you hit.</li>
-      <li>Try to score 10,000 points to unlock a surprise ending!</li>
-      <li><b>Hint:</b> The higher your score, the cooler the surprise 🎁</li>
+      <li>How high can you score? 🚀</li>
     </ul>
     <button id="btn-play">Let’s Play!</button>
   </div>
@@ -219,13 +218,13 @@
   <div id="game-over" style="display:none; text-align: center;">
     <h1>Game Over</h1>
     <p id="final-score" style="font-size:1.3em; margin-top: 10px;"></p>
-    <p>No worries, try again and see if you can uncover the secret ending!</p>
+    <p>No worries, try again and see if you can beat your high score!</p>
     <button onclick="startGame()">Play Again</button>
     <br />
-    <button id="go-to-bubbles" style="margin-top: 10px; background: #6c63ff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Back to Bubbles</button>
+    <button id="go-to-bubbles">Back to Bubbles</button>
   </div>
 
-  <!-- Win Screen -->
+  <!-- Win screen  -->
   <div id="win-screen" style="display:none;">
     <div class="win-box">
       <h1>Congratulations! 🎉</h1>
@@ -237,9 +236,6 @@
       <button id="go-to-bubble" style="margin-top: 10px;">Back to Bubbles</button>
     </div>
   </div>
-
-
-
 
   <div id="scoreboard">Score: 0</div>
   <div id="note-box"></div>
@@ -267,21 +263,6 @@
       window.location.href = 'index.html';
     });
 
-    // Love notes messages
-    const loveNotes = [
-      "Ache se khelooooo",
-      "I believe in you",
-      "Jldi jldi gama khtm kroo",
-      "End me surprise haiiii",
-      "Focus on the game",
-      "Ab disturb nhi krungi",
-      "Wo mazak tha",
-      "Mai to disturb krungi",
-      "Yayyyyy",
-      "Bs jitne hi wale ho, hurray"
-    ];
-
-    // Set canvas size to fill the window and adjust on resize
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -306,7 +287,6 @@
       gameOverScreen.style.display = 'none';
       document.getElementById('win-screen').style.display = 'none'; 
       scoreboard.style.display = 'block';
-      noteBox.classList.remove('show');
       clearTimeout(noteTimeout);
       clearInterval(enemySpawnInterval);
 
@@ -327,7 +307,6 @@
   function spawnEnemies() {
     setInterval(() => {
       if (!isGameOver) {
-        // Base speed + incremental speed based on score (e.g. every 500 points adds 0.5 speed)
         const baseSpeed = 2;
         const speedIncrement = Math.floor(score / 500) * 0.5; 
         const enemySpeed = baseSpeed + speedIncrement + Math.random();
@@ -419,11 +398,6 @@
     function increaseScore(amount) {
       score += amount;
       updateScore();
-      maybeShowNote();
-
-      if (score >= 10000) {
-        winGame();
-      }
     }
 
 
