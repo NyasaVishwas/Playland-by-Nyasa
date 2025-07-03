@@ -186,7 +186,6 @@
       rulesScreen.style.display = 'none';
       gameOverScreen.style.display = 'none';
       scoreboard.style.display = 'block';
-      clearTimeout(noteTimeout);
       clearInterval(enemySpawnInterval);
 
       spaceship = { x: canvas.width/2 - 20, y: canvas.height - 80, width: 40, height: 40 };
@@ -201,7 +200,7 @@
     }
 
     function spawnEnemies() {
-      setInterval(() => {
+      enemySpawnInterval = setInterval(() => {
         if (!isGameOver) {
           const baseSpeed = 2;
           const speedIncrement = Math.floor(score / 500) * 0.5; 
