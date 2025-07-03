@@ -145,6 +145,10 @@
   <canvas id="gameCanvas"></canvas>
 
   <script>
+    let currentInterval = 1000;
+    let lastDifficultyUpdate = 0;
+
+    
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -201,21 +205,24 @@
       requestAnimationFrame(gameLoop);
     }
 
-    let currentInterval = 1000;
     function spawnEnemies() {
       clearInterval(enemySpawnInterval);
       enemySpawnInterval = setInterval(() => {
         if (!isGameOver) {
           const baseSpeed = 2;
-          const speedIncrement = Math.floor(score / 500) * 0.5; 
+          const speedIncrement = Math.floor(score / 500) * 0.5;
           const enemySpeed = baseSpeed + speedIncrement + Math.random();
 
-          enemies.push({
-            x: Math.random() * (canvas.width - 40),
-            y: -40,
-            size: 40,
-            speed: enemySpeed
-          });
+          const numEnemies = Math.min(1 + Math.floor(score / 1000), 5);
+
+          for (let i = 0; i < numEnemies; i++) {
+            enemies.push({
+              x: Math.random() * (canvas.width - 40),
+              y: -40,
+              size: 40,
+              speed: enemySpeed + Math.random() * 0.5 
+            });
+          }
         }
       }, currentInterval);
     }
@@ -292,8 +299,6 @@
       requestAnimationFrame(gameLoop);
     }
 
-    let lastDifficultyUpdate = 0;
-
     function increaseScore(amount) {
       score += amount;
       updateScore();
@@ -304,7 +309,6 @@
         spawnEnemies();
       }
     }
-
 
     function updateScore() {
       scoreboard.innerText = `Score: ${score}`;
