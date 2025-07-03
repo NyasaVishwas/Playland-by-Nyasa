@@ -331,7 +331,6 @@
       ctx.closePath();
       ctx.fill();
 
-
       // Draw bullets
       ctx.fillStyle = '#fff';
       bullets.forEach((b, i) => {
@@ -380,35 +379,18 @@
       updateScore();
     }
 
-
     function updateScore() {
       scoreboard.innerText = `Score: ${score}`;
     }
-
 
     function endGame() {
       isGameOver = true;
       gameOverScreen.style.display = 'block';
       scoreboard.style.display = 'none';
       clearInterval(enemySpawnInterval);
-      noteBox.classList.remove('show');
 
       document.getElementById('final-score').textContent = `Final Score: ${score}`;
     }
-
-    function winGame() {
-      isGameOver = true;
-      document.getElementById('win-screen').style.display = 'block';
-      scoreboard.style.display = 'none';
-      clearInterval(enemySpawnInterval);
-      noteBox.classList.remove('show');
-
-      document.getElementById('final-win-score').textContent = score;
-    }
-
-    document.getElementById('go-to-bubble').addEventListener('click', () => {
-      window.location.href = 'index.html';
-    });
 
     function toggleMusic() {
       const music = document.getElementById("gameMusic");
