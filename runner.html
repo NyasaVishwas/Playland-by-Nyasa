@@ -19,7 +19,7 @@
       width: 800px;
       height: 450px;
       border-radius: 16px;
-      box-shadow: 0 0 20px #81c784;
+      box-shadow: 0 0 20px #98e49bc3;
       overflow: hidden;
       position: relative;
     }
@@ -69,7 +69,8 @@
     }
 
     .end-screen button,
-    .start-screen button {
+    .start-screen button,
+    .music-toggle {
       background: #4caf50;
       border: none;
       color: white;
@@ -111,11 +112,18 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    .music-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 101;
+    }
   </style>
 </head>
 <body>
   <audio id="bgMusic" src="run.mp3" loop></audio>
-  <button onclick="toggleMusic()" style="position: absolute; top: 20px; right: 20px; z-index: 101;">🎶 Toggle Music</button>
+  <button class="music-toggle" onclick="toggleMusic()">🎶 Music</button>
 
   <div id="game-container">
     <canvas id="gameCanvas" width="800" height="450"></canvas>
@@ -125,21 +133,21 @@
     <div id="start-screen" class="start-screen">
       <h2>Game Rules</h2>
       <ul>
-        <li>Use <b>Spacebar</b> to jump</li>
-        <li>Avoid obstacles (they're hazards on the path)</li>
-        <li>Collect 💚 to gain score</li>
-        <li>Grab stars ⭐️ to shield from hazards (Aura++)</li>
-        <li>Run endlessly to set a high score!</li>
-        <li><b>Hint: </b>Double press Spacebar for higher jump</li>
+        <li>Use <b>Spacebar</b> to fly over.</li>
+        <li>Avoid obstacles (they're hazards on the path).</li>
+        <li>Collect 💚 to gain score.</li>
+        <li>Grab stars ⭐️ to shield from hazards (Aura++).</li>
+        <li>Dash through the forest to stack up your score!</li>
+        <li><b>Hint: </b>Double press Spacebar to fly higher</li>
       </ul>
-      <button onclick="startGame()">Start Game</button>
+      <button onclick="startGame()">Let's Play</button>
     </div>
 
     <!-- Game Over Screen -->
     <div id="end-screen" class="end-screen" style="display:none;">
       <h2>Game Over</h2>
       <p style="font-size:1.3em; margin-top: 10px;"><b>Final Score: <span id="finalScore">0</span></b></p>
-      <p>You hit a hazard on the path!<br>Keep running to set a new record!</p>
+      <p>You hit a hazard on the path!<br>Keep flying to set a new record!</p>
       <button onclick="startGame()">Play Again</button>
       <button onclick="window.location.href='index.html'">Back to Bubbles</button>
     </div>
@@ -156,9 +164,9 @@
     playerImg.src = "./logo.png";
     playerImg.alt = "player";
 
-    const leafEmoji = "💚";
+    const heartEmoji = "💚";
     const obstacleColors = ["#000000"];
-    let player, obstacles, leaves, score, gameOver, speed;
+    let player, obstacles, hearts, score, gameOver, speed;
     let playerReachedCenter = false;
     let stars = [];
     let invincible = false;
@@ -167,12 +175,15 @@
     let gameStarted = false;
 
     function startGame() {
-      document.getElementById("bgMusic").play();
+      const bgMusic = document.getElementById("bgMusic");
+      bgMusic.volume = 0.3;
+      bgMusic.play(); 
+
       document.getElementById("start-screen").style.display = "none";
       player = { x: 50, y: 310, width: 60, height: 40, vy: 0, jumping: false, jumpCount: 0 };
       gameStarted = true;
       obstacles = [];
-      leaves = [];
+      hearts = [];
       score = 0;
       speed = 3;
       gameOver = false;
@@ -182,7 +193,7 @@
       document.getElementById("end-screen").style.display = "none";
 
       generateObstacle();
-      generateLeaf();
+      generateHeart();
       generateStar();
       requestAnimationFrame(gameLoop);
     }
@@ -208,7 +219,7 @@
       setTimeout(generateObstacle, 1000 + Math.random() * 500);
     }
 
-    function generateLeaf() {
+    function generateHeart() {
       if (gameOver) return;
 
       // Determine heart height tier
@@ -222,7 +233,7 @@
         heartY = 170 + Math.random() * 50; // High: 170-220px (double jump)
       }
 
-      leaves.push({
+      hearts.push({
         x: canvas.width + Math.random() * 300,
         y: heartY,
         width: 24,
@@ -230,38 +241,81 @@
         speed: speed
       });
 
-      // Increased chance of second heart after 1000 points
-      if (score >= 1000 && Math.random() < 0.5) {
-        const secondRand = Math.random();
-        let secondHeartY;
-        if (secondRand < 0.5) {
-          secondHeartY = 270 + Math.random() * 60;
-        } else if (secondRand < 0.8) {
-          secondHeartY = 220 + Math.random() * 50;
-        } else {
-          secondHeartY = 170 + Math.random() * 50;
+      // Increased heart spawns based on score
+      if (score >= 2000) {
+        // After 2000 points: 70% chance for second heart, 30% chance for third
+        if (Math.random() < 0.7) {
+          const secondRand = Math.random();
+          let secondHeartY;
+          if (secondRand < 0.5) {
+            secondHeartY = 270 + Math.random() * 60;
+          } else if (secondRand < 0.8) {
+            secondHeartY = 220 + Math.random() * 50;
+          } else {
+            secondHeartY = 170 + Math.random() * 50;
+          }
+          hearts.push({
+            x: canvas.width + 100 + Math.random() * 200,
+            y: secondHeartY,
+            width: 24,
+            height: 24,
+            speed: speed
+          });
+          if (Math.random() < 0.3) {
+            const thirdRand = Math.random();
+            let thirdHeartY;
+            if (thirdRand < 0.5) {
+              thirdHeartY = 270 + Math.random() * 60;
+            } else if (thirdRand < 0.8) {
+              thirdHeartY = 220 + Math.random() * 50;
+            } else {
+              thirdHeartY = 170 + Math.random() * 50;
+            }
+            hearts.push({
+              x: canvas.width + 200 + Math.random() * 200,
+              y: thirdHeartY,
+              width: 24,
+              height: 24,
+              speed: speed
+            });
+          }
         }
-        leaves.push({
-          x: canvas.width + 100 + Math.random() * 200,
-          y: secondHeartY,
-          width: 24,
-          height: 24,
-          speed: speed
-        });
-      } else if (score < 1000 && Math.random() < 0.3) {
-        // Maintain original 30% chance for second heart before 1000 points
-        leaves.push({
-          x: canvas.width + 100 + Math.random() * 200,
-          y: 270 + Math.random() * 60,
-          width: 24,
-          height: 24,
-          speed: speed
-        });
+      } else if (score >= 1000) {
+        // After 1000 points: 50% chance for second heart
+        if (Math.random() < 0.5) {
+          const secondRand = Math.random();
+          let secondHeartY;
+          if (secondRand < 0.5) {
+            secondHeartY = 270 + Math.random() * 60;
+          } else if (secondRand < 0.8) {
+            secondHeartY = 220 + Math.random() * 50;
+          } else {
+            secondHeartY = 170 + Math.random() * 50;
+          }
+          hearts.push({
+            x: canvas.width + 100 + Math.random() * 200,
+            y: secondHeartY,
+            width: 24,
+            height: 24,
+            speed: speed
+          });
+        }
+      } else {
+        // Before 1000 points: 30% chance for second heart
+        if (Math.random() < 0.3) {
+          hearts.push({
+            x: canvas.width + 100 + Math.random() * 200,
+            y: 270 + Math.random() * 60,
+            width: 24,
+            height: 24,
+            speed: speed
+          });
+        }
       }
 
-      // Faster spawn rate after 1500 points
-      const spawnInterval = score >= 1500 ? 600 + Math.random() * 600 : 800 + Math.random() * 1000;
-      setTimeout(generateLeaf, spawnInterval);
+      // Faster spawn rate after 1500 points, even faster after 3000
+      const spawnInterval = score >= 3000 ? 600 + Math.random() * 400 : score >= 1500 ? 600 + Math.random() * 600 : 800 + Math.random() * 1000;
+      setTimeout(generateHeart, spawnInterval);
     }
 
     function generateStar() {
@@ -321,16 +375,16 @@
         }
       }
 
-      leaves = leaves.filter(h => h.x + h.width > 0);
-      for (let i = 0; i < leaves.length; i++) {
-        const h = leaves[i];
+      hearts = hearts.filter(h => h.x + h.width > 0);
+      for (let i = 0; i < hearts.length; i++) {
+        const h = hearts[i];
         h.x -= h.speed;
         ctx.font = "24px serif";
-        ctx.fillText(leafEmoji, h.x, h.y);
+        ctx.fillText(heartEmoji, h.x, h.y);
 
         if (isColliding(player, h)) {
           score += 50;
-          leaves.splice(i, 1);
+          hearts.splice(i, 1);
           i--;
         }
       }
@@ -411,7 +465,7 @@
     opacity: 0.7;
   ">
     Crafted by <strong>
-    <a href="https://github.com/NyasaVishwas" target="_blank" style="color: #fbf5b3; text-decoration: underline; font-weight: bold;">
+    <a href="https://github.com/NyasaVishwas" target="_blank" style="color: #ffff2b; text-decoration: underline; font-weight: bold;">
       Nyasa Vishwas
     </a></strong>
   </footer>
