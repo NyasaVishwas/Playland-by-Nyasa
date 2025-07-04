@@ -348,7 +348,7 @@
           return;
         }
 
-        // Check for bullet hit (but handle outside the loop)
+        // Check for bullet hit
         let bossHit = false;
         for (let j = bullets.length - 1; j >= 0; j--) {
           const b = bullets[j];
@@ -360,17 +360,15 @@
           ) {
             bullets.splice(j, 1);
             bossHit = true;
-            break; // Only process one bullet hit per frame
+            break;
           }
         }
 
         if (bossHit) {
-          increaseScore(50);
-          // Let it fade away visually instead of deleting instantly
+          increaseScore(500);
           bossAsteroid = null;
         }
 
-        // Remove if it goes off screen
         if (bossAsteroid && bossAsteroid.y > canvas.height) {
           bossAsteroid = null;
         }
