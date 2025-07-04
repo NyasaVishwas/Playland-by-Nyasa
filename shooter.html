@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Astro Blaster</title>
   <style>
-    /* Fullscreen and responsive canvas */
     html, body {
       margin: 0;
       padding: 0;
@@ -15,19 +14,15 @@
       color: white;
       position: relative;
     }
-
     #gameCanvas {
       display: block;
       background: transparent;
-      /* Make canvas fill the window while keeping aspect ratio */
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       margin: auto;
       max-width: 100vw;
       max-height: 100vh;
     }
-
-    /* Scoreboard styling */
     #scoreboard {
       position: fixed;
       top: 10px;
@@ -40,35 +35,19 @@
       z-index: 10;
       user-select: none;
     }
-
-    /* ✨ Animations */
     @keyframes popIn {
-      from {
-        transform: scale(0.6);
-        opacity: 0;
-      }
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
     @keyframes glowText {
-      from {
-        text-shadow: 0 0 10px #ff9bd2;
-      }
-      to {
-        text-shadow: 0 0 20px #ff3c96;
-      }
+      from { text-shadow: 0 0 10px #ff9bd2; }
+      to { text-shadow: 0 0 20px #ff3c96; }
     }
-
-    /* Rules and Game Over screens centered on top of game */
-    #start-screen, #rules-screen, #game-over {
+    #rules-screen, #game-over {
       position: fixed;
       top: 40%;
       left: 50%;
@@ -82,12 +61,10 @@
       max-width: 350px;
       line-height: 1.6;
     }
-
     #rules-screen {
       background: rgba(255,192,203,0.95);
       color: #000;
     }
-
     button {
       padding: 10px 20px;
       font-size: 1em;
@@ -101,44 +78,28 @@
     button:hover {
       background: #ff85c1;
     }
-
     .button-group {
       display: flex;
       justify-content: center;
       gap: 15px;
       margin-top: 10px;
     }
-
   </style>
 </head>
 <body>
-
   <audio id="gameMusic" src="space.mp3" loop></audio>
-
-  <!-- Start Screen -->
-  <div id="start-screen" style="display: none;">
-    <h1>Astro Blaster 🚀</h1>
-    <p>Blast asteroids out of space! <br>How high can you score?</p>
-    <button id="btn-start">Start Game</button>
-  </div>
-
-  <!-- Music Toggle Button -->
   <button onclick="toggleMusic()" style="position: fixed; top: 5px; right: 5px; z-index: 20; font-size: 0.9em;"> Music🎵 </button>
-
-  <!-- Rules Screen -->
-  <div id="rules-screen" style="display:none;">
+  <div id="rules-screen">
     <h2>Game Rules</h2>
     <ul style="text-align:left; font-size: 1.1em;">
       <li>Move your spaceship using your mouse.</li>
       <li>Press <b>Spacebar</b> to shoot bullets.</li>
-      <li>Destroy incoming asteroids to survive.</li>
+      <li>Dodge incoming asteroids to survive.</li>
       <li>Earn points for each asteroid you hit.</li>
       <li><b>Bonus: </b> Golden asteroids give you 500 points. 🚀</li>
     </ul>
     <button id="btn-play">Let’s Play!</button>
   </div>
-
-  <!-- Game Over Screen -->
   <div id="game-over" style="display:none; text-align: center;">
     <h1>Game Over</h1>
     <p id="final-score" style="font-size:1.3em; margin-top: 10px;"></p>
@@ -148,27 +109,29 @@
       <button id="go-to-bubbles">Back to Bubbles</button>
     </div>
   </div>
-
   <div id="scoreboard">Score: 0</div>
-
   <canvas id="gameCanvas"></canvas>
-    
   <script>
     let currentInterval = 1000;
     let lastDifficultyUpdate = 0;
     let bossAsteroid = null;
     let bossSpawnTimeout = null;
+    let highScore = localStorage.getItem('astroBlasterHighScore') || 0;
 
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-
     const scoreboard = document.getElementById('scoreboard');
-    const startScreen = document.getElementById('start-screen');
     const rulesScreen = document.getElementById('rules-screen');
     const gameOverScreen = document.getElementById('game-over');
-
-    const btnStart = document.getElementById('btn-start');
     const btnPlay = document.getElementById('btn-play');
+
+    // Load PNG images
+    const spaceshipImg = new Image();
+    spaceshipImg.src = './spaceship.png';
+    const asteroidImg = new Image();
+    asteroidImg.src = './asteroid.png';
+    const goldenAsteroidImg = new Image();
+    goldenAsteroidImg.src = './golden-asteroid.png';
 
     let spaceship, bullets, enemies, score, isGameOver, enemySpawnInterval;
 
@@ -192,14 +155,13 @@
 
     function startGame() {
       document.getElementById('gameMusic').play();
-      startScreen.style.display = 'none';
       rulesScreen.style.display = 'none';
       gameOverScreen.style.display = 'none';
       scoreboard.style.display = 'block';
       clearInterval(enemySpawnInterval);
       clearTimeout(bossSpawnTimeout);
 
-      spaceship = { x: canvas.width / 2 - 20, y: canvas.height - 80, width: 40, height: 40 };
+      spaceship = { x: canvas.width / 2 - 20, y: canvas.height - 80, width: 50, height: 50 };
       bullets = [];
       enemies = [];
       score = 0;
@@ -243,12 +205,11 @@
           x: Math.random() * (canvas.width - 60),
           y: -60,
           size: 50,
-          speed: 4,
-          color: '#FFD700'
+          speed: 4
         };
       }
 
-      const nextBossTime = 25000 + Math.random() * 10000; // 25 seconds
+      const nextBossTime = 25000 + Math.random() * 10000;
       bossSpawnTimeout = setTimeout(spawnBossAsteroid, nextBossTime);
     }
 
@@ -272,13 +233,17 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw spaceship
-      ctx.fillStyle = '#0785e6';
-      ctx.beginPath();
-      ctx.moveTo(spaceship.x + spaceship.width / 2, spaceship.y);
-      ctx.lineTo(spaceship.x, spaceship.y + spaceship.height);
-      ctx.lineTo(spaceship.x + spaceship.width, spaceship.y + spaceship.height);
-      ctx.closePath();
-      ctx.fill();
+      if (spaceshipImg.complete) {
+        ctx.drawImage(spaceshipImg, spaceship.x, spaceship.y, spaceship.width, spaceship.height);
+      } else {
+        ctx.fillStyle = '#0785e6';
+        ctx.beginPath();
+        ctx.moveTo(spaceship.x + spaceship.width / 2, spaceship.y);
+        ctx.lineTo(spaceship.x, spaceship.y + spaceship.height);
+        ctx.lineTo(spaceship.x + spaceship.width, spaceship.y + spaceship.height);
+        ctx.closePath();
+        ctx.fill();
+      }
 
       // Draw bullets
       ctx.fillStyle = '#fff';
@@ -288,15 +253,19 @@
         if (bullets[i].y + 10 < 0) bullets.splice(i, 1);
       }
 
-      // Enemies
-      ctx.fillStyle = '#ff6347';
+      // Draw regular asteroids
       for (let i = enemies.length - 1; i >= 0; i--) {
         const en = enemies[i];
         en.y += en.speed;
 
-        ctx.beginPath();
-        ctx.arc(en.x + en.size / 2, en.y + en.size / 2, en.size / 2, 0, Math.PI * 2);
-        ctx.fill();
+        if (asteroidImg.complete) {
+          ctx.drawImage(asteroidImg, en.x, en.y, en.size, en.size);
+        } else {
+          ctx.fillStyle = '#ff6347';
+          ctx.beginPath();
+          ctx.arc(en.x + en.size / 2, en.y + en.size / 2, en.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
 
         // Collision with spaceship
         if (
@@ -327,21 +296,24 @@
         if (en.y > canvas.height) enemies.splice(i, 1);
       }
 
-      // Boss asteroid
+      // Draw boss asteroid
       if (bossAsteroid) {
         bossAsteroid.y += bossAsteroid.speed;
 
-        // Draw boss asteroid
-        ctx.fillStyle = bossAsteroid.color;
-        ctx.beginPath();
-        ctx.arc(
-          bossAsteroid.x + bossAsteroid.size / 2,
-          bossAsteroid.y + bossAsteroid.size / 2,
-          bossAsteroid.size / 2,
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
+        if (goldenAsteroidImg.complete) {
+          ctx.drawImage(goldenAsteroidImg, bossAsteroid.x, bossAsteroid.y, bossAsteroid.size, bossAsteroid.size);
+        } else {
+          ctx.fillStyle = '#FFD700';
+          ctx.beginPath();
+          ctx.arc(
+            bossAsteroid.x + bossAsteroid.size / 2,
+            bossAsteroid.y + bossAsteroid.size / 2,
+            bossAsteroid.size / 2,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
 
         // Collision with spaceship
         if (
@@ -378,7 +350,7 @@
           bossAsteroid = null;
         }
       }
-      
+
       requestAnimationFrame(gameLoop);
     }
 
@@ -395,6 +367,10 @@
 
     function updateScore() {
       scoreboard.innerText = `Score: ${score}`;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('astroBlasterHighScore', highScore);
+      }
     }
 
     function endGame() {
@@ -405,6 +381,7 @@
       clearTimeout(bossSpawnTimeout);
       bossAsteroid = null;
       document.getElementById('final-score').textContent = `Final Score: ${score}`;
+      document.getElementById('high-score').textContent = `High Score: ${highScore}`;
     }
 
     function toggleMusic() {
@@ -416,8 +393,6 @@
       }
     }
   </script>
-
-
   <footer style="
     position: fixed;
     bottom: 10px;
@@ -432,6 +407,5 @@
       Nyasa Vishwas
     </a></strong>
   </footer>
-
 </body>
 </html>
