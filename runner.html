@@ -153,7 +153,7 @@
     const ctx = canvas.getContext("2d");
 
     const playerImg = new Image();
-    playerImg.src = "./boy_logo.png";
+    playerImg.src = "./logo.png";
     playerImg.alt = "player";
 
     const leafEmoji = "💚";
@@ -169,7 +169,7 @@
     function startGame() {
       document.getElementById("bgMusic").play();
       document.getElementById("start-screen").style.display = "none";
-      player = { x: 50, y: 310, width: 40, height: 60, vy: 0, jumping: false, jumpCount: 0 };
+      player = { x: 50, y: 310, width: 60, height: 40, vy: 0, jumping: false, jumpCount: 0 };
       gameStarted = true;
       obstacles = [];
       leaves = [];
@@ -199,7 +199,7 @@
           x: canvas.width + Math.random() * 100,
           y: 340,
           width: 30 + Math.random() * 20,
-          height: 40,
+          height: 60,
           speed: speed,
           color: color
         });
