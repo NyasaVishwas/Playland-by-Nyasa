@@ -179,7 +179,7 @@
       bgMusic.play(); 
 
       document.getElementById("start-screen").style.display = "none";
-      player = { x: 50, y: 310, width: 50, height: 60, vy: 0, jumping: false, jumpCount: 0 };
+      player = { x: 50, y: 290, width: 50, height: 60, vy: 0, jumping: false, jumpCount: 0 }; // Fairy y: 290
       gameStarted = true;
       obstacles = [];
       hearts = [];
@@ -205,11 +205,12 @@
 
       if (obstacles.length === 0 || lastX < canvas.width - gap) {
         const color = obstacleColors[Math.floor(Math.random() * obstacleColors.length)];
+        const height = 20 + Math.random() * 80; // Varied heights: 20-100px
         obstacles.push({
           x: canvas.width + Math.random() * 100,
-          y: 340,
+          y: 370 - height, // Align base with ground line (370px)
           width: 30 + Math.random() * 20,
-          height: 30 + Math.random() * 50, // Varied heights: 30-80px
+          height: height,
           speed: speed,
           color: color
         });
@@ -232,9 +233,25 @@
         heartY = 170 + Math.random() * 50; // High: 170-220px (double jump)
       }
 
+      const heartX = canvas.width + Math.random() * 300;
+
+      // Check for nearby obstacles to avoid overlap
+      let adjustedHeartY = heartY;
+      let adjustedHeartX = heartX;
+      for (const ob of obstacles) {
+        if (Math.abs(ob.x - heartX) < 50 && Math.abs((370 - ob.height) - heartY) < 30) {
+          // Heart is too close to obstacle top; adjust y or x
+          adjustedHeartY = 370 - ob.height - 30; // 30px above obstacle top
+          if (adjustedHeartY < 140) { // Ensure heart stays within canvas (140px top margin)
+            adjustedHeartX = ob.x + ob.width + 50; // Place beside obstacle
+            adjustedHeartY = heartY; // Revert to original height tier
+          }
+        }
+      }
+
       hearts.push({
-        x: canvas.width + Math.random() * 300,
-        y: heartY,
+        x: adjustedHeartX,
+        y: adjustedHeartY,
         width: 24,
         height: 24,
         speed: speed
@@ -253,9 +270,21 @@
           } else {
             secondHeartY = 170 + Math.random() * 50;
           }
+          const secondHeartX = canvas.width + 100 + Math.random() * 200;
+          let adjustedSecondHeartY = secondHeartY;
+          let adjustedSecondHeartX = secondHeartX;
+          for (const ob of obstacles) {
+            if (Math.abs(ob.x - secondHeartX) < 50 && Math.abs((370 - ob.height) - secondHeartY) < 30) {
+              adjustedSecondHeartY = 370 - ob.height - 30;
+              if (adjustedSecondHeartY < 140) {
+                adjustedSecondHeartX = ob.x + ob.width + 50;
+                adjustedSecondHeartY = secondHeartY;
+              }
+            }
+          }
           hearts.push({
-            x: canvas.width + 100 + Math.random() * 200,
-            y: secondHeartY,
+            x: adjustedSecondHeartX,
+            y: adjustedSecondHeartY,
             width: 24,
             height: 24,
             speed: speed
@@ -270,9 +299,21 @@
             } else {
               thirdHeartY = 170 + Math.random() * 50;
             }
+            const thirdHeartX = canvas.width + 200 + Math.random() * 200;
+            let adjustedThirdHeartY = thirdHeartY;
+            let adjustedThirdHeartX = thirdHeartX;
+            for (const ob of obstacles) {
+              if (Math.abs(ob.x - thirdHeartX) < 50 && Math.abs((370 - ob.height) - thirdHeartY) < 30) {
+                adjustedThirdHeartY = 370 - ob.height - 30;
+                if (adjustedThirdHeartY < 140) {
+                  adjustedThirdHeartX = ob.x + ob.width + 50;
+                  adjustedThirdHeartY = thirdHeartY;
+                }
+              }
+            }
             hearts.push({
-              x: canvas.width + 200 + Math.random() * 200,
-              y: thirdHeartY,
+              x: adjustedThirdHeartX,
+              y: adjustedThirdHeartY,
               width: 24,
               height: 24,
               speed: speed
@@ -291,9 +332,21 @@
           } else {
             secondHeartY = 170 + Math.random() * 50;
           }
+          const secondHeartX = canvas.width + 100 + Math.random() * 200;
+          let adjustedSecondHeartY = secondHeartY;
+          let adjustedSecondHeartX = secondHeartX;
+          for (const ob of obstacles) {
+            if (Math.abs(ob.x - secondHeartX) < 50 && Math.abs((370 - ob.height) - secondHeartY) < 30) {
+              adjustedSecondHeartY = 370 - ob.height - 30;
+              if (adjustedSecondHeartY < 140) {
+                adjustedSecondHeartX = ob.x + ob.width + 50;
+                adjustedSecondHeartY = secondHeartY;
+              }
+            }
+          }
           hearts.push({
-            x: canvas.width + 100 + Math.random() * 200,
-            y: secondHeartY,
+            x: adjustedSecondHeartX,
+            y: adjustedSecondHeartY,
             width: 24,
             height: 24,
             speed: speed
@@ -302,9 +355,22 @@
       } else {
         // Before 1000 points: 30% chance for second heart
         if (Math.random() < 0.3) {
+          const secondHeartX = canvas.width + 100 + Math.random() * 200;
+          const secondHeartY = 270 + Math.random() * 60;
+          let adjustedSecondHeartY = secondHeartY;
+          let adjustedSecondHeartX = secondHeartX;
+          for (const ob of obstacles) {
+            if (Math.abs(ob.x - secondHeartX) < 50 && Math.abs((370 - ob.height) - secondHeartY) < 30) {
+              adjustedSecondHeartY = 370 - ob.height - 30;
+              if (adjustedSecondHeartY < 140) {
+                adjustedSecondHeartX = ob.x + ob.width + 50;
+                adjustedSecondHeartY = secondHeartY;
+              }
+            }
+          }
           hearts.push({
-            x: canvas.width + 100 + Math.random() * 200,
-            y: 270 + Math.random() * 60,
+            x: adjustedSecondHeartX,
+            y: adjustedSecondHeartY,
             width: 24,
             height: 24,
             speed: speed
@@ -340,8 +406,8 @@
 
       player.vy += 1.5;
       player.y += player.vy;
-      if (player.y > 310) {
-        player.y = 310;
+      if (player.y > 290) { // New ground level
+        player.y = 290;
         player.vy = 0;
         player.jumpCount = 0;
       }
@@ -364,9 +430,13 @@
       for (const ob of obstacles) {
         ob.x -= ob.speed;
         ctx.fillStyle = ob.color;
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 1;
         ctx.fillRect(ob.x, ob.y, ob.width, ob.height);
+        ctx.strokeRect(ob.x, ob.y, ob.width, ob.height);
 
         if (!invincible && isColliding(player, ob)) {
+          console.log("Collision detected:", { player: { x: player.x, y: player.y, width: player.width, height: player.height }, obstacle: { x: ob.x, y: ob.y, width: ob.width, height: ob.height } });
           gameOver = true;
           document.getElementById("end-screen").style.display = "block";
           document.getElementById("finalScore").innerText = score;
@@ -423,12 +493,13 @@
     }
 
     function isColliding(a, b) {
-      return (
+      const collide = (
         a.x < b.x + b.width &&
         a.x + a.width > b.x &&
         a.y < b.y + b.height &&
         a.y + a.height > b.y
       );
+      return collide;
     }
 
     document.addEventListener("keydown", (e) => {
