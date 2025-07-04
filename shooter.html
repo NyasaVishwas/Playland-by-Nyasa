@@ -67,8 +67,8 @@
       }
     }
 
-    /* Start, Rules and Game Over screens centered on top of game */
-    #start-screen, #rules-screen, #game-over {
+    /* Rules and Game Over screens centered on top of game */
+    #rules-screen, #game-over {
       position: fixed;
       top: 40%;
       left: 50%;
@@ -80,6 +80,7 @@
       z-index: 20;
       color: white;
       max-width: 350px;
+      line-height: 1.6;
     }
 
     #rules-screen {
@@ -100,6 +101,14 @@
     button:hover {
       background: #ff85c1;
     }
+
+    .button-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
   </style>
 </head>
 <body>
@@ -107,7 +116,7 @@
   <audio id="gameMusic" src="space.mp3" loop></audio>
 
   <!-- Start Screen -->
-  <div id="start-screen">
+  <div id="start-screen" style="display: none;">
     <h1>Astro Blaster 🚀</h1>
     <p>Blast asteroids out of space! <br>How high can you score?</p>
     <button id="btn-start">Start Game</button>
@@ -134,9 +143,10 @@
     <h1>Game Over</h1>
     <p id="final-score" style="font-size:1.3em; margin-top: 10px;"></p>
     <p>No worries, try again and see if you can beat your high score!</p>
-    <button onclick="startGame()">Play Again</button>
-    <br />
-    <button id="go-to-bubbles">Back to Bubbles</button>
+    <div class="button-group">
+      <button onclick="startGame()">Play Again</button>
+      <button id="go-to-bubbles">Back to Bubbles</button>
+    </div>
   </div>
 
   <div id="scoreboard">Score: 0</div>
@@ -173,11 +183,7 @@
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-
-    btnStart.addEventListener('click', () => {
-      startScreen.style.display = 'none';
-      rulesScreen.style.display = 'block';
-    });
+    rulesScreen.style.display = 'block';
 
     btnPlay.addEventListener('click', () => {
       rulesScreen.style.display = 'none';
