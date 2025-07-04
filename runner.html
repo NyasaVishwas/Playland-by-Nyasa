@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Runner Dash</title>
+  <title>Forest Frenzy</title>
   <style>
     body {
       margin: 0;
@@ -199,7 +199,7 @@
           x: canvas.width + Math.random() * 100,
           y: 340,
           width: 30 + Math.random() * 20,
-          height: 60,
+          height: 30 + Math.random() * 50, // Varied heights: 30-80px
           speed: speed,
           color: color
         });
@@ -211,15 +211,45 @@
     function generateLeaf() {
       if (gameOver) return;
 
+      // Determine heart height tier
+      const rand = Math.random();
+      let heartY;
+      if (rand < 0.5) {
+        heartY = 270 + Math.random() * 60; // Low: 270-330px (single jump)
+      } else if (rand < 0.8) {
+        heartY = 220 + Math.random() * 50; // Medium: 220-270px (often double jump)
+      } else {
+        heartY = 170 + Math.random() * 50; // High: 170-220px (double jump)
+      }
+
       leaves.push({
         x: canvas.width + Math.random() * 300,
-        y: 270 + Math.random() * 60,
+        y: heartY,
         width: 24,
         height: 24,
         speed: speed
       });
 
-      if (Math.random() < 0.3) {
+      // Increased chance of second heart after 1000 points
+      if (score >= 1000 && Math.random() < 0.5) {
+        const secondRand = Math.random();
+        let secondHeartY;
+        if (secondRand < 0.5) {
+          secondHeartY = 270 + Math.random() * 60;
+        } else if (secondRand < 0.8) {
+          secondHeartY = 220 + Math.random() * 50;
+        } else {
+          secondHeartY = 170 + Math.random() * 50;
+        }
+        leaves.push({
+          x: canvas.width + 100 + Math.random() * 200,
+          y: secondHeartY,
+          width: 24,
+          height: 24,
+          speed: speed
+        });
+      } else if (score < 1000 && Math.random() < 0.3) {
+        // Maintain original 30% chance for second heart before 1000 points
         leaves.push({
           x: canvas.width + 100 + Math.random() * 200,
           y: 270 + Math.random() * 60,
@@ -229,7 +259,9 @@
         });
       }
 
-      setTimeout(generateLeaf, 800 + Math.random() * 1000);
+      // Faster spawn rate after 1500 points
+      const spawnInterval = score >= 1500 ? 600 + Math.random() * 600 : 800 + Math.random() * 1000;
+      setTimeout(generateLeaf, spawnInterval);
     }
 
     function generateStar() {
