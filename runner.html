@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Love Run</title>
+  <title>Runner Dash</title>
   <style>
     body {
       margin: 0;
-      background: linear-gradient(to bottom right, #ffe0e0, #ff0000);
+      background: linear-gradient(to bottom right, #e0f7fa, #4caf50);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -15,16 +15,14 @@
     }
 
     #game-container {
-      background: #fff0f5;
+      background: #f1f8e9;
       width: 800px;
       height: 450px;
       border-radius: 16px;
-      box-shadow: 0 0 20px #f99393;
+      box-shadow: 0 0 20px #81c784;
       overflow: hidden;
       position: relative;
     }
-
-
 
     canvas {
       display: block;
@@ -40,8 +38,8 @@
       border-radius: 12px;
       font-weight: bold;
       font-size: 18px;
-      color: rgb(234, 33, 33);
-      box-shadow: 0 0 10px #ff9f9f;
+      color: #2e7d32;
+      box-shadow: 0 0 10px #81c784;
     }
 
     .end-screen, .start-screen {
@@ -49,17 +47,17 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgb(255, 210, 210);
+      background: #e8f5e9;
       padding: 30px;
       border-radius: 16px;
       text-align: center;
       z-index: 100;
-      box-shadow: 0 0 20px #ff5a5a;
+      box-shadow: 0 0 20px #66bb6a;
     }
 
     .end-screen h2,
     .start-screen h2 {
-      color: #d10000;
+      color: #2e7d32;
       font-size: 28px;
     }
 
@@ -71,7 +69,7 @@
 
     .end-screen button,
     .start-screen button {
-      background: rgb(243, 61, 61);
+      background: #4caf50;
       border: none;
       color: white;
       font-size: 16px;
@@ -87,41 +85,13 @@
       margin-bottom: 16px;
     }
 
-    .inaam-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(253, 181, 181, 0.85); /* soft pink overlay */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 200;
-      animation: fadeIn 0.6s ease;
-    }
-
-    .inaam-box {
-      background: #fff0f5;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 0 25px #ff7f7f;
-      font-family: 'Dancing Script', cursive;
-      font-size: 20px;
-      color: #960f0f;
-      max-width: 600px;
-      text-align: left;
-      line-height: 1.6;
-    }
-
-
-        .ground-line {
+    .ground-line {
       position: absolute;
       left: 0;
-      bottom: 60px; /* Adjust based on your character's Y */
+      bottom: 60px;
       width: 100%;
       height: 20px;
-      background: linear-gradient(to top, #90ee90, #b0ffb0);
+      background: linear-gradient(to top, #4caf50, #66bb6a);
       border-top: 2px dashed #ffffff80;
       z-index: 1;
     }
@@ -131,8 +101,8 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 60px; /* This should match ground-line's bottom offset */
-      background: linear-gradient(to top, #8B4513, #a0522d); /* earthy brown gradient */
+      height: 60px;
+      background: linear-gradient(to top, #8B4513, #a0522d);
       z-index: 0;
     }
 
@@ -140,29 +110,25 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
-
-
   </style>
 </head>
 <body>
   <audio id="bgMusic" src="run.mp3" loop></audio>
-  <button onclick="toggleMusic()" style="position: absolute; top: 20px; right: 20px; z-index: 101;">🎵 Toggle Music</button>
+  <button onclick="toggleMusic()" style="position: absolute; top: 20px; right: 20px; z-index: 101;">🎶 Toggle Music</button>
 
   <div id="game-container">
     <canvas id="gameCanvas" width="800" height="450"></canvas>
     <div id="score">Score: 0</div>
-    
 
     <!-- Start Screen with Rules -->
     <div id="start-screen" class="start-screen">
       <h2>Game Rules</h2>
       <ul>
         <li>Use <b>Spacebar</b> to jump</li>
-        <li>Avoid the obstacles (they're negativity)</li>
-        <li>Hearts collect kro to gain score</li>
-        <li>Collect stars, wo negativity se protect krta h (Aura++)</li>
-        <li>Reach 5000 points to meet me! ❤️</li>
+        <li>Avoid obstacles (they're hazards on the path)</li>
+        <li>Collect 💚 to gain score</li>
+        <li>Grab stars ⭐️ to shield from hazards (Aura++)</li>
+        <li>Run endlessly to set a high score!</li>
         <li><b>Hint: </b>Double press Spacebar for higher jump</li>
       </ul>
       <button onclick="startGame()">Start Game</button>
@@ -170,104 +136,58 @@
 
     <!-- Game Over Screen -->
     <div id="end-screen" class="end-screen" style="display:none;">
-      <h2>💔 Areeee!</h2>
-      <p>Tm negativity k pass kyu chale gye? <br>Mere pass aaoooo naaaa! <br><b>Final Score: <span id="finalScore">0</span></b></p>
-      <button onclick="startGame()">Firse khelo</button>
+      <h2>Game Over</h2>
+      <p style="font-size:1.3em; margin-top: 10px;"><b>Final Score: <span id="finalScore">0</span></b></p>
+      <p>You hit a hazard on the path!<br>Keep running to set a new record!</p>
+      <button onclick="startGame()">Play Again</button>
       <button onclick="window.location.href='index.html'">Back to Bubbles</button>
     </div>
 
-    <!-- Game Win Screen -->
-    <div id="win-screen" class="end-screen" style="display:none;">
-      <h2>Hurrayyyy!</h2>
-      <p>We finally met! <br>(Ab bs real me v jldi se mil le)<br><b>Final Score: <span id="finalScoreWin">0</span></b></p>
-
-      <button onclick="startGame()">Play Again</button>
-      <button onclick="window.location.href='index.html'">Back to Bubbles</button><br>
-      <button onclick="openInaam()" style="background: rgb(243, 61, 61); border: none; color: white; padding: 10px 20px; border-radius: 8px; margin-top: 10px; cursor: pointer;">
-        Tmhara inaam 😂
-      </button>
-
-    </div>
-
-    <!-- Inaam Modal -->
-    <div id="inaamModal" class="inaam-modal" style="display: none;">
-      <div class="inaam-box">
-        💌 Babe, idk how to explain but I really really love you.
-        I really do.
-        And I miss you so much, so veryyyyy much.
-        I know, I should not feel sad, but mujhe
-        boht bura lgta h ki tmhara birthday hmesha
-        summer vacation me hi kyu aata hai?
-        Mera v to mann krta h n tmhare sath rehne ka.
-        Koi naa, next year to most probably college
-        me hi rehna h, yaayyyyyy.
-        Ab kon bachayega tmhe merese??? 😈
-        Ek aur baat bolna tha, sorry.....
-        Iss baar sbkuch itna achanak se hua ki mai koi
-        gift v nhi prepare krke de paayi tmhe 😔
-        Isliye ye chhota sa fun website sirf tmhare liye 💖<br>
-        Once again, Happy Birthday My Love ❤️
-        <button onclick="closeInaam()" style="margin-top: 20px; background: rgb(243, 61, 61); color: white; padding: 10px 16px; border: none; border-radius: 8px;">Close</button>
-      </div>
-    </div>
-
-
     <div class="ground-line"></div>
     <div class="ground-base"></div>
-
   </div>
 
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    const boyImg = new Image();
-    const girlImg = new Image();
-    boyImg.src = "./boy_logo.png";  
-    girlImg.src = "./girl_logo.png";
-    boyImg.alt = "boy";
-    girlImg.alt = "girl";
+    const playerImg = new Image();
+    playerImg.src = "./boy_logo.png";
+    playerImg.alt = "player";
 
-
-    const heartEmoji = "♥️";
+    const leafEmoji = "💚";
     const obstacleColors = ["#000000"];
-
-    let player, obstacles, hearts, score, gameOver, gameWon, girl, speed;
+    let player, obstacles, leaves, score, gameOver, speed;
     let playerReachedCenter = false;
     let stars = [];
     let invincible = false;
     let invincibleTimer = 0;
-    const starEmoji = "⭐";
+    const starEmoji = "⭐️";
     let gameStarted = false;
-
-
 
     function startGame() {
       document.getElementById("bgMusic").play();
       document.getElementById("start-screen").style.display = "none";
-      player = { x: 50, y: 310, width: 40, height: 60, vy: 0, jumping: false, jumpCount: 0};
+      player = { x: 50, y: 310, width: 40, height: 60, vy: 0, jumping: false, jumpCount: 0 };
       gameStarted = true;
       obstacles = [];
-      hearts = [];
-      girl = null;
+      leaves = [];
       score = 0;
       speed = 3;
       gameOver = false;
-      gameWon = false;
       playerReachedCenter = false;
 
       document.getElementById("score").innerText = "Score: 0";
       document.getElementById("end-screen").style.display = "none";
-      document.getElementById("win-screen").style.display = "none";
 
       generateObstacle();
-      generateHeart();
+      generateLeaf();
       generateStar();
       requestAnimationFrame(gameLoop);
     }
 
     function generateObstacle() {
-      if (score >= 5000 || gameOver || gameWon) return;
+      if (gameOver) return;
 
       const gap = 150 + Math.random() * 100;
       const lastX = obstacles.length > 0 ? obstacles[obstacles.length - 1].x : 0;
@@ -277,7 +197,7 @@
         obstacles.push({
           x: canvas.width + Math.random() * 100,
           y: 340,
-          width: 30 + Math.random() * 20, // smaller width
+          width: 30 + Math.random() * 20,
           height: 40,
           speed: speed,
           color: color
@@ -287,57 +207,53 @@
       setTimeout(generateObstacle, 1000 + Math.random() * 500);
     }
 
-      function generateHeart() {
-        if (gameOver || gameWon) return;
+    function generateLeaf() {
+      if (gameOver) return;
 
-        // Always spawn one heart
-        hearts.push({
+      leaves.push({
+        x: canvas.width + Math.random() * 300,
+        y: 270 + Math.random() * 60,
+        width: 24,
+        height: 24,
+        speed: speed
+      });
+
+      if (Math.random() < 0.3) {
+        leaves.push({
+          x: canvas.width + 100 + Math.random() * 200,
+          y: 270 + Math.random() * 60,
+          width: 24,
+          height: 24,
+          speed: speed
+        });
+      }
+
+      setTimeout(generateLeaf, 800 + Math.random() * 1000);
+    }
+
+    function generateStar() {
+      if (gameOver) return;
+
+      if (Math.random() < 0.3) {
+        stars.push({
           x: canvas.width + Math.random() * 300,
           y: 270 + Math.random() * 60,
           width: 24,
           height: 24,
           speed: speed
         });
-
-        if (Math.random() < 0.3) {
-          hearts.push({
-            x: canvas.width + 100 + Math.random() * 200,
-            y: 270 + Math.random() * 60,
-            width: 24,
-            height: 24,
-            speed: speed
-          });
-        }
-
-        setTimeout(generateHeart, 800 + Math.random() * 1000); // Faster spawn
       }
 
-      function generateStar() {
-        if (gameOver || gameWon) return;
-
-        if (Math.random() < 0.3) { 
-          stars.push({
-            x: canvas.width + Math.random() * 300,
-            y: 270 + Math.random() * 60,
-            width: 24,
-            height: 24,
-            speed: speed
-          });
-        }
-
-        setTimeout(generateStar, 7000 + Math.random() * 5000);
-      }
-
-
+      setTimeout(generateStar, 7000 + Math.random() * 5000);
+    }
 
     function gameLoop() {
-      if (!gameStarted || gameOver || gameWon) return;
+      if (!gameStarted || gameOver) return;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       player.vy += 1.5;
       player.y += player.vy;
-
       if (player.y > 310) {
         player.y = 310;
         player.vy = 0;
@@ -345,17 +261,17 @@
       }
 
       if (player.jumping && !playerReachedCenter && player.x < canvas.width / 2 - player.width / 2) {
-        player.x += 1; // Boost forward when jumping before center
+        player.x += 1;
       }
 
       if (invincible) {
         ctx.save();
-        ctx.shadowColor = "#ff4d4d";
+        ctx.shadowColor = "#81c784";
         ctx.shadowBlur = 20;
-        ctx.drawImage(boyImg, player.x, player.y, player.width, player.height);
+        ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
         ctx.restore();
       } else {
-        ctx.drawImage(boyImg, player.x, player.y, player.width, player.height);
+        ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
       }
 
       obstacles = obstacles.filter(ob => ob.x + ob.width > 0);
@@ -364,7 +280,7 @@
         ctx.fillStyle = ob.color;
         ctx.fillRect(ob.x, ob.y, ob.width, ob.height);
 
-      if (!invincible && isColliding(player, ob)) {
+        if (!invincible && isColliding(player, ob)) {
           gameOver = true;
           document.getElementById("end-screen").style.display = "block";
           document.getElementById("finalScore").innerText = score;
@@ -372,24 +288,20 @@
         }
       }
 
-      hearts = hearts.filter(h => h.x + h.width > 0);
-      for (let i = 0; i < hearts.length; i++) {
-        const h = hearts[i];
+      leaves = leaves.filter(h => h.x + h.width > 0);
+      for (let i = 0; i < leaves.length; i++) {
+        const h = leaves[i];
         h.x -= h.speed;
         ctx.font = "24px serif";
-        ctx.fillText(heartEmoji, h.x, h.y);
+        ctx.fillText(leafEmoji, h.x, h.y);
 
         if (isColliding(player, h)) {
           score += 50;
-          hearts.splice(i, 1);
+          leaves.splice(i, 1);
           i--;
-          if (score >= 5000 && !girl) {
-            girl = { x: canvas.width + 100, y: 320, width: 30, height: 60 };
-          }
         }
       }
 
-      // Draw stars
       stars = stars.filter(st => st.x + st.width > 0);
       for (let i = 0; i < stars.length; i++) {
         const st = stars[i];
@@ -405,11 +317,9 @@
         }
       }
 
-      // Check invincibility timer
       if (invincible && Date.now() - invincibleTimer > 5000) {
         invincible = false;
       }
-
 
       if (score > 0 && score % 500 === 0) speed += 0.02;
 
@@ -417,43 +327,14 @@
 
       if (!playerReachedCenter) {
         if (player.x < canvas.width / 2 - player.width / 2) {
-          player.x += 2; // move toward center
+          player.x += 2;
         } else {
           playerReachedCenter = true;
         }
       }
 
-
-      if (girl) {
-        girl.x -= speed;
-        ctx.drawImage(girlImg, girl.x, girl.y, girl.width, girl.height);
-
-        // Once girl appears, boy starts moving towards her
-        if (player.x < girl.x - player.width) {
-          player.x += 2; // move boy to girl slowly
-        } else {
-          gameWon = true;
-          document.getElementById("win-screen").style.display = "block";
-          document.getElementById("finalScoreWin").innerText = score;
-        }
-      }
-
-
       requestAnimationFrame(gameLoop);
     }
-
-    function openInaam() {
-      document.getElementById('inaamModal').style.display = 'flex';
-    }
-
-    function closeInaam() {
-      document.getElementById('inaamModal').style.display = 'none';
-    }
-
-
-
-    document.getElementById("bgMusic").volume = 0.3;
-
 
     function isColliding(a, b) {
       return (
@@ -467,14 +348,12 @@
     document.addEventListener("keydown", (e) => {
       if ((e.code === "Space" || e.key === " ")) {
         if (player.jumpCount < 2) {
-          player.vy = -20 + (player.jumpCount * -4); // 1st jump strong, 2nd jump soft
+          player.vy = -20 + (player.jumpCount * -4);
           player.jumpCount++;
         }
       }
     });
 
-
-    // Wait for player to start
     window.onload = () => {
       document.getElementById("start-screen").style.display = "block";
     };
@@ -487,7 +366,6 @@
         music.pause();
       }
     }
-
   </script>
 
   <footer style="
@@ -500,10 +378,9 @@
     opacity: 0.7;
   ">
     Crafted by <strong>
-    <a href="https://github.com/NyasaVishwas" target="_blank" style="color: #fff691; text-decoration: underline; font-weight: bold;">
+    <a href="https://github.com/NyasaVishwas" target="_blank" style="color: #81c784; text-decoration: underline; font-weight: bold;">
       Nyasa Vishwas
     </a></strong>
   </footer>
-
 </body>
 </html>
