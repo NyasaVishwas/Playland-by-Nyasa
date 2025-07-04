@@ -160,7 +160,7 @@
     const ctx = canvas.getContext("2d");
 
     const playerImg = new Image();
-    playerImg.src = "./logo.png";
+    playerImg.src = "./logo2.png";
     playerImg.alt = "player";
 
     const heartEmoji = "💚";
@@ -179,7 +179,7 @@
       bgMusic.play(); 
 
       document.getElementById("start-screen").style.display = "none";
-      player = { x: 50, y: 310, width: 60, height: 40, vy: 0, jumping: false, jumpCount: 0 };
+      player = { x: 50, y: 310, width: 50, height: 60, vy: 0, jumping: false, jumpCount: 0 };
       gameStarted = true;
       obstacles = [];
       hearts = [];
