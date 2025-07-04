@@ -125,7 +125,7 @@
       <li>Press <b>Spacebar</b> to shoot bullets.</li>
       <li>Destroy incoming asteroids to survive.</li>
       <li>Earn points for each asteroid you hit.</li>
-      <li><b>Bonus: </b> Golden asteroids give you 50 points. 🚀</li>
+      <li><b>Bonus: </b> Golden asteroids give you 500 points. 🚀</li>
     </ul>
     <button id="btn-play">Let’s Play!</button>
   </div>
@@ -237,13 +237,13 @@
         bossAsteroid = {
           x: Math.random() * (canvas.width - 60),
           y: -60,
-          size: 60,
-          speed: 1.5,
+          size: 50,
+          speed: 4,
           color: '#FFD700'
         };
       }
 
-      const nextBossTime = 20000 + Math.random() * 10000; // 20-30 seconds
+      const nextBossTime = 25000 + Math.random() * 10000; // 25 seconds
       bossSpawnTimeout = setTimeout(spawnBossAsteroid, nextBossTime);
     }
 
@@ -267,7 +267,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw spaceship
-      ctx.fillStyle = '#00BFFF';
+      ctx.fillStyle = '#0785e6';
       ctx.beginPath();
       ctx.moveTo(spaceship.x + spaceship.width / 2, spaceship.y);
       ctx.lineTo(spaceship.x, spaceship.y + spaceship.height);
