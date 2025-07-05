@@ -25,7 +25,6 @@
 
     #scoreboard { left: 20px; }
     #lives { right: 20px; }
-
     canvas { display: block; }
 
     #rules-screen, #game-over-screen {
@@ -41,8 +40,14 @@
       display: none;
     }
 
-    button {
+    #game-over-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
       margin-top: 20px;
+    }
+
+    button {
       padding: 10px 20px;
       font-size: 1.1em;
       border: none;
@@ -54,6 +59,22 @@
 
     button:hover {
       background: #ff7b74;
+    }
+
+    #bomb-flash {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: red;
+      opacity: 0;
+      z-index: 25;
+      pointer-events: none;
+      transition: opacity 0.3s ease-out;
+    }
+
+    #bomb-flash.active {
+      opacity: 0.8;
     }
   </style>
 </head>
@@ -75,12 +96,21 @@
 <div id="game-over-screen">
   <h2>Game Over</h2>
   <p id="final-score">Your Score: 0</p>
-  <button onclick="startGame()">Play Again</button>
+  <div id="game-over-buttons">
+    <button onclick="startGame()">Play Again</button>
+    <button onclick="window.location.href='index.html'">Back to Bubbles</button>
+  </div>
 </div>
+
+<!-- Bomb Red Flash -->
+<div id="bomb-flash"></div>
 
 <script>
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
+  const emojis = ["🍎", "🍌", "🍉", "🍇", "🍊", "🥝"];
+  const bombEmoji = "💣";
+
   let fruits = [];
   let particles = [];
   let score = 0;
@@ -88,9 +118,6 @@
   let gameRunning = false;
   let fruitInterval;
   let prevMouse = { x: 0, y: 0 };
-
-  const emojis = ["🍎", "🍌", "🍉", "🍇", "🍊", "🥝"];
-  const bombEmoji = "💣";
 
   function resize() {
     canvas.width = window.innerWidth;
@@ -102,8 +129,6 @@
   function createFruit() {
     if (!gameRunning) return;
     const size = 40;
-
-    // 15% chance to spawn a bomb
     const isBomb = Math.random() < 0.15;
 
     fruits.push({
@@ -164,12 +189,12 @@
         
         fruit.sliced = true;
 
-        // Check if it's a bomb
         if (fruit.isBomb) {
           fruit.emoji = "💥";
           createBurst(fruit.x, fruit.y, "💥");
+          triggerBombFlash();
           updateScore();
-          gameOver(true); // Bomb triggered
+          setTimeout(() => gameOver(true), 300); // Delay so flash appears
           return;
         }
 
@@ -209,10 +234,8 @@
     });
 
     fruits = fruits.filter(f => f.y < canvas.height && !f.sliced);
-
     updateParticles();
     drawParticles();
-
     requestAnimationFrame(gameLoop);
   }
 
@@ -237,10 +260,17 @@
   function gameOver(triggeredByBomb = false) {
     gameRunning = false;
     clearInterval(fruitInterval);
-
-    const message = triggeredByBomb ? "💥 You hit a bomb!" : `Your Score: ${score}`;
+    const message = `Your Score: ${score}`;
     document.getElementById("final-score").textContent = message;
     document.getElementById("game-over-screen").style.display = "block";
+  }
+
+  function triggerBombFlash() {
+    const flash = document.getElementById("bomb-flash");
+    flash.classList.add("active");
+    setTimeout(() => {
+      flash.classList.remove("active");
+    }, 300);
   }
 
   window.onload = () => {
