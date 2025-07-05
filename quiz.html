@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fruit Ninja Mini 🍉</title>
+  <title>Fruit Ninja Mini</title>
   <style>
     html, body {
       margin: 0;
@@ -108,7 +108,10 @@
 <script>
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
-  const emojis = ["🍎", "🍌", "🍉", "🍇", "🍊", "🥝"];
+  let emojis = [
+    "🍎", "🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇",
+    "🍓", "🫐", "🥝", "🍍", "🥭", "🍑", "🍒", "🍈", "🍅"
+    ];
   const bombEmoji = "💣";
 
   let fruits = [];
@@ -264,9 +267,8 @@ function createFruit() {
     }
 
     function increaseDifficulty() {
-    // Gradually reduce interval (fruit spawns faster)
-    if (currentInterval > 600) {  // Don't go below 600ms
-        currentInterval -= 50;      // Decrease slowly
+    if (currentInterval > 600) { 
+        currentInterval -= 50;   
         clearInterval(fruitInterval);
         fruitInterval = setInterval(createFruit, currentInterval);
     }
