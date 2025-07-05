@@ -96,9 +96,10 @@
         </div>
 
         <div id="game-over-screen">
-        <h2>Game Over</h2>
-        <p id="final-score">Your Score: 0</p>
-        <p id="high-score"></p>
+        <h1>Game Over</h1>
+        <p id="final-score" style="font-size:1.3em; margin-top: 10px;">Final Score: 0</p>
+        <p id="high-score" style="font-size:1em; line-height: 1;"></p>
+         <p>Don't give up—your best score is just a slice away!</p>
         <div id="game-over-buttons">
             <button onclick="startGame()">Play Again</button>
             <button onclick="window.location.href='index.html'">Back to Bubbles</button>
@@ -347,8 +348,8 @@
             gameRunning = false;
             clearInterval(fruitInterval);
             clearInterval(difficultyTimer);
-            document.getElementById("final-score").textContent = `Your Score: ${score}`;
-            document.getElementById("high-score").textContent = `High Score: ${highScore}`;
+            document.getElementById("final-score").textContent = `Final Score: ${score}`;
+            document.getElementById("high-score").textContent = `You High Score: ${highScore}`;
             document.getElementById("game-over-screen").style.display = "block";
         }
 
