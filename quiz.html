@@ -126,21 +126,21 @@
   resize();
   window.addEventListener("resize", resize);
 
-  function createFruit() {
-    if (!gameRunning) return;
-    const size = 40;
-    const isBomb = Math.random() < 0.15;
+function createFruit() {
+  if (!gameRunning) return;
+  const size = 40;
+  const isBomb = Math.random() < 0.15;
 
-    fruits.push({
-      x: Math.random() * (canvas.width - size),
-      y: -size,
-      size,
-      speed: 2 + Math.random() * 2,
-      emoji: isBomb ? bombEmoji : emojis[Math.floor(Math.random() * emojis.length)],
-      sliced: false,
-      isBomb: isBomb
-    });
-  }
+  fruits.push({
+    x: Math.random() * (canvas.width - size),
+    y: -size,
+    size,
+    speed: 2 + Math.random() * fruitSpeedMultiplier,
+    emoji: isBomb ? bombEmoji : emojis[Math.floor(Math.random() * emojis.length)],
+    sliced: false,
+    isBomb: isBomb
+  });
+}
 
   function drawFruit(fruit) {
     ctx.font = `${fruit.size}px serif`;
@@ -239,7 +239,11 @@
     requestAnimationFrame(gameLoop);
   }
 
-  function startGame() {
+  let currentInterval = 1000;
+    let difficultyTimer;
+    let fruitSpeedMultiplier = 2;
+
+    function startGame() {
     score = 0;
     lives = 3;
     fruits = [];
@@ -251,19 +255,37 @@
     document.getElementById("rules-screen").style.display = "none";
     document.getElementById("game-over-screen").style.display = "none";
 
+    currentInterval = 1000; // start slower
     clearInterval(fruitInterval);
-    fruitInterval = setInterval(createFruit, 800);
+    fruitInterval = setInterval(createFruit, currentInterval);
 
+    difficultyTimer = setInterval(increaseDifficulty, 5000); // every 5 seconds
     gameLoop();
-  }
+    }
 
-  function gameOver(triggeredByBomb = false) {
+    function increaseDifficulty() {
+    // Gradually reduce interval (fruit spawns faster)
+    if (currentInterval > 600) {  // Don't go below 600ms
+        currentInterval -= 50;      // Decrease slowly
+        clearInterval(fruitInterval);
+        fruitInterval = setInterval(createFruit, currentInterval);
+    }
+
+    // Slightly increase falling speed
+    if (fruitSpeedMultiplier < 4) {
+        fruitSpeedMultiplier += 0.2;  // Tiny increase
+    }
+    }
+
+    function gameOver(triggeredByBomb = false) {
     gameRunning = false;
     clearInterval(fruitInterval);
+    clearInterval(difficultyTimer);
     const message = `Your Score: ${score}`;
     document.getElementById("final-score").textContent = message;
     document.getElementById("game-over-screen").style.display = "block";
-  }
+    }
+
 
   function triggerBombFlash() {
     const flash = document.getElementById("bomb-flash");
