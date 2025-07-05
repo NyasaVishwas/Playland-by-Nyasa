@@ -16,76 +16,81 @@
     #scoreboard, #lives {
       position: fixed;
       top: 15px;
+      font-size: 1.4em;
       background: rgba(0, 0, 0, 0.6);
       padding: 10px 15px;
       border-radius: 10px;
-      font-size: 1.5em;
       z-index: 10;
     }
 
-    #scoreboard {
-      left: 20px;
-    }
+    #scoreboard { left: 20px; }
+    #lives { right: 20px; }
 
-    #lives {
-      right: 20px;
-    }
+    canvas { display: block; }
 
-    #game-over {
+    #rules-screen, #game-over-screen {
       position: fixed;
-      top: 40%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      text-align: center;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.85);
       padding: 30px;
-      border-radius: 20px;
+      border-radius: 15px;
+      text-align: center;
+      z-index: 20;
       display: none;
-      z-index: 99;
     }
 
-    #game-over h1 {
-      font-size: 2.2em;
-      margin-bottom: 15px;
-    }
-
-    #game-over button {
+    button {
+      margin-top: 20px;
       padding: 10px 20px;
-      font-size: 1em;
-      background: #ff5c5c;
+      font-size: 1.1em;
       border: none;
       border-radius: 8px;
+      background: #ff5e57;
+      color: white;
       cursor: pointer;
     }
 
-    canvas {
-      display: block;
+    button:hover {
+      background: #ff7b74;
     }
   </style>
 </head>
 <body>
 
 <div id="scoreboard">Score: 0</div>
-<div id="lives">Lives: 💛💛💛</div>
-<div id="game-over">
-  <h1>💥 Game Over</h1>
-  <p id="final-score"></p>
-  <button onclick="restartGame()">Play Again</button>
-</div>
+<div id="lives">Lives: ❤️❤️❤️</div>
 <canvas id="gameCanvas"></canvas>
+
+<div id="rules-screen">
+  <h2>Fruit Ninja Mini 🍉</h2>
+  <p>🍎 Swipe fruits using your mouse<br>
+     💔 Don't miss them! You only have 3 lives<br>
+     💣 Avoid bombs or the game ends instantly!<br>
+     🎯 Score as high as you can</p>
+  <button onclick="startGame()">Start Game</button>
+</div>
+
+<div id="game-over-screen">
+  <h2>Game Over</h2>
+  <p id="final-score">Your Score: 0</p>
+  <button onclick="startGame()">Play Again</button>
+</div>
 
 <script>
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
-
-  const emojis = ["🍎", "🍌", "🍉", "🍇", "🍊", "🥝"];
-  const bombEmoji = "💣";
-
   let fruits = [];
   let particles = [];
   let score = 0;
   let lives = 3;
-  let gameOver = false;
+  let gameRunning = false;
+  let fruitInterval;
+  let prevMouse = { x: 0, y: 0 };
+
+  const emojis = ["🍎", "🍌", "🍉", "🍇", "🍊", "🥝"];
+  const bombEmoji = "💣";
 
   function resize() {
     canvas.width = window.innerWidth;
@@ -95,8 +100,12 @@
   window.addEventListener("resize", resize);
 
   function createFruit() {
+    if (!gameRunning) return;
     const size = 40;
-    const isBomb = Math.random() < 0.1; // 10% chance for a bomb
+
+    // 15% chance to spawn a bomb
+    const isBomb = Math.random() < 0.15;
+
     fruits.push({
       x: Math.random() * (canvas.width - size),
       y: -size,
@@ -144,48 +153,62 @@
     particles = particles.filter(p => p.life > 0);
   }
 
-  // Swipe detection
-  let prevMouse = { x: 0, y: 0 };
   canvas.addEventListener("mousemove", e => {
-    if (gameOver) return;
+    if (!gameRunning) return;
     const currMouse = { x: e.clientX, y: e.clientY };
+
     fruits.forEach(fruit => {
       if (!fruit.sliced &&
-          Math.hypot(fruit.x - currMouse.x, fruit.y - currMouse.y) < 40 &&
-          Math.hypot(fruit.x - prevMouse.x, fruit.y - prevMouse.y) < 80) {
+        Math.hypot(fruit.x - currMouse.x, fruit.y - currMouse.y) < 40 &&
+        Math.hypot(fruit.x - prevMouse.x, fruit.y - prevMouse.y) < 80) {
+        
         fruit.sliced = true;
+
+        // Check if it's a bomb
         if (fruit.isBomb) {
-          triggerGameOver();
-        } else {
-          score += 1;
-          document.getElementById("scoreboard").textContent = `Score: ${score}`;
-          createBurst(fruit.x, fruit.y, fruit.emoji);
+          fruit.emoji = "💥";
+          createBurst(fruit.x, fruit.y, "💥");
+          updateScore();
+          gameOver(true); // Bomb triggered
+          return;
         }
+
+        score += 1;
+        updateScore();
+        createBurst(fruit.x, fruit.y, fruit.emoji);
       }
     });
+
     prevMouse = currMouse;
   });
 
-  function gameLoop() {
-    if (gameOver) return;
+  function updateScore() {
+    document.getElementById("scoreboard").textContent = `Score: ${score}`;
+  }
 
+  function updateLives() {
+    document.getElementById("lives").textContent = `Lives: ${"❤️".repeat(lives)}${"🤍".repeat(3 - lives)}`;
+  }
+
+  function gameLoop() {
+    if (!gameRunning) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     fruits.forEach(fruit => {
       fruit.y += fruit.speed;
       if (!fruit.sliced) drawFruit(fruit);
-    });
 
-    // Remove missed fruits
-    fruits = fruits.filter(f => {
-      if (f.y > canvas.height && !f.sliced && !f.isBomb) {
+      if (fruit.y > canvas.height && !fruit.sliced && !fruit.isBomb) {
+        fruit.sliced = true;
         lives--;
         updateLives();
-        if (lives <= 0) triggerGameOver();
-        return false;
+        if (lives <= 0) {
+          gameOver(false);
+        }
       }
-      return f.y <= canvas.height && !f.sliced;
     });
+
+    fruits = fruits.filter(f => f.y < canvas.height && !f.sliced);
 
     updateParticles();
     drawParticles();
@@ -193,31 +216,36 @@
     requestAnimationFrame(gameLoop);
   }
 
-  function updateLives() {
-    const heart = "💛";
-    document.getElementById("lives").textContent = `Lives: ${heart.repeat(lives)}`;
-  }
-
-  function triggerGameOver() {
-    gameOver = true;
-    document.getElementById("game-over").style.display = "block";
-    document.getElementById("final-score").textContent = `Your Score: ${score}`;
-  }
-
-  function restartGame() {
+  function startGame() {
     score = 0;
     lives = 3;
-    gameOver = false;
     fruits = [];
     particles = [];
-    document.getElementById("scoreboard").textContent = `Score: 0`;
+    gameRunning = true;
+    updateScore();
     updateLives();
-    document.getElementById("game-over").style.display = "none";
+
+    document.getElementById("rules-screen").style.display = "none";
+    document.getElementById("game-over-screen").style.display = "none";
+
+    clearInterval(fruitInterval);
+    fruitInterval = setInterval(createFruit, 800);
+
     gameLoop();
   }
 
-  setInterval(createFruit, 800);
-  gameLoop();
+  function gameOver(triggeredByBomb = false) {
+    gameRunning = false;
+    clearInterval(fruitInterval);
+
+    const message = triggeredByBomb ? "💥 You hit a bomb!" : `Your Score: ${score}`;
+    document.getElementById("final-score").textContent = message;
+    document.getElementById("game-over-screen").style.display = "block";
+  }
+
+  window.onload = () => {
+    document.getElementById("rules-screen").style.display = "block";
+  };
 </script>
 
 </body>
