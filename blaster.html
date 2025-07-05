@@ -89,6 +89,7 @@
 <body>
   <audio id="gameMusic" src="space.mp3" loop></audio>
   <button onclick="toggleMusic()" style="position: fixed; top: 5px; right: 5px; z-index: 20; font-size: 0.9em;"> Music🎵 </button>
+
   <div id="rules-screen">
     <h2>Game Rules</h2>
     <ul style="text-align:left; font-size: 1.1em;">
@@ -100,6 +101,7 @@
     </ul>
     <button id="btn-play">Let’s Play!</button>
   </div>
+
   <div id="game-over" style="display:none; text-align: center;">
     <h1>Game Over</h1>
     <p id="final-score" style="font-size:1.3em; margin-top: 10px;"></p>
@@ -109,8 +111,10 @@
       <button id="go-to-bubbles">Back to Bubbles</button>
     </div>
   </div>
+
   <div id="scoreboard">Score: 0</div>
   <canvas id="gameCanvas"></canvas>
+  
   <script>
     let currentInterval = 1000;
     let lastDifficultyUpdate = 0;

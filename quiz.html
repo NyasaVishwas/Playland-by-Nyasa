@@ -1,360 +1,368 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Fruit Ninja Mini</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to bottom, #000000, #001a00);
-      overflow: hidden;
-      color: white;
-    }
-    #scoreboard, #lives {
-      position: fixed;
-      top: 10px;
-      font-size: 1.2em;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px 15px;
-      border-radius: 10px;
-      font-weight: bold;
-      z-index: 10;
-    }
-    #scoreboard { left: 10px; }
-    #lives { right: 10px; }
-    canvas { display: block; }
-    #rules-screen, #game-over-screen {
-      position: fixed;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.85);
-      padding: 25px 30px;
-      border-radius: 15px;
-      text-align: center;
-      z-index: 20;
-      display: none;
-      line-height: 1.6;
-    }
-    #game-over-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 1em;
-      border: none;
-      border-radius: 8px;
-      background: #d83a32;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #e64a42;
-    }
-    #bomb-flash {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: red;
-      opacity: 0;
-      z-index: 25;
-      pointer-events: none;
-      transition: opacity 0.3s ease-out;
-    }
-    #bomb-flash.active {
-      opacity: 0.8;
-    }
-  </style>
-</head>
-<body>
-<div id="scoreboard">Score: 0</div>
-<div id="lives">Lives: ❤️❤️❤️</div>
-<canvas id="gameCanvas"></canvas>
-<div id="rules-screen">
-  <h2>Fruit Ninja Mini 🍉</h2>
-  <p>🍎 Swipe fruits to score points<br>
-     💔 Don’t miss fruits or lose a life (3 max)<br>
-     💣 Avoid bombs or lose instantly (unless shielded)<br>
-     🎯 Power-Ups (after 30s):<br>
-     🧊 <b>Ice Fruit</b>: Slows fruits for 5s<br>
-     🍭 <b>Candy Fruit</b>: Doubles points for 5s<br>
-     🕒 <b>Clock Fruit</b>: Adds 1 life (if < 3)<br>
-     🛡️ <b>Shield</b>: Blocks next bomb hit</p>
-  <button onclick="startGame()">Start Game</button>
-</div>
-<div id="game-over-screen">
-  <h2>Game Over</h2>
-  <p id="final-score">Your Score: 0</p>
-  <p id="high-score"></p>
-  <div id="game-over-buttons">
-    <button onclick="startGame()">Play Again</button>
-    <button onclick="window.location.href='index.html'">Back to Bubbles</button>
-  </div>
-</div>
-<div id="bomb-flash"></div>
-<script>
-  const canvas = document.getElementById("gameCanvas");
-  const ctx = canvas.getContext("2d");
-  const emojis = [
-    "🍎", "🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇",
-    "🍓", "🫐", "🥝", "🍍", "🥭", "🍑", "🍒", "🍈", "🍅"
-  ];
-  const powerUpEmojis = {
-    ice: "🧊",
-    candy: "🍭",
-    clock: "🕒",
-    shield: "🛡️"
-  };
-  const bombEmoji = "💣";
-
-  let fruits = [];
-  let particles = [];
-  let score = 0;
-  let lives = 3;
-  let highScore = localStorage.getItem('fruitNinjaHighScore') || 0;
-  let gameRunning = false;
-  let iceActive = false;
-  let candyActive = false;
-  let shieldActive = false;
-  let gameTime = 0;
-  let fruitInterval;
-  let prevMouse = { x: 0, y: 0 };
-
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener("resize", resize);
-
-  function createFruit() {
-    if (!gameRunning) return;
-    const size = 48;
-    const types = gameTime > 30000 ? ['fruit', 'bomb', 'ice', 'candy', 'clock', 'shield'] : ['fruit', 'bomb'];
-    const typeWeights = gameTime > 30000 ? [0.75, 0.15, 0.0125, 0.0125, 0.0125, 0.0125] : [0.85, 0.15];
-    const type = weightedRandom(types, typeWeights);
-
-    fruits.push({
-      x: Math.random() * (canvas.width - size),
-      y: -size,
-      size,
-      speed: 2 + Math.random() * fruitSpeedMultiplier,
-      emoji: type === 'fruit' ? emojis[Math.floor(Math.random() * emojis.length)] :
-             type === 'bomb' ? bombEmoji :
-             powerUpEmojis[type],
-      sliced: false,
-      isBomb: type === 'bomb',
-      isPowerUp: ['ice', 'candy', 'clock', 'shield'].includes(type),
-      type
-    });
-  }
-
-  function weightedRandom(items, weights) {
-    const totalWeight = weights.reduce((sum, w) => sum + w, 0);
-    let r = Math.random() * totalWeight;
-    for (let i = 0; i < items.length; i++) {
-      r -= weights[i];
-      if (r <= 0) return items[i];
-    }
-    return items[items.length - 1];
-  }
-
-  function drawFruit(fruit) {
-    ctx.font = `${fruit.size}px serif`;
-    ctx.fillText(fruit.emoji, fruit.x, fruit.y);
-  }
-
-  function createBurst(x, y, emoji) {
-    for (let i = 0; i < 6; i++) {
-      particles.push({
-        x,
-        y,
-        vx: (Math.random() - 0.5) * 4,
-        vy: (Math.random() - 0.5) * 4,
-        life: 1.0,
-        emoji
-      });
-    }
-  }
-
-  function drawParticles() {
-    particles.forEach(p => {
-      ctx.font = `20px serif`;
-      ctx.globalAlpha = p.life;
-      ctx.fillText(p.emoji, p.x, p.y);
-      ctx.globalAlpha = 1.0;
-    });
-  }
-
-  function updateParticles() {
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= 0.02;
-    });
-    particles = particles.filter(p => p.life > 0);
-  }
-
-  canvas.addEventListener("mousemove", e => {
-    if (!gameRunning) return;
-    const currMouse = { x: e.clientX, y: e.clientY };
-
-    fruits.forEach(fruit => {
-      if (!fruit.sliced &&
-        Math.hypot(fruit.x - currMouse.x, fruit.y - currMouse.y) < 48 &&
-        Math.hypot(fruit.x - prevMouse.x, fruit.y - prevMouse.y) < 96) {
-        
-        fruit.sliced = true;
-
-        if (fruit.isBomb) {
-          if (shieldActive) {
-            createBurst(fruit.x, fruit.y, "🛡️");
-            shieldActive = false;
-            fruits = fruits.filter(f => f !== fruit);
-            return;
-          }
-          fruit.emoji = "💥";
-          createBurst(fruit.x, fruit.y, "💥");
-          triggerBombFlash();
-          updateScore();
-          setTimeout(() => gameOver(true), 300);
-          return;
-        }
-
-        if (fruit.isPowerUp) {
-          if (fruit.type === 'ice') {
-            iceActive = true;
-            setTimeout(() => iceActive = false, 5000);
-          } else if (fruit.type === 'candy') {
-            candyActive = true;
-            setTimeout(() => candyActive = false, 5000);
-          } else if (fruit.type === 'clock') {
-            if (lives < 3) {
-              lives++;
-              updateLives();
+    <head>
+        <meta charset="UTF-8">
+        <title>Fruit Ninja Mini</title>
+        <style>
+            html, body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #000000, #001a00);
+            overflow: hidden;
+            color: white;
             }
-          } else if (fruit.type === 'shield') {
-            shieldActive = true;
-          }
-          createBurst(fruit.x, fruit.y, fruit.emoji);
-          fruits = fruits.filter(f => f !== fruit);
-          return;
+            #scoreboard, #lives {
+            position: fixed;
+            top: 10px;
+            font-size: 1.2em;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 10;
+            }
+            #scoreboard { left: 10px; }
+            #lives { right: 10px; }
+            canvas { display: block; }
+            #rules-screen, #game-over-screen {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.85);
+            padding: 25px 30px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 20;
+            display: none;
+            line-height: 1.6;
+            }
+            #game-over-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            }
+            button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            background: #d83a32;
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            margin-top: 15px;
+            }
+            button:hover {
+            background: #e64a42;
+            }
+            #bomb-flash {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: red;
+            opacity: 0;
+            z-index: 25;
+            pointer-events: none;
+            transition: opacity 0.3s ease-out;
+            }
+            #bomb-flash.active {
+            opacity: 0.8;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="scoreboard">Score: 0</div>
+        <div id="lives">Lives: ❤️❤️❤️</div>
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="rules-screen">
+        <h2>Game Rules</h2>
+            <ul style="text-align:left; font-size: 1.1em;">
+                <li>Swipe fruits to score points.</li>
+                <li>Don’t miss fruits or lose a life (3 max).</li>
+                <li>Avoid 💣 or lose instantly (unless shielded).</li>
+                <li><b>Power-Ups:</b>
+                    <ul style="list-style: none; padding-left: 1em;">
+                        <li>🧊: Slows fruits for 5s<br></li>
+                        <li>🍭: Doubles points for 5s</li>
+                        <li>❤️: Adds 1 life (if < 3)</li>
+                        <li>🛡️: locks next bomb hit</li>
+                    </ul>
+                </li>
+            </ul>
+        <button onclick="startGame()">Let's Play</button>
+        </div>
+
+        <div id="game-over-screen">
+        <h2>Game Over</h2>
+        <p id="final-score">Your Score: 0</p>
+        <p id="high-score"></p>
+        <div id="game-over-buttons">
+            <button onclick="startGame()">Play Again</button>
+            <button onclick="window.location.href='index.html'">Back to Bubbles</button>
+        </div>
+        </div>
+        <div id="bomb-flash"></div>
+        <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const emojis = [
+            "🍎", "🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇",
+            "🍓", "🫐", "🥝", "🍍", "🥭", "🍑", "🍒", "🍈", "🍅"
+        ];
+        const powerUpEmojis = {
+            ice: "🧊",
+            candy: "🍭",
+            clock: "🕒",
+            shield: "🛡️"
+        };
+        const bombEmoji = "💣";
+
+        let fruits = [];
+        let particles = [];
+        let score = 0;
+        let lives = 3;
+        let highScore = localStorage.getItem('fruitNinjaHighScore') || 0;
+        let gameRunning = false;
+        let iceActive = false;
+        let candyActive = false;
+        let shieldActive = false;
+        let gameTime = 0;
+        let fruitInterval;
+        let prevMouse = { x: 0, y: 0 };
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        function createFruit() {
+            if (!gameRunning) return;
+            const size = 48;
+            const types = gameTime > 30000 ? ['fruit', 'bomb', 'ice', 'candy', 'clock', 'shield'] : ['fruit', 'bomb'];
+            const typeWeights = gameTime > 30000 ? [0.75, 0.15, 0.0125, 0.0125, 0.0125, 0.0125] : [0.85, 0.15];
+            const type = weightedRandom(types, typeWeights);
+
+            fruits.push({
+            x: Math.random() * (canvas.width - size),
+            y: -size,
+            size,
+            speed: 2 + Math.random() * fruitSpeedMultiplier,
+            emoji: type === 'fruit' ? emojis[Math.floor(Math.random() * emojis.length)] :
+                    type === 'bomb' ? bombEmoji :
+                    powerUpEmojis[type],
+            sliced: false,
+            isBomb: type === 'bomb',
+            isPowerUp: ['ice', 'candy', 'clock', 'shield'].includes(type),
+            type
+            });
         }
 
-        increaseScore(1);
-        createBurst(fruit.x, fruit.y, fruit.emoji);
-      }
-    });
-
-    prevMouse = currMouse;
-  });
-
-  function increaseScore(amount) {
-    score += candyActive ? amount * 2 : amount;
-    updateScore();
-  }
-
-  function updateScore() {
-    document.getElementById("scoreboard").textContent = `Score: ${score}`;
-    if (score > highScore) {
-      highScore = score;
-      localStorage.setItem('fruitNinjaHighScore', highScore);
-    }
-  }
-
-  function updateLives() {
-    document.getElementById("lives").textContent = `Lives: ${"❤️".repeat(lives)}${"🤍".repeat(3 - lives)}`;
-  }
-
-  function gameLoop() {
-    if (!gameRunning) return;
-    gameTime += 16.67; // Approx 60 FPS
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    fruits.forEach(fruit => {
-      fruit.y += fruit.speed * (iceActive ? 0.5 : 1);
-      if (!fruit.sliced) drawFruit(fruit);
-
-      if (fruit.y > canvas.height && !fruit.sliced && !fruit.isBomb && !fruit.isPowerUp) {
-        fruit.sliced = true;
-        lives--;
-        updateLives();
-        if (lives <= 0) {
-          gameOver(false);
+        function weightedRandom(items, weights) {
+            const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+            let r = Math.random() * totalWeight;
+            for (let i = 0; i < items.length; i++) {
+            r -= weights[i];
+            if (r <= 0) return items[i];
+            }
+            return items[items.length - 1];
         }
-      }
-    });
 
-    fruits = fruits.filter(f => f.y < canvas.height && !f.sliced);
-    updateParticles();
-    drawParticles();
-    requestAnimationFrame(gameLoop);
-  }
+        function drawFruit(fruit) {
+            ctx.font = `${fruit.size}px serif`;
+            ctx.fillText(fruit.emoji, fruit.x, fruit.y);
+        }
 
-  let currentInterval = 1000;
-  let fruitSpeedMultiplier = 2;
-  let difficultyTimer;
+        function createBurst(x, y, emoji) {
+            for (let i = 0; i < 6; i++) {
+            particles.push({
+                x,
+                y,
+                vx: (Math.random() - 0.5) * 4,
+                vy: (Math.random() - 0.5) * 4,
+                life: 1.0,
+                emoji
+            });
+            }
+        }
 
-  function startGame() {
-    score = 0;
-    lives = 3;
-    fruits = [];
-    particles = [];
-    gameRunning = true;
-    iceActive = false;
-    candyActive = false;
-    shieldActive = false;
-    gameTime = 0;
-    updateScore();
-    updateLives();
+        function drawParticles() {
+            particles.forEach(p => {
+            ctx.font = `20px serif`;
+            ctx.globalAlpha = p.life;
+            ctx.fillText(p.emoji, p.x, p.y);
+            ctx.globalAlpha = 1.0;
+            });
+        }
 
-    document.getElementById("rules-screen").style.display = "none";
-    document.getElementById("game-over-screen").style.display = "none";
+        function updateParticles() {
+            particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= 0.02;
+            });
+            particles = particles.filter(p => p.life > 0);
+        }
 
-    currentInterval = 1000;
-    clearInterval(fruitInterval);
-    fruitInterval = setInterval(createFruit, currentInterval);
+        canvas.addEventListener("mousemove", e => {
+            if (!gameRunning) return;
+            const currMouse = { x: e.clientX, y: e.clientY };
 
-    difficultyTimer = setInterval(increaseDifficulty, 5000);
-    gameLoop();
-  }
+            fruits.forEach(fruit => {
+            if (!fruit.sliced &&
+                Math.hypot(fruit.x - currMouse.x, fruit.y - currMouse.y) < 48 &&
+                Math.hypot(fruit.x - prevMouse.x, fruit.y - prevMouse.y) < 96) {
+                
+                fruit.sliced = true;
 
-  function increaseDifficulty() {
-    if (currentInterval > 600) {
-      currentInterval -= 50;
-      clearInterval(fruitInterval);
-      fruitInterval = setInterval(createFruit, currentInterval);
-    }
-    if (fruitSpeedMultiplier < 4) {
-      fruitSpeedMultiplier += 0.2;
-    }
-  }
+                if (fruit.isBomb) {
+                if (shieldActive) {
+                    createBurst(fruit.x, fruit.y, "🛡️");
+                    shieldActive = false;
+                    fruits = fruits.filter(f => f !== fruit);
+                    return;
+                }
+                fruit.emoji = "💥";
+                createBurst(fruit.x, fruit.y, "💥");
+                triggerBombFlash();
+                updateScore();
+                setTimeout(() => gameOver(true), 300);
+                return;
+                }
 
-  function gameOver(triggeredByBomb = false) {
-    gameRunning = false;
-    clearInterval(fruitInterval);
-    clearInterval(difficultyTimer);
-    document.getElementById("final-score").textContent = `Your Score: ${score}`;
-    document.getElementById("high-score").textContent = `High Score: ${highScore}`;
-    document.getElementById("game-over-screen").style.display = "block";
-  }
+                if (fruit.isPowerUp) {
+                if (fruit.type === 'ice') {
+                    iceActive = true;
+                    setTimeout(() => iceActive = false, 5000);
+                } else if (fruit.type === 'candy') {
+                    candyActive = true;
+                    setTimeout(() => candyActive = false, 5000);
+                } else if (fruit.type === 'clock') {
+                    if (lives < 3) {
+                    lives++;
+                    updateLives();
+                    }
+                } else if (fruit.type === 'shield') {
+                    shieldActive = true;
+                }
+                createBurst(fruit.x, fruit.y, fruit.emoji);
+                fruits = fruits.filter(f => f !== fruit);
+                return;
+                }
 
-  function triggerBombFlash() {
-    const flash = document.getElementById("bomb-flash");
-    flash.classList.add("active");
-    setTimeout(() => {
-      flash.classList.remove("active");
-    }, 300);
-  }
+                increaseScore(1);
+                createBurst(fruit.x, fruit.y, fruit.emoji);
+            }
+            });
 
-  window.onload = () => {
-    document.getElementById("rules-screen").style.display = "block";
-  };
-</script>
-</body>
+            prevMouse = currMouse;
+        });
+
+        function increaseScore(amount) {
+            score += candyActive ? amount * 2 : amount;
+            updateScore();
+        }
+
+        function updateScore() {
+            document.getElementById("scoreboard").textContent = `Score: ${score}`;
+            if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('fruitNinjaHighScore', highScore);
+            }
+        }
+
+        function updateLives() {
+            document.getElementById("lives").textContent = `Lives: ${"❤️".repeat(lives)}${"🤍".repeat(3 - lives)}`;
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            gameTime += 16.67; // Approx 60 FPS
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            fruits.forEach(fruit => {
+            fruit.y += fruit.speed * (iceActive ? 0.5 : 1);
+            if (!fruit.sliced) drawFruit(fruit);
+
+            if (fruit.y > canvas.height && !fruit.sliced && !fruit.isBomb && !fruit.isPowerUp) {
+                fruit.sliced = true;
+                lives--;
+                updateLives();
+                if (lives <= 0) {
+                gameOver(false);
+                }
+            }
+            });
+
+            fruits = fruits.filter(f => f.y < canvas.height && !f.sliced);
+            updateParticles();
+            drawParticles();
+            requestAnimationFrame(gameLoop);
+        }
+
+        let currentInterval = 1000;
+        let fruitSpeedMultiplier = 2;
+        let difficultyTimer;
+
+        function startGame() {
+            score = 0;
+            lives = 3;
+            fruits = [];
+            particles = [];
+            gameRunning = true;
+            iceActive = false;
+            candyActive = false;
+            shieldActive = false;
+            gameTime = 0;
+            updateScore();
+            updateLives();
+
+            document.getElementById("rules-screen").style.display = "none";
+            document.getElementById("game-over-screen").style.display = "none";
+
+            currentInterval = 1000;
+            clearInterval(fruitInterval);
+            fruitInterval = setInterval(createFruit, currentInterval);
+
+            difficultyTimer = setInterval(increaseDifficulty, 5000);
+            gameLoop();
+        }
+
+        function increaseDifficulty() {
+            if (currentInterval > 600) {
+            currentInterval -= 50;
+            clearInterval(fruitInterval);
+            fruitInterval = setInterval(createFruit, currentInterval);
+            }
+            if (fruitSpeedMultiplier < 4) {
+            fruitSpeedMultiplier += 0.2;
+            }
+        }
+
+        function gameOver(triggeredByBomb = false) {
+            gameRunning = false;
+            clearInterval(fruitInterval);
+            clearInterval(difficultyTimer);
+            document.getElementById("final-score").textContent = `Your Score: ${score}`;
+            document.getElementById("high-score").textContent = `High Score: ${highScore}`;
+            document.getElementById("game-over-screen").style.display = "block";
+        }
+
+        function triggerBombFlash() {
+            const flash = document.getElementById("bomb-flash");
+            flash.classList.add("active");
+            setTimeout(() => {
+            flash.classList.remove("active");
+            }, 300);
+        }
+
+        window.onload = () => {
+            document.getElementById("rules-screen").style.display = "block";
+        };
+        </script>
+    </body>
 </html>
