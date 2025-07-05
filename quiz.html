@@ -9,50 +9,51 @@
       padding: 0;
       background: linear-gradient(to bottom, #000000, #001a00);
       overflow: hidden;
-      font-family: sans-serif;
       color: white;
     }
     #scoreboard, #lives {
       position: fixed;
-      top: 15px;
-      font-size: 1.4em;
+      top: 10px;
+      font-size: 1.2em;
       background: rgba(0, 0, 0, 0.6);
       padding: 10px 15px;
       border-radius: 10px;
+      font-weight: bold;
       z-index: 10;
     }
-    #scoreboard { left: 20px; }
-    #lives { right: 20px; }
+    #scoreboard { left: 10px; }
+    #lives { right: 10px; }
     canvas { display: block; }
     #rules-screen, #game-over-screen {
       position: fixed;
-      top: 50%;
+      top: 40%;
       left: 50%;
       transform: translate(-50%, -50%);
       background: rgba(0,0,0,0.85);
-      padding: 30px;
+      padding: 25px 30px;
       border-radius: 15px;
       text-align: center;
       z-index: 20;
       display: none;
+      line-height: 1.6;
     }
     #game-over-buttons {
       display: flex;
       justify-content: center;
-      gap: 20px;
+      gap: 10px;
       margin-top: 20px;
     }
     button {
       padding: 10px 20px;
-      font-size: 1.1em;
+      font-size: 1em;
       border: none;
       border-radius: 8px;
-      background: #ff5e57;
+      background: #d83a32;
       color: white;
       cursor: pointer;
     }
     button:hover {
-      background: #ff7b74;
+      background: #e64a42;
     }
     #bomb-flash {
       position: fixed;
