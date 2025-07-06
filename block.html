@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whimsy Blocks</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #d8b9ff, #b043f4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #gameContainer {
+      background: #f5f0e6;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(106, 27, 154, 0.4);
+      display: none;
+      position: relative;
+    }
+
+    #gameCanvas {
+      background: #fffaf0;
+      display: block;
+      margin: 0 auto;
+      border: 2px solid #e5d7b6;
+    }
+
+    #nextPieceCanvas {
+      background: #fffaf0;
+      display: block;
+      margin: 10px auto;
+      border: 2px solid #e5d7b6;
+    }
+
+    #scoreboard {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: white;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #5a3d1a;
+      box-shadow: 0 0 10px rgba(106, 27, 154, 0.4);
+      z-index: 10;
+    }
+
+    #rulesScreen, #gameOverScreen, #pauseScreen {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fffaf0;
+      border-radius: 15px;
+      padding: 25px 30px;
+      max-width: 350px;
+      text-align: center;
+      z-index: 20;
+      line-height: 1.6;
+      box-shadow: 0 0 20px rgba(106, 27, 154, 0.4);
+    }
+
+    #gameOverScreen {
+      display: none;
+    }
+
+    #canvasOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 15;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #5a3d1a;
+      font-size: 28px;
+    }
+
+    ul {
+      text-align: left;
+      padding-left: 20px;
+      font-size: 1em;
+      line-height: 1.6;
+      margin: 10px 0 20px 0;
+    }
+
+    button {
+      margin: 15px 8px 0 8px;
+      padding: 10px 20px;
+      background: #6a1b9a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #8e24aa;
+    }
+
+    #volume-control {
+      margin-top: 15px;
+    }
+
+    #volume-slider {
+        width: 150px;
+        cursor: pointer;
+        appearance: none; 
+        -webkit-appearance: none;
+        background: transparent; 
+        }
+
+        #volume-slider::-webkit-slider-runnable-track {
+        background: #83109d;
+        height: 6px;
+        border-radius: 3px;
+        }
+
+        #volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #83109d;
+        border: 2px solid #83109d;
+        border-radius: 50%;
+        margin-top: -5px;
+        cursor: pointer;
+        }
+
+        #volume-slider::-moz-range-track {
+        background: #83109d;
+        height: 6px;
+        border-radius: 3px;
+        }
+
+        #volume-slider::-moz-range-thumb {
+        background: #83109d;
+        border: 2px solid #83109d;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        }
+
+        #volume-slider::-ms-track {
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+        height: 6px;
+        }
+
+        #volume-slider::-ms-fill-lower {
+        background: #83109d;
+        border-radius: 3px;
+        }
+
+        #volume-slider::-ms-fill-upper {
+        background: #83109d;
+        border-radius: 3px;
+        }
+
+        #volume-slider::-ms-thumb {
+        background: #83109d;
+        border: 2px solid #83109d;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        cursor: pointer;
+        }
+
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+  </style>
+</head>
+<body>
+  <audio id="bgMusic" src="run.mp3" loop></audio>
+
+  <!-- Rules Screen -->
+  <div id="rulesScreen">
+    <h2>Match the Shape 🧩</h2>
+    <ul>
+      <li>⬅️: Move Left</li>
+      <li>➡️: Move Right</li>
+      <li>⬆️: Rotate Block</li>
+      <li>⬇️: Drop Faster</li>
+      <li>P: Pause Game</li>
+      <li>Clear full rows to score and prevent stack-up!</li>
+    </ul>
+    <div id="volume-control">
+      <label for="volume-slider">Music Volume: </label>
+      <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+    </div>
+    <button onclick="startGame()">Start Game</button>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="gameOverScreen">
+    <h2>Game Over</h2>
+    <p id="finalScore" style="font-size:1.3em; margin-top: 10px;">Final Score: 0</p>
+    <p id="highScore" style="font-size:1.2em; line-height: 1; color: #6a1b9a;"></p>
+    <p id="newHighScore" style="font-size:1.1em; color: #6a1b9a; display: none;">New High Score!</p>
+    <p>Stack got too high!<br>Keep matching to set a new record!</p>
+    <button onclick="restartGame()">Play Again</button>
+    <button onclick="window.location.href='index.html'">Back to Bubbles</button>
+  </div>
+
+  <!-- Pause Screen -->
+  <div id="pauseScreen" style="display: none;">
+    <h2>Paused</h2>
+    <p>Press P to resume</p>
+  </div>
+
+  <!-- Game Container -->
+  <div id="gameContainer">
+    <div id="canvasOverlay"></div>
+    <canvas id="nextPieceCanvas" width="120" height="120"></canvas>
+    <div id="scoreboard">Score: 0</div>
+    <canvas id="gameCanvas" width="360" height="480"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const nextCanvas = document.getElementById("nextPieceCanvas");
+    const nextCtx = nextCanvas.getContext("2d");
+    const blockSize = 30;
+    const columns = 12;
+    const rows = 16;
+    let board = [];
+    let currentPiece, currentX, currentY, currentRotation;
+    let nextPiece;
+    let score = 0;
+    let gameOver = false;
+    let gamePaused = false;
+    let speed = 500;
+    let highScore = localStorage.getItem('matchShapeHighScore') || 0;
+    const bgMusic = document.getElementById("bgMusic");
+    const volumeSlider = document.getElementById("volume-slider");
+
+    const shapes = [
+      [[1, 1, 1, 1]],                        // I
+      [[1, 1], [1, 1]],                      // O
+      [[0, 1, 0], [1, 1, 1]],                // T
+      [[1, 1, 0], [0, 1, 1]],                // S
+      [[0, 1, 1], [1, 1, 0]],                // Z
+      [[1, 0, 0], [1, 1, 1]],                // J
+      [[0, 0, 1], [1, 1, 1]]                 // L
+    ];
+
+    const colors = ["#6a1b9a", "#8e24aa", "#ab47bc", "#ce93d8", "#d8b9ff", "#e1bee7", "#d26de3"];
+
+    // Load saved volume or default to 0.5
+    bgMusic.volume = localStorage.getItem('matchShapeVolume') || 0.5;
+    volumeSlider.value = bgMusic.volume;
+
+    // Update volume and save to localStorage
+    function updateVolume() {
+      bgMusic.volume = volumeSlider.value;
+      localStorage.setItem('matchShapeVolume', bgMusic.volume);
+    }
+    volumeSlider.addEventListener('input', updateVolume);
+
+    function createBoard() {
+      board = Array.from({ length: rows }, () => Array(columns).fill(0));
+    }
+
+    function drawBoard() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < columns; x++) {
+          ctx.strokeStyle = "#e5d7b6";
+          ctx.strokeRect(x * blockSize, y * blockSize, blockSize, blockSize);
+          if (board[y][x]) {
+            ctx.fillStyle = board[y][x];
+            ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+          }
+        }
+      }
+    }
+
+    function drawPiece() {
+      const shape = shapes[currentPiece];
+      ctx.fillStyle = colors[currentPiece];
+      shape.forEach((row, dy) => {
+        row.forEach((val, dx) => {
+          if (val) {
+            ctx.fillRect((currentX + dx) * blockSize, (currentY + dy) * blockSize, blockSize, blockSize);
+            ctx.strokeStyle = "#fffaf0";
+            ctx.strokeRect((currentX + dx) * blockSize, (currentY + dy) * blockSize, blockSize, blockSize);
+          }
+        });
+      });
+    }
+
+    function drawNextPiece() {
+      nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+      nextCtx.strokeStyle = "#e5d7b6";
+      for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
+          nextCtx.strokeRect(x * blockSize, y * blockSize, blockSize, blockSize);
+        }
+      }
+      const shape = shapes[nextPiece];
+      const offsetX = shape[0].length === 4 ? 0 : (4 - shape[0].length) / 2; // Center I block
+      const offsetY = shape.length === 4 ? 0 : (4 - shape.length) / 2;
+      nextCtx.fillStyle = colors[nextPiece];
+      shape.forEach((row, dy) => {
+        row.forEach((val, dx) => {
+          if (val) {
+            nextCtx.fillRect((dx + offsetX) * blockSize, (dy + offsetY) * blockSize, blockSize, blockSize);
+            nextCtx.strokeStyle = "#fffaf0";
+            nextCtx.strokeRect((dx + offsetX) * blockSize, (dy + offsetY) * blockSize, blockSize, blockSize);
+          }
+        });
+      });
+    }
+
+    function spawnPiece() {
+      currentPiece = nextPiece !== undefined ? nextPiece : Math.floor(Math.random() * shapes.length);
+      nextPiece = Math.floor(Math.random() * shapes.length);
+      currentX = Math.floor((columns - shapes[currentPiece][0].length) / 2);
+      currentY = 0;
+      currentRotation = 0;
+      if (!canMove(0, 0)) {
+        gameOver = true;
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+        document.getElementById("canvasOverlay").style.display = "block";
+        document.getElementById("finalScore").textContent = `Final Score: ${score}`;
+        document.getElementById("highScore").textContent = `High Score: ${highScore}`;
+        document.getElementById("newHighScore").style.display = score > highScore ? "block" : "none";
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem('matchShapeHighScore', highScore);
+        }
+        document.getElementById("gameOverScreen").style.display = "block";
+      } else {
+        drawNextPiece();
+      }
+    }
+
+    function canMove(dx, dy, shape = shapes[currentPiece]) {
+      return shape.every((row, y) =>
+        row.every((val, x) => {
+          if (val) {
+            const nx = currentX + x + dx;
+            const ny = currentY + y + dy;
+            return ny < rows && nx >= 0 && nx < columns && !board[ny]?.[nx];
+          }
+          return true;
+        })
+      );
+    }
+
+    function placePiece() {
+      const shape = shapes[currentPiece];
+      shape.forEach((row, y) => {
+        row.forEach((val, x) => {
+          if (val) {
+            board[currentY + y][currentX + x] = colors[currentPiece];
+          }
+        });
+      });
+      removeFullRows();
+      spawnPiece();
+    }
+
+    function removeFullRows() {
+      for (let y = rows - 1; y >= 0; y--) {
+        if (board[y].every(cell => cell)) {
+          board.splice(y, 1);
+          board.unshift(Array(columns).fill(0));
+          score += 100;
+          document.getElementById("scoreboard").textContent = `Score: ${score}`;
+          if (score > 0 && score % 1000 === 0) speed = Math.max(100, speed - 50);
+          y++;
+        }
+      }
+    }
+
+    function rotatePiece() {
+      const original = shapes[currentPiece];
+      const rotated = original[0].map((_, i) => original.map(row => row[i]).reverse());
+      const oldX = currentX;
+      const oldShape = shapes[currentPiece];
+      shapes[currentPiece] = rotated;
+
+      // Try wall kicks (-1, +1)
+      if (canMove(0, 0)) return;
+      if (canMove(-1, 0)) { currentX--; return; }
+      if (canMove(1, 0)) { currentX++; return; }
+
+      // Revert if no valid position
+      shapes[currentPiece] = oldShape;
+      currentX = oldX;
+    }
+
+    function gameLoop() {
+      if (gamePaused || gameOver) return;
+
+      if (canMove(0, 1)) {
+        currentY++;
+      } else {
+        placePiece();
+      }
+      drawBoard();
+      drawPiece();
+      if (!gameOver) {
+        setTimeout(() => requestAnimationFrame(gameLoop), speed);
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (gameOver) return;
+      if (e.key === "p" || e.key === "P") {
+        gamePaused = !gamePaused;
+        document.getElementById("pauseScreen").style.display = gamePaused ? "block" : "none";
+        if (!gamePaused) {
+          bgMusic.play().catch(error => console.error("Error playing music:", error));
+          requestAnimationFrame(gameLoop);
+        } else {
+          bgMusic.pause();
+        }
+        return;
+      }
+      if (gamePaused) return;
+      if (e.key === "ArrowLeft" && canMove(-1, 0)) currentX--;
+      if (e.key === "ArrowRight" && canMove(1, 0)) currentX++;
+      if (e.key === "ArrowDown" && canMove(0, 1)) currentY++;
+      if (e.key === "ArrowUp") rotatePiece();
+      drawBoard();
+      drawPiece();
+    });
+
+    function startGame() {
+      bgMusic.play().catch(error => console.error("Error playing music:", error));
+      document.getElementById("rulesScreen").style.display = "none";
+      document.getElementById("gameOverScreen").style.display = "none";
+      document.getElementById("pauseScreen").style.display = "none";
+      document.getElementById("canvasOverlay").style.display = "none";
+      document.getElementById("gameContainer").style.display = "block";
+      createBoard();
+      score = 0;
+      speed = 500;
+      gameOver = false;
+      gamePaused = false;
+      document.getElementById("scoreboard").textContent = "Score: 0";
+      spawnPiece();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function restartGame() {
+      startGame();
+    }
+
+    window.onload = () => {
+      document.getElementById("rulesScreen").style.display = "block";
+      document.getElementById("gameOverScreen").style.display = "none";
+      document.getElementById("pauseScreen").style.display = "none";
+      document.getElementById("canvasOverlay").style.display = "none";
+      document.getElementById("gameContainer").style.display = "none";
+      document.getElementById("highScore").textContent = `High Score: ${highScore}`;
+    };
+  </script>
+
+  <footer style="
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #ffffff;
+    opacity: 0.7;
+  ">
+    Crafted by <strong>
+    <a href="https://github.com/NyasaVishwas" target="_blank" style="color: #fcf6ac; text-decoration: underline; font-weight: bold;">
+      Nyasa Vishwas
+    </a></strong>
+  </footer>
+</body>
+</html>
