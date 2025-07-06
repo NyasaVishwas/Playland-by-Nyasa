@@ -70,6 +70,13 @@
             #bomb-flash.active {
             opacity: 0.8;
             }
+            #volume-control {
+            margin-top: 15px;
+            }
+            #volume-slider {
+            width: 150px;
+            cursor: pointer;
+            }
         </style>
     </head>
     <body>
@@ -92,6 +99,10 @@
                     </ul>
                 </li>
             </ul>
+        <div id="volume-control">
+            <label for="volume-slider">Music Volume: </label>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+        </div>
         <button onclick="startGame()">Let's Play</button>
         </div>
 
@@ -99,16 +110,24 @@
         <h1>Game Over</h1>
         <p id="final-score" style="font-size:1.3em; margin-top: 10px;">Final Score: 0</p>
         <p id="high-score" style="font-size:1em; line-height: 1;"></p>
-         <p>Don't give up—your best score is just a slice away!</p>
+        <p>Don't give up—your best score is just a slice away!</p>
+        <div id="volume-control">
+            <label for="volume-slider-game-over">Music Volume: </label>
+            <input type="range" id="volume-slider-game-over" min="0" max="1" step="0.1" value="0.5">
+        </div>
         <div id="game-over-buttons">
             <button onclick="startGame()">Play Again</button>
             <button onclick="window.location.href='index.html'">Back to Bubbles</button>
         </div>
         </div>
         <div id="bomb-flash"></div>
+        <audio id="background-music" src="background.mp3" loop></audio>
         <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
+        const music = document.getElementById("background-music");
+        const volumeSlider = document.getElementById("volume-slider");
+        const volumeSliderGameOver = document.getElementById("volume-slider-game-over");
         const emojis = [
             "🍎", "🍏", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇",
             "🍓", "🫐", "🥝", "🍍", "🥭", "🍑", "🍒", "🍈", "🍅"
@@ -133,6 +152,28 @@
         let gameTime = 0;
         let fruitInterval;
         let prevMouse = { x: 0, y: 0 };
+
+        // Load saved volume or default to 0.5
+        music.volume = localStorage.getItem('fruitNinjaVolume') || 0.5;
+        volumeSlider.value = music.volume;
+        volumeSliderGameOver.value = music.volume;
+
+        // Update volume and save to localStorage
+        function updateVolume() {
+            music.volume = volumeSlider.value;
+            volumeSliderGameOver.value = music.volume; // Sync sliders
+            localStorage.setItem('fruitNinjaVolume', music.volume);
+        }
+
+        // Sync game over slider with main slider
+        function updateVolumeGameOver() {
+            music.volume = volumeSliderGameOver.value;
+            volumeSlider.value = music.volume; // Sync sliders
+            localStorage.setItem('fruitNinjaVolume', music.volume);
+        }
+
+        volumeSlider.addEventListener('input', updateVolume);
+        volumeSliderGameOver.addEventListener('input', updateVolumeGameOver);
 
         function resize() {
             canvas.width = window.innerWidth;
@@ -330,6 +371,12 @@
             fruitInterval = setInterval(createFruit, currentInterval);
 
             difficultyTimer = setInterval(increaseDifficulty, 5000);
+            
+            // Play background music
+            music.play().catch(error => {
+                console.error("Error playing music:", error);
+            });
+            
             gameLoop();
         }
 
@@ -348,9 +395,12 @@
             gameRunning = false;
             clearInterval(fruitInterval);
             clearInterval(difficultyTimer);
+            music.pause();
+            music.currentTime = 0; // Reset to start
             document.getElementById("final-score").textContent = `Final Score: ${score}`;
-            document.getElementById("high-score").textContent = `You High Score: ${highScore}`;
+            document.getElementById("high-score").textContent = `Your High Score: ${highScore}`;
             document.getElementById("game-over-screen").style.display = "block";
+            volumeSliderGameOver.value = music.volume; // Ensure slider reflects current volume
         }
 
         function triggerBombFlash() {
