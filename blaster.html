@@ -156,6 +156,7 @@
   <div id="game-over" style="display:none; text-align: center;">
     <h1>Game Over</h1>
     <p id="final-score" style="font-size:1.3em; margin-top: 10px;"></p>
+    <p id="high-score" style="font-size:1em; line-height: 1; color: #ffb2d9;"></p>
     <p>No worries, try again and see if you can beat your high score!</p>
     <div class="button-group">
       <button onclick="startGame()">Play Again</button>
@@ -452,6 +453,7 @@
       music.pause();
       music.currentTime = 0;
       document.getElementById('final-score').textContent = `Final Score: ${score}`;
+      document.getElementById('high-score').textContent = `High Score: ${highScore}`;
     }
   </script>
   <footer style="
