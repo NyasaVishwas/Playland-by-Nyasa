@@ -68,14 +68,14 @@
       margin-bottom: 16px;
     }
 
-    button{
+    button {
       background: #4caf50;
       border: none;
       color: white;
       font-size: 16px;
       padding: 10px 20px;
       border-radius: 8px;
-      margin: 6px;
+      margin-top: 15px;
       cursor: pointer;
     }
 
@@ -115,18 +115,77 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .music-toggle {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 101;
+    #volume-slider {
+      width: 150px;
+      cursor: pointer;
+      appearance: none; 
+      -webkit-appearance: none; 
+      background: transparent;
     }
+
+    #volume-slider::-webkit-slider-runnable-track {
+      background: #046b0a;
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    #volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #046b0a;
+      border: 2px solid #046b0a;
+      border-radius: 50%;
+      margin-top: -5px;
+      cursor: pointer;
+    }
+
+    #volume-slider::-moz-range-track {
+      background: #046b0a;
+      height: 6px;
+      border-radius: 3px;
+    }
+
+    #volume-slider::-moz-range-thumb {
+      background: #046b0a;
+      border: 2px solid #046b0a;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    #volume-slider::-ms-track {
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+      height: 6px;
+    }
+
+    #volume-slider::-ms-fill-lower {
+      background: #046b0a;
+      border-radius: 3px;
+    }
+
+    #volume-slider::-ms-fill-upper {
+      background: #046b0a;
+      border-radius: 3px;
+    }
+
+    #volume-slider::-ms-thumb {
+      background: #046b0a;
+      border: 2px solid #046b0a;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
   <audio id="bgMusic" src="run.mp3" loop></audio>
-  <button class="music-toggle" onclick="toggleMusic()">🎶 Music</button>
-
   <div id="game-container">
     <canvas id="gameCanvas" width="800" height="450"></canvas>
     <div id="score">Score: 0</div>
@@ -141,13 +200,18 @@
         <li>Dash through the forest to stack up your score!</li>
         <li><b>Hint: </b>Double press Spacebar to fly higher</li>
       </ul>
+      <div id="volume-control">
+        <label for="volume-slider">Music Volume: </label>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+      </div>
       <button onclick="startGame()">Let's Play</button>
     </div>
 
     <!-- Game Over Screen -->
     <div id="end-screen" class="end-screen" style="display:none;">
       <h2>Game Over</h2>
-      <p style="font-size:1.3em; margin-top: 10px;"><b>Final Score: <span id="finalScore">0</span></b></p>
+      <p id="final-score" style="font-size:1.3em; margin-top: 10px;">Final Score: 0</p>
+      <p id="high-score" style="font-size:1em; line-height: 1; color: #046b0a;"></p>
       <p>You hit a hazard on the path!<br>Keep flying to set a new record!</p>
       <button onclick="startGame()">Play Again</button>
       <button onclick="window.location.href='index.html'">Back to Bubbles</button>
@@ -160,6 +224,8 @@
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
+    const bgMusic = document.getElementById("bgMusic");
+    const volumeSlider = document.getElementById("volume-slider");
 
     const playerImg = new Image();
     playerImg.src = "./fairy.png";
@@ -174,17 +240,27 @@
     let invincibleTimer = 0;
     const starEmoji = "⭐️";
     let gameStarted = false;
+    let highScore = localStorage.getItem('forestFrenzyHighScore') || 0;
+
+    // Load saved volume or default to 0.5
+    bgMusic.volume = localStorage.getItem('forestFrenzyVolume') || 0.5;
+    volumeSlider.value = bgMusic.volume;
+
+    // Update volume and save to localStorage
+    function updateVolume() {
+      bgMusic.volume = volumeSlider.value;
+      localStorage.setItem('forestFrenzyVolume', bgMusic.volume);
+    }
+    volumeSlider.addEventListener('input', updateVolume);
 
     function startGame() {
-      const bgMusic = document.getElementById("bgMusic");
-      bgMusic.volume = 0.3;
-      bgMusic.play(); 
-
+      bgMusic.play().catch(error => console.error("Error playing music:", error));
       document.getElementById("start-screen").style.display = "none";
-      player = { x: 50, y: 290, width: 50, height: 60, vy: 0, jumping: false, jumpCount: 0 }; // Fairy y: 290
+      player = { x: 50, y: 290, width: 50, height: 60, vy: 0, jumping: false, jumpCount: 0 };
       gameStarted = true;
       obstacles = [];
       hearts = [];
+      stars = [];
       score = 0;
       speed = 3;
       gameOver = false;
@@ -207,10 +283,10 @@
 
       if (obstacles.length === 0 || lastX < canvas.width - gap) {
         const color = obstacleColors[Math.floor(Math.random() * obstacleColors.length)];
-        const height = 20 + Math.random() * 80; // Varied heights: 20-100px
+        const height = 20 + Math.random() * 80;
         obstacles.push({
           x: canvas.width + Math.random() * 100,
-          y: 370 - height, // Align base with ground line (370px)
+          y: 370 - height,
           width: 30 + Math.random() * 20,
           height: height,
           speed: speed,
@@ -224,29 +300,26 @@
     function generateHeart() {
       if (gameOver) return;
 
-      // Determine heart height tier
       const rand = Math.random();
       let heartY;
       if (rand < 0.5) {
-        heartY = 270 + Math.random() * 60; // Low: 270-330px (single jump)
+        heartY = 270 + Math.random() * 60;
       } else if (rand < 0.8) {
-        heartY = 220 + Math.random() * 50; // Medium: 220-270px (often double jump)
+        heartY = 220 + Math.random() * 50;
       } else {
-        heartY = 170 + Math.random() * 50; // High: 170-220px (double jump)
+        heartY = 170 + Math.random() * 50;
       }
 
       const heartX = canvas.width + Math.random() * 300;
 
-      // Check for nearby obstacles to avoid overlap
       let adjustedHeartY = heartY;
       let adjustedHeartX = heartX;
       for (const ob of obstacles) {
         if (Math.abs(ob.x - heartX) < 50 && Math.abs((370 - ob.height) - heartY) < 30) {
-          // Heart is too close to obstacle top; adjust y or x
-          adjustedHeartY = 370 - ob.height - 30; // 30px above obstacle top
-          if (adjustedHeartY < 140) { // Ensure heart stays within canvas (140px top margin)
-            adjustedHeartX = ob.x + ob.width + 50; // Place beside obstacle
-            adjustedHeartY = heartY; // Revert to original height tier
+          adjustedHeartY = 370 - ob.height - 30;
+          if (adjustedHeartY < 140) {
+            adjustedHeartX = ob.x + ob.width + 50;
+            adjustedHeartY = heartY;
           }
         }
       }
@@ -259,9 +332,7 @@
         speed: speed
       });
 
-      // Increased heart spawns based on score
       if (score >= 2000) {
-        // After 2000 points: 70% chance for second heart, 30% chance for third
         if (Math.random() < 0.7) {
           const secondRand = Math.random();
           let secondHeartY;
@@ -323,7 +394,6 @@
           }
         }
       } else if (score >= 1000) {
-        // After 1000 points: 50% chance for second heart
         if (Math.random() < 0.5) {
           const secondRand = Math.random();
           let secondHeartY;
@@ -355,7 +425,6 @@
           });
         }
       } else {
-        // Before 1000 points: 30% chance for second heart
         if (Math.random() < 0.3) {
           const secondHeartX = canvas.width + 100 + Math.random() * 200;
           const secondHeartY = 270 + Math.random() * 60;
@@ -380,7 +449,6 @@
         }
       }
 
-      // Faster spawn rate after 1500 points, even faster after 3000
       const spawnInterval = score >= 3000 ? 600 + Math.random() * 400 : score >= 1500 ? 600 + Math.random() * 600 : 800 + Math.random() * 1000;
       setTimeout(generateHeart, spawnInterval);
     }
@@ -402,16 +470,27 @@
     }
 
     function gameLoop() {
-      if (!gameStarted || gameOver) return;
+      if (!gameStarted || gameOver) {
+        if (gameOver) {
+          bgMusic.pause();
+          bgMusic.currentTime = 0;
+          document.getElementById("end-screen").style.display = "block";
+          document.getElementById("final-score").textContent = `Final Score: ${score}`;
+          document.getElementById("high-score").textContent = `High Score: ${highScore}`;
+          return;
+        }
+        return;
+      }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       player.vy += 1.5;
       player.y += player.vy;
-      if (player.y > 290) { // New ground level
+      if (player.y > 290) {
         player.y = 290;
         player.vy = 0;
         player.jumpCount = 0;
+        player.jumping = false;
       }
 
       if (player.jumping && !playerReachedCenter && player.x < canvas.width / 2 - player.width / 2) {
@@ -440,9 +519,6 @@
         if (!invincible && isColliding(player, ob)) {
           console.log("Collision detected:", { player: { x: player.x, y: player.y, width: player.width, height: player.height }, obstacle: { x: ob.x, y: ob.y, width: ob.width, height: ob.height } });
           gameOver = true;
-          document.getElementById("end-screen").style.display = "block";
-          document.getElementById("finalScore").innerText = score;
-          return;
         }
       }
 
@@ -457,6 +533,11 @@
           score += 50;
           hearts.splice(i, 1);
           i--;
+          if (score > highScore) {
+            highScore = score;
+            localStorage.setItem('forestFrenzyHighScore', highScore);
+          }
+          document.getElementById("score").innerText = `Score: ${score}`;
         }
       }
 
@@ -481,8 +562,6 @@
 
       if (score > 0 && score % 500 === 0) speed += 0.02;
 
-      document.getElementById("score").innerText = "Score: " + score;
-
       if (!playerReachedCenter) {
         if (player.x < canvas.width / 2 - player.width / 2) {
           player.x += 2;
@@ -505,10 +584,11 @@
     }
 
     document.addEventListener("keydown", (e) => {
-      if ((e.code === "Space" || e.key === " ")) {
+      if ((e.code === "Space" || e.key === " ") && !gameOver) {
         if (player.jumpCount < 2) {
           player.vy = -20 + (player.jumpCount * -4);
           player.jumpCount++;
+          player.jumping = true;
         }
       }
     });
@@ -516,15 +596,6 @@
     window.onload = () => {
       document.getElementById("start-screen").style.display = "block";
     };
-
-    function toggleMusic() {
-      const music = document.getElementById("bgMusic");
-      if (music.paused) {
-        music.play();
-      } else {
-        music.pause();
-      }
-    }
   </script>
 
   <footer style="
