@@ -65,6 +65,7 @@
       z-index: 20;
       line-height: 1.6;
       box-shadow: 0 0 20px rgba(106, 27, 154, 0.4);
+      animation: fadeIn 0.3s ease-in;
     }
 
     #gameOverScreen {
@@ -116,72 +117,71 @@
     }
 
     #volume-slider {
-        width: 150px;
-        cursor: pointer;
-        appearance: none; 
-        -webkit-appearance: none;
-        background: transparent; 
-        }
+      width: 150px;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent;
+    }
 
-        #volume-slider::-webkit-slider-runnable-track {
-        background: #83109d;
-        height: 6px;
-        border-radius: 3px;
-        }
+    #volume-slider::-webkit-slider-runnable-track {
+      background: #83109d;
+      height: 6px;
+      border-radius: 3px;
+    }
 
-        #volume-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        background: #83109d;
-        border: 2px solid #83109d;
-        border-radius: 50%;
-        margin-top: -5px;
-        cursor: pointer;
-        }
+    #volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #83109d;
+      border: 2px solid #83109d;
+      border-radius: 50%;
+      margin-top: -5px;
+      cursor: pointer;
+    }
 
-        #volume-slider::-moz-range-track {
-        background: #83109d;
-        height: 6px;
-        border-radius: 3px;
-        }
+    #volume-slider::-moz-range-track {
+      background: #83109d;
+      height: 6px;
+      border-radius: 3px;
+    }
 
-        #volume-slider::-moz-range-thumb {
-        background: #83109d;
-        border: 2px solid #83109d;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        cursor: pointer;
-        }
+    #volume-slider::-moz-range-thumb {
+      background: #83109d;
+      border: 2px solid #83109d;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
 
-        #volume-slider::-ms-track {
-        background: transparent;
-        border-color: transparent;
-        color: transparent;
-        height: 6px;
-        }
+    #volume-slider::-ms-track {
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+      height: 6px;
+    }
 
-        #volume-slider::-ms-fill-lower {
-        background: #83109d;
-        border-radius: 3px;
-        }
+    #volume-slider::-ms-fill-lower {
+      background: #83109d;
+      border-radius: 3px;
+    }
 
-        #volume-slider::-ms-fill-upper {
-        background: #83109d;
-        border-radius: 3px;
-        }
+    #volume-slider::-ms-fill-upper {
+      background: #83109d;
+      border-radius: 3px;
+    }
 
-        #volume-slider::-ms-thumb {
-        background: #83109d;
-        border: 2px solid #83109d;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        cursor: pointer;
-        }
-
+    #volume-slider::-ms-thumb {
+      background: #83109d;
+      border: 2px solid #83109d;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translate(-50%, -60%); }
@@ -194,7 +194,7 @@
 
   <!-- Rules Screen -->
   <div id="rulesScreen">
-    <h2>Match the Shape 🧩</h2>
+    <h2>Whimsy Blocks 🧩</h2>
     <ul>
       <li>⬅️: Move Left</li>
       <li>➡️: Move Right</li>
@@ -215,7 +215,6 @@
     <h2>Game Over</h2>
     <p id="finalScore" style="font-size:1.3em; margin-top: 10px;">Final Score: 0</p>
     <p id="highScore" style="font-size:1.2em; line-height: 1; color: #6a1b9a;"></p>
-    <p id="newHighScore" style="font-size:1.1em; color: #6a1b9a; display: none;">New High Score!</p>
     <p>Stack got too high!<br>Keep matching to set a new record!</p>
     <button onclick="restartGame()">Play Again</button>
     <button onclick="window.location.href='index.html'">Back to Bubbles</button>
@@ -318,7 +317,7 @@
         }
       }
       const shape = shapes[nextPiece];
-      const offsetX = shape[0].length === 4 ? 0 : (4 - shape[0].length) / 2; // Center I block
+      const offsetX = shape[0].length === 4 ? 0 : (4 - shape[0].length) / 2;
       const offsetY = shape.length === 4 ? 0 : (4 - shape.length) / 2;
       nextCtx.fillStyle = colors[nextPiece];
       shape.forEach((row, dy) => {
@@ -332,7 +331,18 @@
       });
     }
 
+    function spawnObstacleRow() {
+      if (score > 2000 && Math.random() < 0.05) {
+        board.pop();
+        const newRow = Array(columns).fill(0);
+        const randomX = Math.floor(Math.random() * columns);
+        newRow[randomX] = colors[Math.floor(Math.random() * colors.length)];
+        board.unshift(newRow);
+      }
+    }
+
     function spawnPiece() {
+      spawnObstacleRow();
       currentPiece = nextPiece !== undefined ? nextPiece : Math.floor(Math.random() * shapes.length);
       nextPiece = Math.floor(Math.random() * shapes.length);
       currentX = Math.floor((columns - shapes[currentPiece][0].length) / 2);
@@ -344,12 +354,11 @@
         bgMusic.currentTime = 0;
         document.getElementById("canvasOverlay").style.display = "block";
         document.getElementById("finalScore").textContent = `Final Score: ${score}`;
-        document.getElementById("highScore").textContent = `High Score: ${highScore}`;
-        document.getElementById("newHighScore").style.display = score > highScore ? "block" : "none";
         if (score > highScore) {
           highScore = score;
           localStorage.setItem('matchShapeHighScore', highScore);
         }
+        document.getElementById("highScore").textContent = `High Score: ${highScore}`;
         document.getElementById("gameOverScreen").style.display = "block";
       } else {
         drawNextPiece();
@@ -389,7 +398,9 @@
           board.unshift(Array(columns).fill(0));
           score += 100;
           document.getElementById("scoreboard").textContent = `Score: ${score}`;
-          if (score > 0 && score % 1000 === 0) speed = Math.max(100, speed - 50);
+          if (score > 0 && score % 500 === 0) {
+            speed = Math.max(100, speed * 0.9);
+          }
           y++;
         }
       }
