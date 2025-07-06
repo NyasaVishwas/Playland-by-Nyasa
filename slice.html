@@ -111,7 +111,7 @@
         <p id="final-score" style="font-size:1.3em; margin-top: 10px;">Final Score: 0</p>
         <p id="high-score" style="font-size:1em; line-height: 1;"></p>
         <p>Don't give up—your best score is just a slice away!</p>
-        <div id="volume-control">
+        <div id="volume-control" display="none">
             <label for="volume-slider-game-over">Music Volume: </label>
             <input type="range" id="volume-slider-game-over" min="0" max="1" step="0.1" value="0.5">
         </div>
@@ -121,7 +121,7 @@
         </div>
         </div>
         <div id="bomb-flash"></div>
-        <audio id="background-music" src="background.mp3" loop></audio>
+        <audio id="background-music" src="sli.mp3" loop></audio>
         <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
