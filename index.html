@@ -394,7 +394,7 @@
 
     // Form submission handling
     document.querySelector('form[name="visitor-form"]').addEventListener('submit', (e) => {
-      e.preventDefault();
+      //e.preventDefault();
       const formData = new FormData(document.querySelector('form[name="visitor-form"]'));
       fetch('/', {
         method: 'POST',
