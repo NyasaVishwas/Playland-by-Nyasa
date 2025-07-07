@@ -234,7 +234,7 @@
       to { opacity: 1; transform: scale(1); }
     }
 
-    #musicPopup button {
+    #musicPopup .bubble-btn {
       background: none;
       border: none;
       font-size: 4rem;
@@ -244,7 +244,7 @@
       transition: transform 0.3s, text-shadow 0.3s;
     }
 
-    #musicPopup button:hover {
+    #musicPopup .bubble-btn:hover {
       transform: scale(1.2);
       text-shadow: 0 0 10px #b6c9ff, 0 0 20px #bdd5ff;
     }
@@ -260,6 +260,13 @@
       gap: 15px;
       align-items: center;
       justify-content: center;
+    }
+
+    #musicPopup form[name="visitor-form"] input[type="text"] {
+      font-size: 1rem;
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
 
     #musicPopup form[name="visitor-form"] button {
@@ -310,7 +317,7 @@
       <p style="font-size: 1.2rem; margin: 10px 0; color: #0084ff;">
         🕹️ Pop the bubble to begin your adventure!
       </p>
-      <button onclick="startExperience()">🫧</button>
+      <button class="bubble-btn" onclick="startExperience()">🫧</button>
     </div>
   </div>
 
