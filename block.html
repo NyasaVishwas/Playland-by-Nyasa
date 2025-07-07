@@ -1,3 +1,9 @@
+<!-- 
+  © 2025 Nyasa Vishwas
+  This project and its source code are protected under copyright.
+  Do not copy or redistribute without permission.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +71,6 @@
       z-index: 20;
       line-height: 1.6;
       box-shadow: 0 0 20px rgba(106, 27, 154, 0.4);
-      animation: fadeIn 0.3s ease-in;
     }
 
     #gameOverScreen {
@@ -85,7 +90,7 @@
 
     h2 {
       margin-top: 0;
-      color: #5a3d1a;
+      color: #6a1b9a;
       font-size: 28px;
     }
 
@@ -464,6 +469,7 @@
     });
 
     function startGame() {
+      sessionStorage.setItem('whimsyGameStarted', 'true');
       bgMusic.play().catch(error => console.error("Error playing music:", error));
       document.getElementById("rulesScreen").style.display = "none";
       document.getElementById("gameOverScreen").style.display = "none";
@@ -481,17 +487,24 @@
     }
 
     function restartGame() {
+      sessionStorage.removeItem('whimsyGameStarted');
       startGame();
     }
 
-    window.onload = () => {
-      document.getElementById("rulesScreen").style.display = "block";
+    document.addEventListener("DOMContentLoaded", () => {
+      const wasPlaying = sessionStorage.getItem('whimsyGameStarted');
+      if (!wasPlaying) {
+        document.getElementById("rulesScreen").style.display = "block";
+        document.getElementById("gameContainer").style.display = "none";
+      }
+
+      // Always hide these initially
       document.getElementById("gameOverScreen").style.display = "none";
       document.getElementById("pauseScreen").style.display = "none";
       document.getElementById("canvasOverlay").style.display = "none";
-      document.getElementById("gameContainer").style.display = "none";
       document.getElementById("highScore").textContent = `High Score: ${highScore}`;
-    };
+    });
+
   </script>
 
   <footer style="
