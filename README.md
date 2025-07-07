@@ -6,7 +6,7 @@ A whimsical collection of four retro-inspired web games using HTML, CSS, and Van
 **Playland by Nyasa** is a fun web platform with floating bubbles linking to four games. Each game uses Canvas, local storage for high scores/volume, and looping soundtracks for an immersive experience.
 
 ## Live Demo
-Check it out live here: [Playland-by-Nyasa](INSERT_YOUR_HOSTED_URL_HERE)
+Check it out live here: [Playland-by-Nyasa](https://playland-by-nyasa.netlify.app)
 
 ## Games
 - **Slicemoji**: Slice emojis with mouse swipes, avoid obstacles, track high scores.
