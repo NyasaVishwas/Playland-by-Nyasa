@@ -9,7 +9,7 @@ A whimsical collection of four retro-inspired web games crafted with ❤️ by m
 Check it out live here: [Playland-by-Nyasa](INSERT_YOUR_HOSTED_URL_HERE)
 
 ## Games
-- **Slicemoji** (`slice.html`): Slice emojis with mouse swipes, avoid obstacles, track high scores.
-- **Fairy Flight** (`fairy.html`): Guide a fairy through a forest, dodge obstacles, use spacebar.
-- **Cosmic Craze** (`cosmo.html`): Shoot asteroids in space, control with cursor and spacebar.
-- **Whimsy Blocks** (`block.html`): Tetris-style puzzle with arrow keys (⬅️⬆️⬇️➡️, P to pause).
+- **Slicemoji**: Slice emojis with mouse swipes, avoid obstacles, track high scores.
+- **Fairy Flight**: Guide a fairy through a forest, dodge obstacles, use spacebar.
+- **Cosmic Craze**: Shoot asteroids in space, control with cursor and spacebar.
+- **Whimsy Blocks**: Tetris-style puzzle with arrow keys (⬅️⬆️⬇️➡️, P to pause).
