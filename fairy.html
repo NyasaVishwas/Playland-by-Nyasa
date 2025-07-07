@@ -240,6 +240,7 @@
     let invincibleTimer = 0;
     const starEmoji = "⭐️";
     let gameStarted = false;
+    let rulesShownOnce = false;
     let highScore = localStorage.getItem('forestFrenzyHighScore') || 0;
 
     // Load saved volume or default to 0.5
@@ -597,6 +598,8 @@
       document.getElementById("start-screen").style.display = "block";
       document.getElementById("end-screen").style.display = "none";
       gameOver = false;
+      gameStarted = false;
+      rulesShownOnce = true;
     };
   </script>
 
