@@ -79,51 +79,70 @@
             #volume-control {
             margin-top: 15px;
             }
+
             #volume-slider {
             width: 150px;
             cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
             }
-            /* White slider track */
+
             #volume-slider::-webkit-slider-runnable-track {
             background: #ffffff;
             height: 6px;
             border-radius: 3px;
             }
+
+            #volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            margin-top: -5px;
+            cursor: pointer;
+            }
+
             #volume-slider::-moz-range-track {
             background: #ffffff;
             height: 6px;
             border-radius: 3px;
             }
-            #volume-slider::-ms-track {
+
+            #volume-slider::-moz-range-thumb {
             background: #ffffff;
-            height: 6px;
-            border-radius: 3px;
-            color: transparent;
-            }
-            /* Slider thumb styling for consistency */
-            #volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
+            border: 2px solid #ffffff;
             width: 16px;
             height: 16px;
-            background: #ffffff;
-            border: 2px solid #d83a32;
-            border-radius: 50%;
-            margin-top: -5px;
-            cursor: pointer;
-            }
-            #volume-slider::-moz-range-thumb {
-            width: 12px;
-            height: 12px;
-            background: #ffffff;
-            border: 2px solid #d83a32;
             border-radius: 50%;
             cursor: pointer;
             }
+
+            #volume-slider::-ms-track {
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+            height: 6px;
+            }
+
+            #volume-slider::-ms-fill-lower {
+            background: #ffffff;
+            border-radius: 3px;
+            }
+
+            #volume-slider::-ms-fill-upper {
+            background: #ffffff;
+            border-radius: 3px;
+            }
+
             #volume-slider::-ms-thumb {
-            width: 12px;
-            height: 12px;
             background: #ffffff;
-            border: 2px solid #d83a32;
+            border: 2px solid #ffffff;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             cursor: pointer;
             }
