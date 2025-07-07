@@ -12,14 +12,14 @@ Check it out live here: [Playland-by-Nyasa](https://playland-by-nyasa.netlify.ap
 - **Slicemoji**: Slice emojis with mouse swipes, avoid obstacles, track high scores.
 - **Fairy Flight**: Guide a fairy through a forest, dodge obstacles, use spacebar.
 - **Cosmic Craze**: Shoot asteroids in space, control with cursor and spacebar.
-- **Whimsy Blocks**: Tetris-style puzzle with arrow keys (⬅️⬆️⬇️➡️, P to pause).
+- **Whimsy Blocks**: Tetris-style puzzle with arrow keys (⬅️ ⬆️ ⬇️ ➡️, P to pause).
 
 ## Contributing
 Fork, branch (`git checkout -b feature/your-feature`), commit, and submit a pull request. Ideas: add touch controls, sound effects, or unified gradients.
 
 ## Credits
-- **Developer**: [Nyasa Vishwas](https://github.com/NyasaVishwas)
+- **Developer**: [Nyasa Vishwas](https://www.linkedin.com/in/nyasavishwas)
 - **Inspiration**: *Fruit Ninja*, *Tetris*, *Space Shooter*, *Chrome Dino*
 
 ---
-Crafted with ❤️ by [Nyasa Vishwas](https://github.com/NyasaVishwas). Pop a bubble and play! 🌻🕹️
+Crafted with ❤️ by [Nyasa Vishwas](https://www.linkedin.com/in/nyasavishwas). Pop a bubble and play! 🌻🕹️
