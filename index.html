@@ -463,9 +463,14 @@
       return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
-    if (isMobileDevice()) {
+    const isMobile = /Mobi|Android|iPhone|iPod/i.test(navigator.userAgent) && window.innerWidth < 768;
+
+    if (isMobile) {
       document.getElementById("mobileWarning").style.display = "flex";
+    } else {
+      document.getElementById("mobileWarning").style.display = "none";
     }
+
 
   </script>
 
