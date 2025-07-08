@@ -296,10 +296,54 @@
       background-color: #a3bffa;
       color: white;
     }
+
+    #mobileWarning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(6px);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      color: #000;
+      padding: 20px;
+    }
+
+    #mobileWarningContent {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    }
+
+    #mobileWarningContent h2 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+
+    #mobileWarningContent p {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
   </style>
 </head>
 
 <body>
+  <div id="mobileWarning">
+    <div id="mobileWarningContent">
+      <h2>Hi there! 👋</h2>
+      <p>This experience is best viewed on a <strong>desktop or laptop</strong>.<br>Please switch devices for the best gameplay and visuals! 🎮</p>
+    </div>
+  </div>
+
+  
   <div id="game-container"></div>
   <div id="decorative-bubbles"></div>
 
@@ -416,6 +460,16 @@
         .then(() => console.log('Name submitted to Netlify'))
         .catch(error => console.error('Error submitting name:', error));
     });
+
+    // Show warning if opened on mobile
+    function isMobileDevice() {
+      return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    if (isMobileDevice()) {
+      document.getElementById("mobileWarning").style.display = "flex";
+    }
+
   </script>
 
   <footer style="
